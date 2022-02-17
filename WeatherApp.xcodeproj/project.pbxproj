@@ -101,10 +101,11 @@
 		BB12194A27BE6D0100EF331E /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				BB12198027BE6D9A00EF331E /* Controller */,
+				BB12197F27BE6D9300EF331E /* View */,
+				BB12197E27BE6D8D00EF331E /* Model */,
 				BB12194B27BE6D0100EF331E /* AppDelegate.swift */,
 				BB12194D27BE6D0100EF331E /* SceneDelegate.swift */,
-				BB12194F27BE6D0100EF331E /* ViewController.swift */,
-				BB12195127BE6D0100EF331E /* Main.storyboard */,
 				BB12195727BE6D0200EF331E /* Assets.xcassets */,
 				BB12195927BE6D0200EF331E /* LaunchScreen.storyboard */,
 				BB12195C27BE6D0200EF331E /* Info.plist */,
@@ -128,6 +129,29 @@
 				BB12197127BE6D0200EF331E /* WeatherAppUITestsLaunchTests.swift */,
 			);
 			path = WeatherAppUITests;
+			sourceTree = "<group>";
+		};
+		BB12197E27BE6D8D00EF331E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		BB12197F27BE6D9300EF331E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BB12195127BE6D0100EF331E /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		BB12198027BE6D9A00EF331E /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				BB12194F27BE6D0100EF331E /* ViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
