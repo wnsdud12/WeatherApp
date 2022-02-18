@@ -55,6 +55,8 @@
 		BB12197127BE6D0200EF331E /* WeatherAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		BB12198127BE6F8500EF331E /* WeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
 		BB12198327BE6F9200EF331E /* WeatherManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManager.swift; sourceTree = "<group>"; };
+		BB12198527BF618B00EF331E /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		BB12198627BF679000EF331E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,8 @@
 		BB12193F27BE6D0100EF331E = {
 			isa = PBXGroup;
 			children = (
+				BB12198627BF679000EF331E /* .gitignore */,
+				BB12198527BF618B00EF331E /* Secrets.xcconfig */,
 				BB12194A27BE6D0100EF331E /* WeatherApp */,
 				BB12196427BE6D0200EF331E /* WeatherAppTests */,
 				BB12196E27BE6D0200EF331E /* WeatherAppUITests */,
@@ -470,6 +474,7 @@
 		};
 		BB12197627BE6D0200EF331E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB12198527BF618B00EF331E /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -497,6 +502,7 @@
 		};
 		BB12197727BE6D0200EF331E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BB12198527BF618B00EF331E /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

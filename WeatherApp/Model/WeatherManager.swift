@@ -8,21 +8,21 @@
 import Foundation
 
 struct WeatherManager {
-    let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?numOfRows=100&pageNo=1&dataType=JSON&"
+    let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
     private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String
     
     func fetchWeather() {
-        print("start : fetchWeather()")
+        print("start - fetchWeather()")
         let baseDateTime: (String, String) = setBaseDateTime()
         guard let apiKey = apiKey else {
             return print("URL이 이상해요")
         }
-        let urlString = "\(weatherURL)&serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)"
+        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=55&ny=127&numOfRows=100&pageNo=1&dataType=JSON"
         preformRequest(with: urlString)
         print(urlString)
     }
     func fetchWeather(testDate: String) {
-        print("start : fetchWeather(testDate:)")
+        print("start - fetchWeather(testDate:)")
         let baseDateTime: (String, String) = setBaseDateTime(testDate: testDate)
         guard let apiKey = apiKey else { return }
         let urlString = "\(weatherURL)&serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)"
@@ -31,20 +31,25 @@ struct WeatherManager {
 }
 
 func preformRequest(with urlString: String) {
-    print("start : preformRequest(with:)")
+    print("start - preformRequest(with:)")
     if let url = URL(string: urlString) {
         let session = URLSession(configuration: .default)
         
         let task = session.dataTask(with: url) {
             (data, response, error) in
             if error != nil {
+                print("error - don't start preformRequest(with:)")
                 return
             }
             if let safeData = data {
                 parseJSON(weatherData: safeData)
+            } else {
+                print("error - don't start parsJSON(weatherData:)")
             }
         }
         task.resume()
+    } else {
+        print("error - url is wrong")
     }
 }
 
@@ -52,6 +57,7 @@ func parseJSON(weatherData: Data) {
     print("start : parseJSON(weatherData:)")
     let decoder = JSONDecoder()
     do {
+        // decoding을 못하는 듯 함
         let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
         let fcstDate = decodedData.response.body.items.item[0].fcstDate
         let fcstTime = decodedData.response.body.items.item[0].fcstTime
@@ -60,7 +66,13 @@ func parseJSON(weatherData: Data) {
         print("우선 성공")
         print("날짜 : \(fcstDate)\n시간 : \(fcstTime)\n데이터 : \(category) - \(value)")
     } catch {
-        print("우선 실패")
+        do{
+            let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
+            print("error - \(decodedData.response.header.resultMsg)")
+        }
+        catch {
+            print("error - can't get API data")
+        }
     }
 }
 
