@@ -7,9 +7,18 @@
 
 import Foundation
 
+typealias ItemTable = (date:String,time:String,[String:String])
+
+protocol WeatherManagerDelegate {
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
+    func didFailWithError(error: Error)
+}
+
 struct WeatherManager {
     let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
     private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String
+    
+    var delegate: WeatherManagerDelegate?
     
     func fetchWeather() {
         print("start - fetchWeather()")
@@ -57,14 +66,35 @@ func parseJSON(weatherData: Data) {
     print("start : parseJSON(weatherData:)")
     let decoder = JSONDecoder()
     do {
-        // decoding을 못하는 듯 함
+        /*
+         date,time,[category:value]
+         테이블 뷰에 보여질 것
+         날짜
+         시간 온도 하늘상태 강수량(신적설) 강수확률
+         시간 온도 하늘상태 강수량(신적설) 강수확률
+         시간 온도 하늘상태 강수량(신적설) 강수확률
+         .
+         .
+         .
+         날짜
+         시간 온도 하늘상태 강수량(신적설) 강수확률
+         시간 온도 하늘상태 강수량(신적설) 강수확률
+         시간 온도 하늘상태 강수량(신적설) 강수확률
+         .
+         .
+         .
+         */
         let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
-        let fcstDate = decodedData.response.body.items.item[0].fcstDate
-        let fcstTime = decodedData.response.body.items.item[0].fcstTime
-        let category = decodedData.response.body.items.item[0].category.rawValue
-        let value = decodedData.response.body.items.item[0].fcstValue
+        print(decodedData)
+        var itemTable: [ItemTable] = []
+        for items in decodedData.response.body.items.item.indices {
+            let fcstDate = decodedData.response.body.items.item[items].fcstDate
+            let fcstTime = decodedData.response.body.items.item[items].fcstTime
+            let category = decodedData.response.body.items.item[items].category
+            let value = decodedData.response.body.items.item[items].fcstValue
+        }
         print("우선 성공")
-        print("날짜 : \(fcstDate)\n시간 : \(fcstTime)\n데이터 : \(category) - \(value)")
+        //print("날짜 : \(fcstDate)\n시간 : \(fcstTime)\n데이터 : \(category) - \(value)")
     } catch {
         do{
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)

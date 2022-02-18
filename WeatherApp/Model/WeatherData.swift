@@ -74,8 +74,7 @@ struct Items: Codable {
 ///  - fcstValue : 예보 값
 ///  - nx, ny : 예보지점 X, Y 좌표
 struct Item: Codable {
-    let fcstDate, fcstTime, fcstValue: String
-    let category: Category
+    let fcstDate, fcstTime, fcstValue, category: String
     let nx, ny: Int
 }
 
@@ -87,6 +86,4 @@ struct Item: Codable {
 /// - TMP : 현재 기온(℃)
 /// - TMN : 최저기온(℃)
 /// - TMX : 최고기온(℃)
-enum Category: String, Codable {
-    case POP, PTY, PCP, SNO, SKY, TMP, TMN, TMX
-}
+
