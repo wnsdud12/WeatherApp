@@ -20,6 +20,7 @@
 		BB12198227BE6F8500EF331E /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198127BE6F8500EF331E /* WeatherData.swift */; };
 		BB12198427BE6F9200EF331E /* WeatherManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198327BE6F9200EF331E /* WeatherManager.swift */; };
 		BB12198827BF748500EF331E /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198727BF748500EF331E /* WeatherModel.swift */; };
+		BB12198A27BF974000EF331E /* WeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198927BF974000EF331E /* WeatherCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		BB12198527BF618B00EF331E /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		BB12198627BF679000EF331E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BB12198727BF748500EF331E /* WeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
+		BB12198927BF974000EF331E /* WeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				BB12194F27BE6D0100EF331E /* ViewController.swift */,
+				BB12198927BF974000EF331E /* WeatherCell.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				BB12195627BE6D0100EF331E /* WeatherApp.xcdatamodeld in Sources */,
 				BB12198227BE6F8500EF331E /* WeatherData.swift in Sources */,
 				BB12198827BF748500EF331E /* WeatherModel.swift in Sources */,
+				BB12198A27BF974000EF331E /* WeatherCell.swift in Sources */,
 				BB12195027BE6D0100EF331E /* ViewController.swift in Sources */,
 				BB12194C27BE6D0100EF331E /* AppDelegate.swift in Sources */,
 				BB12194E27BE6D0100EF331E /* SceneDelegate.swift in Sources */,

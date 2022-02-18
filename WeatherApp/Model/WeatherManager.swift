@@ -72,7 +72,7 @@ struct WeatherManager {
             let item = decodedData.response.body.items.item
 
             print("우선 성공")
-            let weather = WeatherModel(item: item)
+            let weather = WeatherModel(items: item)
             return weather
         } catch {
             delegate?.didFailWithError(error: error)
