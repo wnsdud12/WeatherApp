@@ -5,21 +5,32 @@
 //  Created by sumwb on 2022/02/18.
 //
 
+    /*
+     date,time,[category:value]
+     테이블 뷰에 보여질 것
+     날짜
+     시간 온도 하늘상태 강수량(신적설) 강수확률
+     시간 온도 하늘상태 강수량(신적설) 강수확률
+     시간 온도 하늘상태 강수량(신적설) 강수확률
+     .
+     .
+     .
+     날짜
+     시간 온도 하늘상태 강수량(신적설) 강수확률
+     시간 온도 하늘상태 강수량(신적설) 강수확률
+     시간 온도 하늘상태 강수량(신적설) 강수확률
+     .
+     .
+     .
+     */
 import Foundation
 
 typealias ItemTable = (date:String,time:String,[String:String])
-typealias aaa = (String,String,String,String)
-
 struct WeatherModel {
-    var itemForView: [aaa]
-    
-    init(fcstDate: [String], fcstTime: [String], category: [String], fcstValue:[String]) {
-        var itemTableArray: [aaa] = []
-        for i in fcstDate.indices {
-            let newData:aaa = (fcstDate[i],fcstTime[i],category[i],fcstValue[i])
-            itemTableArray.append(newData)
-        }
-        self.itemForView = itemTableArray
+    var value: Int
+    init(item: [Item]) {
+        print(item)
+        self.value = item.count
     }
 }
 

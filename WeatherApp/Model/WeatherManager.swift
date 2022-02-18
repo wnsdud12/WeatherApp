@@ -51,7 +51,7 @@ struct WeatherManager {
                 }
                 if let safeData = data {
                     if let weather = parseJSON(weatherData: safeData) {
-                        print(weather)
+                        delegate?.didUpdateWeather(self, weather: weather)
                     }
                 } else {
                     print("error - don't start parsJSON(weatherData:)")
@@ -63,58 +63,19 @@ struct WeatherManager {
         }
     }
     
+    // JSON으로 받아온 데이터를 가공하기 위해 WeatherModel 구조체에 전달
     func parseJSON(weatherData: Data) -> WeatherModel? {
         print("start : parseJSON(weatherData:)")
         let decoder = JSONDecoder()
-        var fcstDate: [String] = []
-        var fcstTime: [String] = []
-        var fcstValue: [String] = []
-        var category: [String] = []
-        //var categoryTMNTMX: [String] = []
         do {
-            /*
-             date,time,[category:value]
-             테이블 뷰에 보여질 것
-             날짜
-             시간 온도 하늘상태 강수량(신적설) 강수확률
-             시간 온도 하늘상태 강수량(신적설) 강수확률
-             시간 온도 하늘상태 강수량(신적설) 강수확률
-             .
-             .
-             .
-             날짜
-             시간 온도 하늘상태 강수량(신적설) 강수확률
-             시간 온도 하늘상태 강수량(신적설) 강수확률
-             시간 온도 하늘상태 강수량(신적설) 강수확률
-             .
-             .
-             .
-             */
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
-            print(decodedData.response.body.items.item.count)
-            for i in decodedData.response.body.items.item.indices {
-                let useCategory: [String] = ["TMP","SKY","PTY","POP","PCP","SNO"]
-               // let otherUseCategory: [String] = ["TMN","TMX"]
-                if useCategory.contains(decodedData.response.body.items.item[i].category)  {
-                fcstDate.append(decodedData.response.body.items.item[i].fcstDate)
-                fcstTime.append(decodedData.response.body.items.item[i].fcstTime)
-                category.append(decodedData.response.body.items.item[i].category)
-                fcstValue.append(decodedData.response.body.items.item[i].fcstValue)
-                }
-//                else if otherUseCategory.contains(decodedData.response.body.items.item[i].category) {
-//                    fcstDate.append(decodedData.response.body.items.item[i].fcstDate)
-//                    fcstTime.append(decodedData.response.body.items.item[i].fcstTime)
-//                    categoryTMNTMX.append(decodedData.response.body.items.item[i].category)
-//                    fcstValue.append(decodedData.response.body.items.item[i].fcstValue)
-//                }
-                else {
-                    continue
-                }
-            }
+            let item = decodedData.response.body.items.item
+
             print("우선 성공")
-            let weather = WeatherModel(fcstDate: fcstDate, fcstTime: fcstTime, category: category, fcstValue: fcstValue)
+            let weather = WeatherModel(item: item)
             return weather
         } catch {
+            delegate?.didFailWithError(error: error)
             do{
                 let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
                 print("error - \(decodedData.response.header.resultMsg)")
