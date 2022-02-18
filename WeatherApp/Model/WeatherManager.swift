@@ -7,7 +7,6 @@
 
 import Foundation
 
-typealias ItemTable = (date:String,time:String,[String:String])
 
 protocol WeatherManagerDelegate {
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
@@ -37,75 +36,97 @@ struct WeatherManager {
         let urlString = "\(weatherURL)&serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)"
         preformRequest(with: urlString)
     }
-}
-
-func preformRequest(with urlString: String) {
-    print("start - preformRequest(with:)")
-    if let url = URL(string: urlString) {
-        let session = URLSession(configuration: .default)
-        
-        let task = session.dataTask(with: url) {
-            (data, response, error) in
-            if error != nil {
-                print("error - don't start preformRequest(with:)")
-                return
+    
+    
+    func preformRequest(with urlString: String) {
+        print("start - preformRequest(with:)")
+        if let url = URL(string: urlString) {
+            let session = URLSession(configuration: .default)
+            
+            let task = session.dataTask(with: url) {
+                (data, response, error) in
+                if error != nil {
+                    print("error - don't start preformRequest(with:)")
+                    return
+                }
+                if let safeData = data {
+                    if let weather = parseJSON(weatherData: safeData) {
+                        print(weather)
+                    }
+                } else {
+                    print("error - don't start parsJSON(weatherData:)")
+                }
             }
-            if let safeData = data {
-                parseJSON(weatherData: safeData)
-            } else {
-                print("error - don't start parsJSON(weatherData:)")
-            }
+            task.resume()
+        } else {
+            print("error - url is wrong")
         }
-        task.resume()
-    } else {
-        print("error - url is wrong")
     }
-}
-
-func parseJSON(weatherData: Data) {
-    print("start : parseJSON(weatherData:)")
-    let decoder = JSONDecoder()
-    do {
-        /*
-         date,time,[category:value]
-         테이블 뷰에 보여질 것
-         날짜
-         시간 온도 하늘상태 강수량(신적설) 강수확률
-         시간 온도 하늘상태 강수량(신적설) 강수확률
-         시간 온도 하늘상태 강수량(신적설) 강수확률
-         .
-         .
-         .
-         날짜
-         시간 온도 하늘상태 강수량(신적설) 강수확률
-         시간 온도 하늘상태 강수량(신적설) 강수확률
-         시간 온도 하늘상태 강수량(신적설) 강수확률
-         .
-         .
-         .
-         */
-        let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
-        print(decodedData)
-        var itemTable: [ItemTable] = []
-        for items in decodedData.response.body.items.item.indices {
-            let fcstDate = decodedData.response.body.items.item[items].fcstDate
-            let fcstTime = decodedData.response.body.items.item[items].fcstTime
-            let category = decodedData.response.body.items.item[items].category
-            let value = decodedData.response.body.items.item[items].fcstValue
-        }
-        print("우선 성공")
-        //print("날짜 : \(fcstDate)\n시간 : \(fcstTime)\n데이터 : \(category) - \(value)")
-    } catch {
-        do{
+    
+    func parseJSON(weatherData: Data) -> WeatherModel? {
+        print("start : parseJSON(weatherData:)")
+        let decoder = JSONDecoder()
+        var fcstDate: [String] = []
+        var fcstTime: [String] = []
+        var fcstValue: [String] = []
+        var category: [String] = []
+        //var categoryTMNTMX: [String] = []
+        do {
+            /*
+             date,time,[category:value]
+             테이블 뷰에 보여질 것
+             날짜
+             시간 온도 하늘상태 강수량(신적설) 강수확률
+             시간 온도 하늘상태 강수량(신적설) 강수확률
+             시간 온도 하늘상태 강수량(신적설) 강수확률
+             .
+             .
+             .
+             날짜
+             시간 온도 하늘상태 강수량(신적설) 강수확률
+             시간 온도 하늘상태 강수량(신적설) 강수확률
+             시간 온도 하늘상태 강수량(신적설) 강수확률
+             .
+             .
+             .
+             */
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
-            print("error - \(decodedData.response.header.resultMsg)")
-        }
-        catch {
-            print("error - can't get API data")
+            print(decodedData.response.body.items.item.count)
+            for i in decodedData.response.body.items.item.indices {
+                let useCategory: [String] = ["TMP","SKY","PTY","POP","PCP","SNO"]
+               // let otherUseCategory: [String] = ["TMN","TMX"]
+                if useCategory.contains(decodedData.response.body.items.item[i].category)  {
+                fcstDate.append(decodedData.response.body.items.item[i].fcstDate)
+                fcstTime.append(decodedData.response.body.items.item[i].fcstTime)
+                category.append(decodedData.response.body.items.item[i].category)
+                fcstValue.append(decodedData.response.body.items.item[i].fcstValue)
+                }
+//                else if otherUseCategory.contains(decodedData.response.body.items.item[i].category) {
+//                    fcstDate.append(decodedData.response.body.items.item[i].fcstDate)
+//                    fcstTime.append(decodedData.response.body.items.item[i].fcstTime)
+//                    categoryTMNTMX.append(decodedData.response.body.items.item[i].category)
+//                    fcstValue.append(decodedData.response.body.items.item[i].fcstValue)
+//                }
+                else {
+                    continue
+                }
+            }
+            print("우선 성공")
+            let weather = WeatherModel(fcstDate: fcstDate, fcstTime: fcstTime, category: category, fcstValue: fcstValue)
+            return weather
+        } catch {
+            do{
+                let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
+                print("error - \(decodedData.response.header.resultMsg)")
+                return nil
+            }
+            catch {
+                print("error - can't get API data")
+                return nil
+            }
         }
     }
 }
-
 /// 현재 시간 정보를 받아와 날짜와 시간값을 요청값에 맞게 변환
 /// - returns: ( base_date, base_time)
 func setBaseDateTime() -> (String, String) {
