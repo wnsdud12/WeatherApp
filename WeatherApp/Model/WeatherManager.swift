@@ -73,7 +73,6 @@ struct WeatherManager {
 
             print("우선 성공")
             let weather = WeatherModel(items: item)
-            print(weather.valueArray[0]["TMP"])
             return weather
         } catch {
             delegate?.didFailWithError(error: error)

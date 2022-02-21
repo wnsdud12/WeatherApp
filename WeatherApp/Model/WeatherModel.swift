@@ -30,58 +30,22 @@ typealias ItemTable = (date:String,time:String,value:ItemValue)
 typealias LowHighTMP = (String, ItemValue)
 
 struct WeatherModel {
-    
-    
-    //let viewLowHighTMPData: [LowHighTMP]
-    
-    // ItemTable의 배열로 초기화
-    /*let tableViewData: [ItemTable]
-     init(items: [Item]) {
-     let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
-     //let otherUseCategory: [String] = ["TMN","TMN"]
-     
-     var itemValue: ItemValue = [:]
-     var timeData: [ItemTable] = []
-     
-     var time = items[0].fcstTime
-     var date = items[0].fcstDate
-     
-     for i in items where useCategory.contains(i.category) {
-     let value = setFcstValue(category: i.category, fcstValue: i.fcstValue)
-     if time == i.fcstTime {
-     itemValue[i.category] = value
-     } else {
-     timeData.append((date, time, itemValue))
-     date = i.fcstDate
-     time = i.fcstTime
-     itemValue = [:]
-     continue
-     }
-     
-     }
-     self.tableViewData = timeData
-     print(timeData)
-     }*/
     var timeArray: [String]
     var valueArray: [ItemValue]
     init(items: [Item]) {
+        
         var timeArray: [String] = [items[0].fcstTime]
         var valueArray: [ItemValue] = []
         var itemValue: ItemValue = [:]
         let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
         
-        
         for item in items where useCategory.contains(item.category) {
             let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+            
             if timeArray.last == item.fcstTime {
-                print(timeArray.last == item.fcstTime)
-                print("\(String(describing: timeArray.last)), \(item.fcstTime)")
                 
                 itemValue[item.category] = value
             } else {
-                print(timeArray.last == item.fcstTime)
-                print("\(String(describing: timeArray.last)), \(item.fcstTime)")
-                
                 timeArray.append(item.fcstTime)
                 valueArray.append(itemValue)
                 
@@ -91,20 +55,20 @@ struct WeatherModel {
         }
         valueArray.append(itemValue)
         
-        self.timeArray = timeArray
-        self.valueArray = valueArray
-        if timeArray.count == valueArray.count {
-            print("success")
-            for i in valueArray.indices {
-                print("\(timeArray[i]), \(valueArray[i].count)")
-            }
-        } else {
-            print("fail\ntimeArray\n\(timeArray)\n\nvalueArray\n\(valueArray)")
+        self.timeArray = timeArray.map {
+            convertTimeString(fcstTime: $0)
         }
-        
+        self.valueArray = valueArray
     }
 }
-
+func convertTimeString(fcstTime: String) -> String {
+    var timeString: String = ""
+    if var intTime = Int(fcstTime) {
+        intTime = intTime / 100
+        timeString = String(intTime)
+    }
+    return timeString + "시"
+}
 // 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 표시해주는 함수
 func setFcstValue(category: String, fcstValue: String) -> String {
     var valueString: String = ""

@@ -7,39 +7,6 @@
 
 import Foundation
 
-/*// API로 받아온 JSON 데이터 구조
-{
-    "response": {
-        "header": {
-            "resultCode": "00",
-            "resultMsg": "NORMAL_SERVICE"
-        },
-        "body": {
-            "dataType": "JSON",
-            "items": {
-                "item": [
-                    {
-                    "baseDate": "20220217",
-                    "baseTime": "1400",
-                    "category": "TMP",
-                    "fcstDate": "20220217",
-                    "fcstTime": "1500",
-                    "fcstValue": "-2",
-                    "nx": 55,
-                    "ny": 127
-                    },
-                    {
-                        ...
-                    },
-                ]
-            },
-            "pageNo": 1,
-            "numOfRows": 1000,
-            "totalCount": 700
-        }
-    }
-}*/
-
 /// Weather API를 디코딩할 때 생성되는 JSON data
 struct WeatherData: Codable {
     let response: Response
