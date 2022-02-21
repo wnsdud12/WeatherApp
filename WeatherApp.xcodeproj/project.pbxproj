@@ -21,6 +21,8 @@
 		BB12198427BE6F9200EF331E /* WeatherManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198327BE6F9200EF331E /* WeatherManager.swift */; };
 		BB12198827BF748500EF331E /* WeatherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198727BF748500EF331E /* WeatherModel.swift */; };
 		BB12198E27C3745300EF331E /* WeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198D27C3745300EF331E /* WeatherTableViewCell.swift */; };
+		BB12199127C38BED00EF331E /* rain.png in Resources */ = {isa = PBXBuildFile; fileRef = BB12199027C38BED00EF331E /* rain.png */; };
+		BB12199327C38C6700EF331E /* sunny.png in Resources */ = {isa = PBXBuildFile; fileRef = BB12199227C38C6700EF331E /* sunny.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,8 @@
 		BB12198627BF679000EF331E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		BB12198727BF748500EF331E /* WeatherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
 		BB12198D27C3745300EF331E /* WeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableViewCell.swift; sourceTree = "<group>"; };
+		BB12199027C38BED00EF331E /* rain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rain.png; sourceTree = "<group>"; };
+		BB12199227C38C6700EF331E /* sunny.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sunny.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,7 @@
 		BB12194A27BE6D0100EF331E /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				BB12198F27C38BDA00EF331E /* images */,
 				BB12198027BE6D9A00EF331E /* Controller */,
 				BB12197F27BE6D9300EF331E /* View */,
 				BB12197E27BE6D8D00EF331E /* Model */,
@@ -168,6 +173,15 @@
 				BB12198D27C3745300EF331E /* WeatherTableViewCell.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		BB12198F27C38BDA00EF331E /* images */ = {
+			isa = PBXGroup;
+			children = (
+				BB12199027C38BED00EF331E /* rain.png */,
+				BB12199227C38C6700EF331E /* sunny.png */,
+			);
+			path = images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -275,6 +289,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB12195B27BE6D0200EF331E /* LaunchScreen.storyboard in Resources */,
+				BB12199127C38BED00EF331E /* rain.png in Resources */,
+				BB12199327C38C6700EF331E /* sunny.png in Resources */,
 				BB12195827BE6D0200EF331E /* Assets.xcassets in Resources */,
 				BB12195327BE6D0100EF331E /* Main.storyboard in Resources */,
 			);

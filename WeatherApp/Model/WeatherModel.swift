@@ -43,7 +43,6 @@ struct WeatherModel {
             let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
             
             if timeArray.last == item.fcstTime {
-                
                 itemValue[item.category] = value
             } else {
                 timeArray.append(item.fcstTime)
@@ -85,11 +84,11 @@ func setFcstValue(category: String, fcstValue: String) -> String {
     case "SKY": // 하늘상태
         valueString = fcstValueOfSKY(fcstValue: fcstValue)
     case "TMP": // 기온
-        valueString = fcstValue + "℃"
+        valueString = fcstValue + "º"
     case "TMN": // 최저기온
-        valueString = fcstValue + "℃"
+        valueString = fcstValue + "º"
     case "TMX": // 최고기온
-        valueString = fcstValue + "℃"
+        valueString = fcstValue + "º"
     default:
         break
     }

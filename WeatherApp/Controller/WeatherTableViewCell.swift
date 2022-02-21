@@ -9,7 +9,6 @@ import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
     
-    
     @IBOutlet weak var lblTime: UILabel!
     @IBOutlet weak var lblTMP: UILabel!
     @IBOutlet weak var lblSKY: UILabel!
