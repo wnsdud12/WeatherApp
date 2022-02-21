@@ -14,5 +14,4 @@ class WeatherCell: UITableViewCell {
     @IBOutlet weak var lblSKYPTY: UILabel!
     @IBOutlet weak var lblPOP: UILabel!
     @IBOutlet weak var lblPCPSNO: UILabel!
-    
 }

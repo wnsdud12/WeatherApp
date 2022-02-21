@@ -15,37 +15,53 @@ class ViewController: UIViewController {
     
     var weatherManager = WeatherManager()
     
+    var timeArray: [String] = []
+    var valueArray: [ItemValue] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         print("start APP")
         weatherManager.delegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
         
         weatherManager.fetchWeather()
+        
+        
     }
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       return 1
+        return timeArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "weatherDataCell",for: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell", for: indexPath) as! WeatherCell
+        
+        cell.lblTime.text = timeArray[indexPath.row]
+        cell.lblPOP.text = valueArray[indexPath.row]["POP"]
+        cell.lblTMP.text = valueArray[indexPath.row]["TMP"]
+        cell.lblPCPSNO.text = valueArray[indexPath.row]["PCP"]
+        
         return cell
     }
     
     
 }
 extension ViewController: WeatherManagerDelegate {
-    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        var tableViewData = weather.tableViewData
-        
-    }
     
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
+        DispatchQueue.main.sync {
+            self.timeArray = weather.timeArray
+            self.valueArray = weather.valueArray
+        }
+    }
+
     func didFailWithError(error: Error) {
        print(error.localizedDescription)
     }
-    
-    
+
+
 }

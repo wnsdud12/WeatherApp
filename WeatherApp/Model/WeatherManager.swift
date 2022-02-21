@@ -21,11 +21,11 @@ struct WeatherManager {
     
     func fetchWeather() {
         print("start - fetchWeather()")
-        let baseDateTime: (String, String) = setBaseDateTime()
+        let baseDateTime: (date: String, time: String) = setBaseDateTime()
         guard let apiKey = apiKey else {
             return print("URL이 이상해요")
         }
-        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=55&ny=127&numOfRows=100&pageNo=1&dataType=JSON"
+        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=55&ny=127&numOfRows=1000&pageNo=1&dataType=JSON"
         preformRequest(with: urlString)
         print(urlString)
     }
@@ -73,6 +73,7 @@ struct WeatherManager {
 
             print("우선 성공")
             let weather = WeatherModel(items: item)
+            print(weather.valueArray[0]["TMP"])
             return weather
         } catch {
             delegate?.didFailWithError(error: error)

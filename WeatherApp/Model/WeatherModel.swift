@@ -26,39 +26,82 @@
 import Foundation
 
 typealias ItemValue = [String:String] // key : category, value : fcstValue
-typealias ItemTable = (String,String,ItemValue)
+typealias ItemTable = (date:String,time:String,value:ItemValue)
 typealias LowHighTMP = (String, ItemValue)
 
 struct WeatherModel {
     
-    let tableViewData: [ItemTable]
+    
     //let viewLowHighTMPData: [LowHighTMP]
     
+    // ItemTable의 배열로 초기화
+    /*let tableViewData: [ItemTable]
+     init(items: [Item]) {
+     let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
+     //let otherUseCategory: [String] = ["TMN","TMN"]
+     
+     var itemValue: ItemValue = [:]
+     var timeData: [ItemTable] = []
+     
+     var time = items[0].fcstTime
+     var date = items[0].fcstDate
+     
+     for i in items where useCategory.contains(i.category) {
+     let value = setFcstValue(category: i.category, fcstValue: i.fcstValue)
+     if time == i.fcstTime {
+     itemValue[i.category] = value
+     } else {
+     timeData.append((date, time, itemValue))
+     date = i.fcstDate
+     time = i.fcstTime
+     itemValue = [:]
+     continue
+     }
+     
+     }
+     self.tableViewData = timeData
+     print(timeData)
+     }*/
+    var timeArray: [String]
+    var valueArray: [ItemValue]
     init(items: [Item]) {
-        let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
-        //let otherUseCategory: [String] = ["TMN","TMN"]
-        
+        var timeArray: [String] = [items[0].fcstTime]
+        var valueArray: [ItemValue] = []
         var itemValue: ItemValue = [:]
-        var timeData: [ItemTable] = []
+        let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
         
-        var time = items[0].fcstTime
-        var date = items[0].fcstDate
         
-        for i in items where useCategory.contains(i.category) {
-            let value = setFcstValue(category: i.category, fcstValue: i.fcstValue)
-            if time == i.fcstTime {
-                itemValue[i.category] = value
+        for item in items where useCategory.contains(item.category) {
+            let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+            if timeArray.last == item.fcstTime {
+                print(timeArray.last == item.fcstTime)
+                print("\(String(describing: timeArray.last)), \(item.fcstTime)")
+                
+                itemValue[item.category] = value
             } else {
-                timeData.append((date, time, itemValue))
-                date = i.fcstDate
-                time = i.fcstTime
+                print(timeArray.last == item.fcstTime)
+                print("\(String(describing: timeArray.last)), \(item.fcstTime)")
+                
+                timeArray.append(item.fcstTime)
+                valueArray.append(itemValue)
+                
                 itemValue = [:]
-                continue
+                itemValue[item.category] = value
             }
-           
         }
-        self.tableViewData = timeData
-        print(timeData)
+        valueArray.append(itemValue)
+        
+        self.timeArray = timeArray
+        self.valueArray = valueArray
+        if timeArray.count == valueArray.count {
+            print("success")
+            for i in valueArray.indices {
+                print("\(timeArray[i]), \(valueArray[i].count)")
+            }
+        } else {
+            print("fail\ntimeArray\n\(timeArray)\n\nvalueArray\n\(valueArray)")
+        }
+        
     }
 }
 
@@ -73,7 +116,8 @@ func setFcstValue(category: String, fcstValue: String) -> String {
     case "PCP": // 강수량
         valueString = fcstValueOfPCP(fcstValue: fcstValue)
     case "SNO": // 신적설
-        valueString = fcstValueOfSNO(fcstValue: fcstValue)
+        //valueString = fcstValueOfSNO(fcstValue: fcstValue)
+        valueString = fcstValue
     case "SKY": // 하늘상태
         valueString = fcstValueOfSKY(fcstValue: fcstValue)
     case "TMP": // 기온
