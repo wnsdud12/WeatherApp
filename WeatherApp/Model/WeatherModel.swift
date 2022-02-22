@@ -5,24 +5,6 @@
 //  Created by sumwb on 2022/02/18.
 //
 
-/*
- date,time,[category:value]
- 테이블 뷰에 보여질 것
- 날짜
- 시간 온도 하늘상태 강수량(신적설) 강수확률
- 시간 온도 하늘상태 강수량(신적설) 강수확률
- 시간 온도 하늘상태 강수량(신적설) 강수확률
- .
- .
- .
- 날짜
- 시간 온도 하늘상태 강수량(신적설) 강수확률
- 시간 온도 하늘상태 강수량(신적설) 강수확률
- 시간 온도 하늘상태 강수량(신적설) 강수확률
- .
- .
- .
- */
 import Foundation
 
 typealias ItemValue = [String:String] // key : category, value : fcstValue
@@ -91,6 +73,9 @@ struct WeatherModel {
         self.todayTMPArray = todayTMPArray
     }
 }
+
+// fcstTime로 받아온 시간 문자열의 형식인 HHmm을 HH시로 바꿔서 반환
+// ex) 1600 -> 16시
 func convertTimeString(fcstTime: String) -> String {
     var timeString: String = ""
     if var intTime = Int(fcstTime) {
@@ -99,7 +84,7 @@ func convertTimeString(fcstTime: String) -> String {
     }
     return timeString + "시"
 }
-// 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 표시해주는 함수
+// 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 반환해주는 함수
 func setFcstValue(category: String, fcstValue: String) -> String {
     var valueString: String = ""
     switch category {
@@ -140,7 +125,7 @@ func fcstValueOfPTY(fcstValue: String) -> String {
     case "4":
         value_PTY = "소나기"
     default:
-        value_PTY = "몰?루"
+        value_PTY = "error"
     }
     return value_PTY
 }
@@ -201,7 +186,7 @@ func fcstValueOfSKY(fcstValue: String) -> String {
     case "4":
         value_SKY = "흐림"
     default:
-        value_SKY = "몰?루"
+        value_SKY = "error"
     }
     return value_SKY
 }

@@ -7,9 +7,10 @@
 
 import UIKit
 /// - 해야 할 것
-///     - 지역 변경 기능 추가
+///     - 지역 변경 기능 추가 - 예제가 C언어기 때문에 연습좀 해봐야 할듯 - 당분간 XCode 안건듬
 ///     - lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기
-///     - 최저, 최고기온 표시
+///     - UI 꾸미기
+///     - 백그라운드에서 계속 업데이트 해서 눈/비 알림
 class ViewController: UIViewController, UITableViewDataSource {
     
     @IBOutlet weak var lblTMPNow: UILabel!
@@ -31,6 +32,12 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         weatherManager.fetchWeather()
     }
+    
+//    // 나중에 다른 뷰에 갔다가 다시 돌아오는 상황을 만들게 되면 viewWillAppear에 코딩
+//    override func viewWillAppear(_ animated: Bool) {
+//        weatherManager.fetchWeather()
+//    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return timeArray.count
     }
