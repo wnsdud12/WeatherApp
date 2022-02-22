@@ -175,6 +175,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="lblTMN" destination="pnp-gV-MFt" id="2Lg-qv-PlA"/>
+                        <outlet property="lblTMPNow" destination="iza-nT-7W1" id="hSA-Ma-euD"/>
+                        <outlet property="lblTMX" destination="B9y-2D-gCE" id="qWe-JC-1vL"/>
                         <outlet property="tableView" destination="bL2-ze-h88" id="dBF-Jr-CNr"/>
                     </connections>
                 </viewController>

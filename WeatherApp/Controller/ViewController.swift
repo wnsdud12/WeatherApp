@@ -51,10 +51,15 @@ extension ViewController: WeatherManagerDelegate {
     
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
+            // TableView에 보여질 데이터
             self.timeArray = weather.timeArray
             self.valueArray = weather.valueArray
+            // 일일 최저/최고 기온, 현재 기온 데이터
+            self.lblTMPNow.text = weather.nowTMP
+            self.lblTMN.text = weather.todayTMPArray[0].1["TMN"] ?? "-"
+            self.lblTMX.text = weather.todayTMPArray[0].1["TMX"] ?? "-"
             
-            self.tableView.reloadData()
+            self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }
     }
     

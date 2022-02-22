@@ -25,7 +25,7 @@ struct WeatherManager {
         guard let apiKey = apiKey else {
             return print("URL이 이상해요")
         }
-        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=55&ny=127&numOfRows=1000&pageNo=1&dataType=JSON"
+        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=56&ny=124&numOfRows=1000&pageNo=1&dataType=JSON"
         preformRequest(with: urlString)
         print(urlString)
     }

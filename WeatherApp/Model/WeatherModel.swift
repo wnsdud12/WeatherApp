@@ -32,11 +32,22 @@ typealias LowHighTMP = (String, ItemValue)
 struct WeatherModel {
     var timeArray: [String]
     var valueArray: [ItemValue]
+    var todayTMPArray: [LowHighTMP]
+    let nowTMP: String
     init(items: [Item]) {
+        var nowTMP: String = ""
+        for item in items where item.category == "TMP" {
+            if nowTMP == "" {
+                nowTMP = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+            }
+        }
+        self.nowTMP = nowTMP
         
+        // 시간 별 날씨 데이터 받아오기
         var timeArray: [String] = [items[0].fcstTime]
         var valueArray: [ItemValue] = []
         var itemValue: ItemValue = [:]
+        var todayTMPArray: [LowHighTMP] = []
         let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
         
         for item in items where useCategory.contains(item.category) {
@@ -58,6 +69,26 @@ struct WeatherModel {
             convertTimeString(fcstTime: $0)
         }
         self.valueArray = valueArray
+        
+        // 일일 최저/최고기온 데이터 받아오기
+        itemValue = [:]
+        var date = items[0].fcstDate
+        for item in items where item.category == "TMN" || item.category == "TMX" {
+            let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+            
+            if item.fcstDate == date {
+                itemValue[item.category] = value
+            } else {
+                todayTMPArray.append((date, itemValue))
+                date = item.fcstDate
+                itemValue = [:]
+                itemValue[item.category] = value
+            }
+            
+        }
+        todayTMPArray.append((date, itemValue))
+        print(todayTMPArray.dropFirst(0))
+        self.todayTMPArray = todayTMPArray
     }
 }
 func convertTimeString(fcstTime: String) -> String {
