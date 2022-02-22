@@ -23,6 +23,8 @@
 		BB12198E27C3745300EF331E /* WeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB12198D27C3745300EF331E /* WeatherTableViewCell.swift */; };
 		BB12199127C38BED00EF331E /* rain.png in Resources */ = {isa = PBXBuildFile; fileRef = BB12199027C38BED00EF331E /* rain.png */; };
 		BB12199327C38C6700EF331E /* sunny.png in Resources */ = {isa = PBXBuildFile; fileRef = BB12199227C38C6700EF331E /* sunny.png */; };
+		BB44B95C27C4D69B00BA8B7F /* MapConvert.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44B95B27C4D69B00BA8B7F /* MapConvert.swift */; };
+		BB44B95F27C4D6FB00BA8B7F /* Numerics in Frameworks */ = {isa = PBXBuildFile; productRef = BB44B95E27C4D6FB00BA8B7F /* Numerics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,7 @@
 		BB12198D27C3745300EF331E /* WeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableViewCell.swift; sourceTree = "<group>"; };
 		BB12199027C38BED00EF331E /* rain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rain.png; sourceTree = "<group>"; };
 		BB12199227C38C6700EF331E /* sunny.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sunny.png; sourceTree = "<group>"; };
+		BB44B95B27C4D69B00BA8B7F /* MapConvert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapConvert.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB44B95F27C4D6FB00BA8B7F /* Numerics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +158,7 @@
 				BB12198127BE6F8500EF331E /* WeatherData.swift */,
 				BB12198327BE6F9200EF331E /* WeatherManager.swift */,
 				BB12198727BF748500EF331E /* WeatherModel.swift */,
+				BB44B95B27C4D69B00BA8B7F /* MapConvert.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -200,6 +205,9 @@
 			dependencies = (
 			);
 			name = WeatherApp;
+			packageProductDependencies = (
+				BB44B95E27C4D6FB00BA8B7F /* Numerics */,
+			);
 			productName = WeatherApp;
 			productReference = BB12194827BE6D0100EF331E /* WeatherApp.app */;
 			productType = "com.apple.product-type.application";
@@ -272,6 +280,9 @@
 				Base,
 			);
 			mainGroup = BB12193F27BE6D0100EF331E;
+			packageReferences = (
+				BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics" */,
+			);
 			productRefGroup = BB12194927BE6D0100EF331E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -320,6 +331,7 @@
 				BB12198E27C3745300EF331E /* WeatherTableViewCell.swift in Sources */,
 				BB12198427BE6F9200EF331E /* WeatherManager.swift in Sources */,
 				BB12195627BE6D0100EF331E /* WeatherApp.xcdatamodeld in Sources */,
+				BB44B95C27C4D69B00BA8B7F /* MapConvert.swift in Sources */,
 				BB12198227BE6F8500EF331E /* WeatherData.swift in Sources */,
 				BB12198827BF748500EF331E /* WeatherModel.swift in Sources */,
 				BB12195027BE6D0100EF331E /* ViewController.swift in Sources */,
@@ -684,6 +696,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-numerics.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BB44B95E27C4D6FB00BA8B7F /* Numerics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics" */;
+			productName = Numerics;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		BB12195427BE6D0100EF331E /* WeatherApp.xcdatamodeld */ = {
