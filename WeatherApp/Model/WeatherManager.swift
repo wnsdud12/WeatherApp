@@ -10,7 +10,7 @@ import Foundation
 
 protocol WeatherManagerDelegate {
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
-    func didFailWithError(error: Error)
+    func didFailWithError(error: Error, errorMsg: String)
 }
 
 struct WeatherManager {
@@ -75,10 +75,9 @@ struct WeatherManager {
             let weather = WeatherModel(items: item)
             return weather
         } catch {
-            delegate?.didFailWithError(error: error)
             do{
                 let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
-                print("error - \(decodedData.response.header.resultMsg)")
+                delegate?.didFailWithError(error: error, errorMsg: decodedData.response.header.resultMsg)
                 return nil
             }
             catch {

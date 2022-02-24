@@ -9,7 +9,9 @@ import Foundation
 import Numerics
 
 //
-// API 신청할 때 받은 문서 파일에서 c 언어 예제 코드가 0일때
+// API 신청할 때 받은 문서 파일에서 c 언어 예제 코드를 swift 언어로 변환
+// tan, cos, pow 등의 수학함수들을 사용하기 위해 swift-numerics 패키지 사용
+// https://github.com/apple/swift-numerics
 //
 
 typealias Point<T> = (x: T, y: T)

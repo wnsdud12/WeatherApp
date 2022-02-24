@@ -80,8 +80,9 @@ extension ViewController: WeatherManagerDelegate {
         }
     }
     
-    func didFailWithError(error: Error) {
+    func didFailWithError(error: Error, errorMsg: String) {
         print(error.localizedDescription)
+        print(errorMsg)
     }
 }
 extension ViewController: CLLocationManagerDelegate {
