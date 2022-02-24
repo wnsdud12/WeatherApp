@@ -175,6 +175,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="lblAddress" destination="OHW-5b-3TM" id="L3s-eN-TO6"/>
                         <outlet property="lblTMN" destination="pnp-gV-MFt" id="2Lg-qv-PlA"/>
                         <outlet property="lblTMPNow" destination="iza-nT-7W1" id="hSA-Ma-euD"/>
                         <outlet property="lblTMX" destination="B9y-2D-gCE" id="qWe-JC-1vL"/>
