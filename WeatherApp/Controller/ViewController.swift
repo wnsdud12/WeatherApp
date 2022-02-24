@@ -9,11 +9,18 @@
 import UIKit
 import CoreLocation
 /// - 해야 할 것
-///     - 지역 변경 기능 추가  - 만들기만 하고 실행은 안해봄
-///             -> 혹시 API 신청할 때 받은 엑셀 파일로 할 수 있는게 있나 확인해봐야할듯(격자 데이터를 보고 매칭되는 지역 표기 / 위경도만 받아오면 엑셀 파일로 매칭해서 바꿔주기 등)
-///     - lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기
-///     - UI 꾸미기
-///     - 백그라운드에서 계속 업데이트 해서 눈/비 알림
+///     1. 지역 검색 기능
+///        - 전화번호 입력화면 같은 버튼 여러 개로 만들 생각
+///        - juso.go.kr의 공공데이터 사용 필요할지 고민중
+///     2. lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기
+///     3. UI 꾸미기
+///     4. 백그라운드에서 계속 업데이트 해서 눈/비 알림
+///     5. baseTime의 한 시간 후부터의 데이터만 받아옴
+///         - 검색한 시간이 02:20(baseTime = 0200)일 때 받아온 데이터의 제일 처음 값은 03시의 값
+///     6. 검색한 날짜의 최저/최고 기온이 확인이 안될 때가 있음(API상에서는 tmn-오전6시, tmx-오후3시에만 검색되는 듯함)
+///         - 오전 6시 이전에 데이터를 검색하면 오늘의 최저/최고 기온이 모두 확인 가능하지만 다른 시간대엔 최고 기온만 확인 혹은 최저/최고 둘 다 확인 불가할 때가 있음
+///     7. 5, 6번을 생각하면 baseTime을 전날 23시로 요청하는 식으로 해야 할듯함
+///         - 00:00 ~ 02:59의 시간대에 검색하는 경우도 생각
 class ViewController: UIViewController, UITableViewDataSource {
     
     @IBOutlet weak var lblAddress: UILabel!
@@ -115,7 +122,7 @@ extension ViewController: CLLocationManagerDelegate {
             
             let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
             print("경도 : \(lon), 위도 : \(lat)\nX : \(mapConvert.x) Y : \(mapConvert.y)")
-            weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
+            weatherManager.fetchWeather(testDate: "20220224 02:59", nx: mapConvert.x, ny: mapConvert.y)
         }
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
