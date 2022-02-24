@@ -93,7 +93,8 @@ func setFcstValue(category: String, fcstValue: String) -> String {
     case "PTY": // 강수형태
         valueString = fcstValueOfPTY(fcstValue: fcstValue)
     case "PCP": // 강수량
-        valueString = fcstValueOfPCP(fcstValue: fcstValue)
+        //valueString = fcstValueOfPCP(fcstValue: fcstValue)
+        valueString = fcstValue
     case "SNO": // 신적설
         //valueString = fcstValueOfSNO(fcstValue: fcstValue)
         valueString = fcstValue

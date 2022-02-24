@@ -19,13 +19,13 @@ struct WeatherManager {
     
     var delegate: WeatherManagerDelegate?
     
-    func fetchWeather() {
+    func fetchWeather(nx: Int, ny: Int) {
         print("start - fetchWeather()")
         let baseDateTime: (date: String, time: String) = setBaseDateTime()
         guard let apiKey = apiKey else {
             return print("URL이 이상해요")
         }
-        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=56&ny=124&numOfRows=1000&pageNo=1&dataType=JSON"
+        let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
         preformRequest(with: urlString)
         print(urlString)
     }

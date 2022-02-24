@@ -4,8 +4,10 @@
 //
 //  Created by sumwb on 2022/02/17.
 //
+// 제발 되어라
 
 import UIKit
+import CoreLocation
 /// - 해야 할 것
 ///     - 지역 변경 기능 추가  - 만들기만 하고 실행은 안해봄
 ///             -> 혹시 API 신청할 때 받은 엑셀 파일로 할 수 있는게 있나 확인해봐야할듯(격자 데이터를 보고 매칭되는 지역 표기 / 위경도만 받아오면 엑셀 파일로 매칭해서 바꿔주기 등)
@@ -14,12 +16,14 @@ import UIKit
 ///     - 백그라운드에서 계속 업데이트 해서 눈/비 알림
 class ViewController: UIViewController, UITableViewDataSource {
     
+    @IBOutlet weak var lblAddress: UILabel!
     @IBOutlet weak var lblTMPNow: UILabel!
     @IBOutlet weak var lblTMN: UILabel!
     @IBOutlet weak var lblTMX: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
     var weatherManager = WeatherManager()
+    let locationManager = CLLocationManager()
     
     var timeArray: [String] = []
     var valueArray: [ItemValue] = []
@@ -29,9 +33,14 @@ class ViewController: UIViewController, UITableViewDataSource {
         // Do any additional setup after loading the view.
         print("start APP")
         weatherManager.delegate = self
+        locationManager.delegate = self
+        
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestLocation()
+        
         tableView.dataSource = self
         
-        weatherManager.fetchWeather()
     }
     
 //    // 나중에 다른 뷰에 갔다가 다시 돌아오는 상황을 만들게 되면 viewWillAppear에 코딩
@@ -73,5 +82,42 @@ extension ViewController: WeatherManagerDelegate {
     
     func didFailWithError(error: Error) {
         print(error.localizedDescription)
+    }
+}
+extension ViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last{
+            locationManager.stopUpdatingLocation()
+            
+            let lat = location.coordinate.latitude // 현재 위치의 위도
+            let lon = location.coordinate.longitude // 현재 위치의 경도
+            var address: String = ""
+            // 현재 위치 지명 표시
+            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
+                (placemarks, error) -> Void in
+                if let pm = placemarks?.last {
+                    if pm.administrativeArea != nil {
+                        print("add administrativeArea")
+                        address += pm.administrativeArea!
+                    }
+                    if pm.locality != nil {
+                        print("add locality")
+                        address += " " + pm.locality!
+                    }
+                    self.lblAddress.text = address
+                    print("현재 위치 : \(address)")
+                }
+            }
+            if address == "" {
+                self.lblAddress.text = "위치 정보 알 수 없음"
+            }
+            
+            let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
+            print("경도 : \(lon), 위도 : \(lat)\nX : \(mapConvert.x) Y : \(mapConvert.y)")
+            weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("location Error - \(error)")
     }
 }
