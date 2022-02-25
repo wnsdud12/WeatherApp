@@ -25,6 +25,7 @@
 		BB12199327C38C6700EF331E /* sunny.png in Resources */ = {isa = PBXBuildFile; fileRef = BB12199227C38C6700EF331E /* sunny.png */; };
 		BB44B95C27C4D69B00BA8B7F /* MapConvert.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44B95B27C4D69B00BA8B7F /* MapConvert.swift */; };
 		BB44B95F27C4D6FB00BA8B7F /* Numerics in Frameworks */ = {isa = PBXBuildFile; productRef = BB44B95E27C4D6FB00BA8B7F /* Numerics */; };
+		BB44B96127C8A3FA00BA8B7F /* WeatherTMPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44B96027C8A3FA00BA8B7F /* WeatherTMPModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		BB12199027C38BED00EF331E /* rain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rain.png; sourceTree = "<group>"; };
 		BB12199227C38C6700EF331E /* sunny.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sunny.png; sourceTree = "<group>"; };
 		BB44B95B27C4D69B00BA8B7F /* MapConvert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapConvert.swift; sourceTree = "<group>"; };
+		BB44B96027C8A3FA00BA8B7F /* WeatherTMPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTMPModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 				BB12198327BE6F9200EF331E /* WeatherManager.swift */,
 				BB12198727BF748500EF331E /* WeatherModel.swift */,
 				BB44B95B27C4D69B00BA8B7F /* MapConvert.swift */,
+				BB44B96027C8A3FA00BA8B7F /* WeatherTMPModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB44B96127C8A3FA00BA8B7F /* WeatherTMPModel.swift in Sources */,
 				BB12198E27C3745300EF331E /* WeatherTableViewCell.swift in Sources */,
 				BB12198427BE6F9200EF331E /* WeatherManager.swift in Sources */,
 				BB12195627BE6D0100EF331E /* WeatherApp.xcdatamodeld in Sources */,
