@@ -34,8 +34,8 @@ struct WeatherModel {
         var timeArray: [String] = []
         var valueArray: [ItemValue] = []
         var itemValue: ItemValue = [:]
-        //let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
-        let useCategory: [String] = ["TMP"]
+        let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
+        //let useCategory: [String] = ["TMP"]
         // ViewController에 보내 tableView에 표시해줄 데이터
         var returnTime: [[String]] = []
         var returnValue: [[ItemValue]] = []
@@ -50,6 +50,8 @@ struct WeatherModel {
             isSameDate = sections.last == items[i].fcstDate ? true : false
             isSameTime = timeArray.last == items[i].fcstTime ? true : false
             
+            print("date : \(isSameDate), time : \(isSameTime)")
+            
             let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
             
             if !isSameTime {
@@ -59,14 +61,28 @@ struct WeatherModel {
                     timeArray = []
                 }
                 timeArray.append(items[i].fcstTime)
-            } else {
+            }
+            
+            if isSameTime {
                 itemValue[items[i].category] = value
+                print(itemValue)
+            } else {
+                if !isSameDate {
+                    returnValue.append(valueArray)
+                    print(returnValue)
+                    valueArray = []
+                } else {
+                    itemValue[items[i].category] = value
+                    print(itemValue)
+                }
+                valueArray.append(itemValue)
+                print(valueArray)
             }
         }
         
         returnTime.append(timeArray)
         returnValue.append(valueArray)
-        
+        print(returnValue)
         self.timeArray = returnTime
         self.valueArray = returnValue
         self.sections = sections
