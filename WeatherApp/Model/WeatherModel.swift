@@ -31,17 +31,20 @@ struct WeatherModel {
     var weatherIconString: String
     init(items: [Item]) {
         // 시간 별 날씨 데이터 받아오기
-        var timeArray: [String] = [items[0].fcstTime]
+        var timeArray: [String] = []
         var valueArray: [ItemValue] = []
         var itemValue: ItemValue = [:]
-        let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
+        //let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
+        let useCategory: [String] = ["TMP"]
+        // ViewController에 보내 tableView에 표시해줄 데이터
         var returnTime: [[String]] = []
         var returnValue: [[ItemValue]] = []
         
+        // 날짜와 시간이 달라졌는지 확인할 변수
         var isSameDate: Bool = true
         var isSameTime: Bool = true
         
-        var sections: [String] = []
+        var sections: [String] = [items[0].fcstDate]
         
         for i in items.indices where useCategory.contains(items[i].category) {
             isSameDate = sections.last == items[i].fcstDate ? true : false
@@ -49,29 +52,20 @@ struct WeatherModel {
             
             let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
             
-            print("\n\(items[i].fcstDate) \(items[i].fcstTime), value : \(items[i].fcstValue)")
-            print("sameDate : \(isSameDate), sameTime : \(isSameTime)")
-            print(itemValue)
-            switch isSameTime {
-            case true:
-                itemValue[items[i].category] = value
-            case false:
-                switch isSameDate {
-                case true:
-                    valueArray.append(itemValue)
-                    itemValue[items[i].category] = value
-                    continue
-                case false:
-                    valueArray.append(itemValue)
-                    itemValue[items[i].category] = value
+            if !isSameTime {
+                if !isSameDate {
+                    sections.append(items[i].fcstDate)
+                    returnTime.append(timeArray)
+                    timeArray = []
                 }
+                timeArray.append(items[i].fcstTime)
+            } else {
+                itemValue[items[i].category] = value
             }
-            
         }
         
         returnTime.append(timeArray)
         returnValue.append(valueArray)
-        
         
         self.timeArray = returnTime
         self.valueArray = returnValue
