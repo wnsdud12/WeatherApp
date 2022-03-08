@@ -8,6 +8,13 @@
 
 import UIKit
 import CoreLocation
+
+/* 필요한 아이콘
+ SKY(PTY가 없음일 때) 맑음(낮v,밤v), 구름많음(낮v,밤v), 흐림v
+ PTY 비v, 비/눈, 눈v, 소나기
+ */
+
+
 /// - 해야 할 것
 ///     1. 지역 검색 기능
 ///        - 전화번호 입력화면 같은 버튼 여러 개로 만들 생각
@@ -22,6 +29,8 @@ import CoreLocation
 ///     5, 6 완성은 했으나 수정 전 코드를 지우지 않았고 새 코드도 조금 다듬어야 할듯
 class ViewController: UIViewController, UITableViewDataSource {
     
+    
+    
     @IBOutlet weak var lblAddress: UILabel!
     @IBOutlet weak var lblTMPNow: UILabel!
     @IBOutlet weak var lblTMN: UILabel!
@@ -31,13 +40,13 @@ class ViewController: UIViewController, UITableViewDataSource {
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
     
-    var timeArray: [String] = []
-    var valueArray: [ItemValue] = []
+    var timeArray: [[String]] = []
+    var valueArray: [[ItemValue]] = []
+    var sections: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        print("start APP")
         weatherManager.delegate = self
         locationManager.delegate = self
         
@@ -46,7 +55,6 @@ class ViewController: UIViewController, UITableViewDataSource {
         locationManager.requestLocation()
         
         tableView.dataSource = self
-        
     }
     
     //    // 나중에 다른 뷰에 갔다가 다시 돌아오는 상황을 만들게 되면 viewWillAppear에 코딩
@@ -54,20 +62,31 @@ class ViewController: UIViewController, UITableViewDataSource {
     //        weatherManager.fetchWeather()
     //    }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return timeArray.count
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-        
-        cell.lblTime.text = self.timeArray[indexPath.row]
-        cell.lblTMP.text = self.valueArray[indexPath.row]["TMP"]
-        cell.lblSKY.text = self.valueArray[indexPath.row]["SKY"]
-        cell.lblPOP.text = self.valueArray[indexPath.row]["POP"]
-        cell.lblPCP.text = self.valueArray[indexPath.row]["PCP"]
-        
+        //if sections[indexPath.section] != nil {
+            cell.lblTime.text = self.timeArray[indexPath.section][indexPath.row]
+            cell.lblTMP.text = self.valueArray[indexPath.section][indexPath.row]["TMP"]
+            cell.lblSKY.text = self.valueArray[indexPath.section][indexPath.row]["SKY"]
+            cell.lblPOP.text = self.valueArray[indexPath.section][indexPath.row]["POP"]
+            cell.lblPCP.text = self.valueArray[indexPath.section][indexPath.row]["PCP"]
+        //}
         return cell
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section]
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        if sections[section] != nil {
+//            return timeArray[section].count
+//        } else {
+//            return 0
+//        }
+        return timeArray[section].count
     }
 }
 extension ViewController: WeatherManagerDelegate {
@@ -77,6 +96,10 @@ extension ViewController: WeatherManagerDelegate {
             // TableView에 보여질 데이터 - WeatherModel
             self.timeArray = weather.timeArray
             self.valueArray = weather.valueArray
+            self.sections = weather.sections
+            
+            
+            //print(self.valueArray)
             
             self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }
@@ -111,11 +134,9 @@ extension ViewController: CLLocationManagerDelegate {
                         print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
                     }
                     if pm.administrativeArea != nil {
-                        print("add administrativeArea")
                         address += pm.administrativeArea!
                     }
                     if pm.locality != nil {
-                        print("add locality")
                         address += " " + pm.locality!
                     }
                     self.lblAddress.text = address
@@ -124,7 +145,6 @@ extension ViewController: CLLocationManagerDelegate {
             }
             
             let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
-            print("경도 : \(lon), 위도 : \(lat)\nX : \(mapConvert.x) Y : \(mapConvert.y)")
             weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
         }
     }

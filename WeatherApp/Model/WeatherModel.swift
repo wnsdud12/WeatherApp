@@ -12,66 +12,101 @@ typealias ItemTable = (date:String,time:String,value:ItemValue)
 typealias LowHighTMP = (String, ItemValue)
 
 struct WeatherModel {
-    var timeArray: [String]
-    var valueArray: [ItemValue]
     
-//    var todayTMPArray: [LowHighTMP]
-//    let nowTMP: String
+    enum WeatherIcon: String {
+        case sunny
+        case night
+        case cloud_sun
+        case cloud_night
+        case cloudy
+        case rain
+        case snow
+        case rainyORsnowy
+        case rain_shower
+    }
+    
+    var timeArray: [[String]]
+    var valueArray: [[ItemValue]]
+    var sections: [String]
+    var weatherIconString: String
     init(items: [Item]) {
-//        var nowTMP: String = ""
-//        for item in items where item.category == "TMP" {
-//            if nowTMP == "" {
-//                nowTMP = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-//            }
-//        }
-//        self.nowTMP = nowTMP
-//
         // 시간 별 날씨 데이터 받아오기
         var timeArray: [String] = [items[0].fcstTime]
         var valueArray: [ItemValue] = []
         var itemValue: ItemValue = [:]
-//        var todayTMPArray: [LowHighTMP] = []
         let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
+        var returnTime: [[String]] = []
+        var returnValue: [[ItemValue]] = []
         
-        for item in items where useCategory.contains(item.category) {
-            let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+        var isSameDate: Bool = true
+        var isSameTime: Bool = true
+        
+        var sections: [String] = []
+        
+        for i in items.indices where useCategory.contains(items[i].category) {
+            isSameDate = sections.last == items[i].fcstDate ? true : false
+            isSameTime = timeArray.last == items[i].fcstTime ? true : false
             
-            if timeArray.last == item.fcstTime {
-                itemValue[item.category] = value
-            } else {
-                timeArray.append(item.fcstTime)
-                valueArray.append(itemValue)
-                
-                itemValue = [:]
-                itemValue[item.category] = value
+            let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
+            
+            print("\n\(items[i].fcstDate) \(items[i].fcstTime), value : \(items[i].fcstValue)")
+            print("sameDate : \(isSameDate), sameTime : \(isSameTime)")
+            print(itemValue)
+            switch isSameTime {
+            case true:
+                itemValue[items[i].category] = value
+            case false:
+                switch isSameDate {
+                case true:
+                    valueArray.append(itemValue)
+                    itemValue[items[i].category] = value
+                    continue
+                case false:
+                    valueArray.append(itemValue)
+                    itemValue[items[i].category] = value
+                }
             }
+            
         }
-        valueArray.append(itemValue)
         
-        self.timeArray = timeArray.map {
-            convertTimeString(fcstTime: $0)
-        }
-        self.valueArray = valueArray
+        returnTime.append(timeArray)
+        returnValue.append(valueArray)
         
-//        // 일일 최저/최고기온 데이터 받아오기
-//        itemValue = [:]
-//        var date = items[0].fcstDate
-//        for item in items where item.category == "TMN" || item.category == "TMX" {
-//            let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-//            
-//            if item.fcstDate == date {
-//                itemValue[item.category] = value
-//            } else {
-//                todayTMPArray.append((date, itemValue))
-//                date = item.fcstDate
-//                itemValue = [:]
-//                itemValue[item.category] = value
-//            }
-//            
-//        }
-//        todayTMPArray.append((date, itemValue))
-//        self.todayTMPArray = todayTMPArray
+        
+        self.timeArray = returnTime
+        self.valueArray = returnValue
+        self.sections = sections
+        self.weatherIconString = ""
     }
+    //    원본
+    //    init(items: [Item]) {
+    //        // 시간 별 날씨 데이터 받아오기
+    //        var timeArray: [String] = [items[0].fcstTime]
+    //        var valueArray: [ItemValue] = []
+    //        var itemValue: ItemValue = [:]
+    //        let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
+    //
+    //        for item in items where useCategory.contains(item.category) {
+    //            let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+    //
+    //            if timeArray.last == item.fcstTime {
+    //                itemValue[item.category] = value
+    //            } else {
+    //                timeArray.append(item.fcstTime)
+    //                valueArray.append(itemValue)
+    //
+    //                itemValue = [:]
+    //                itemValue[item.category] = value
+    //            }
+    //        }
+    //        valueArray.append(itemValue)
+    //
+    //        self.timeArray = timeArray.map {
+    //            convertTimeString(fcstTime: $0)
+    //        }
+    //        self.valueArray = valueArray
+    //        self.weatherIconString = "" + ".png"
+    //    }
 }
 
 // fcstTime로 받아온 시간 문자열의 형식인 HHmm을 HH시로 바꿔서 반환

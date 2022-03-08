@@ -7,9 +7,6 @@
 
 import Foundation
 
-let group = DispatchGroup()
-let queue = DispatchQueue(label: "weather")
-let queue2 = DispatchQueue.main
 protocol WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel)
     func didUpdateWeatherTMPs(_ weatherManager: WeatherManager, tmp: WeatherTMPModel)
@@ -23,34 +20,34 @@ struct WeatherManager {
     var delegate: WeatherManagerDelegate?
     
     func fetchWeather(nx: Int, ny: Int) {
-        print("start - fetchWeather()")
         let baseDateTime: (date: String, time: String) = setBaseDateTime()
         let yesterday: (date: String, time: String) = setYesterDayDateTime()
-        
-        print("base - \(baseDateTime.date) : \(baseDateTime.time)")
-        print("yesterday - \(yesterday.date) : \(yesterday.time)")
         
         guard let apiKey = apiKey else { return print("URL이 이상해요") }
         let weatherURLString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
         let tmpURLString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(yesterday.date)&base_time=\(yesterday.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
         
         print("weatherURL\n\(weatherURLString)\ntmpURL\n\(tmpURLString)")
-        
-        queue.async(group: group) {
-            print("start preformRequest - weather")
+        DispatchQueue.global().async {
             preformRequest(with: weatherURLString, make: true)
         }
-        queue.async(group: group) {
-            print("start preformRequest - tmp")
+        DispatchQueue.global().async {
             preformRequest(with: tmpURLString, make: false)
         }
+//        queue.async(group: group) {
+//            print("start preformRequest - weather")
+//            preformRequest(with: weatherURLString, make: true)
+//        }
+//        queue.async(group: group) {
+//            print("start preformRequest - tmp")
+//            preformRequest(with: tmpURLString, make: false)
+//        }
         
     }
     func preformRequest(with urlString: String, make isWeatherModel: Bool) {
         
         if let url = URL(string: urlString) {
             let session = URLSession(configuration: .default)
-            print("1")
             let task = session.dataTask(with: url) {
                 data, response, error in
                 if error != nil {
@@ -76,7 +73,6 @@ struct WeatherManager {
     }
     
     func parseJSON(weatherData: Data) -> [Item]? {
-        print("start parseJSON")
         let decoder = JSONDecoder()
         do {
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
@@ -89,79 +85,6 @@ struct WeatherManager {
         }
     }
 }
-/*struct WeatherManager2 {
- let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
- private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String
- 
- var delegate: WeatherManagerDelegate?
- 
- func fetchWeather(nx: Int, ny: Int) {
- print("start - fetchWeather()")
- let baseDateTime: (date: String, time: String) = setBaseDateTime()
- guard let apiKey = apiKey else { return print("URL이 이상해요") }
- let urlString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
- preformRequest(with: urlString)
- print(urlString)
- }
- func fetchWeather(testDate: String, nx: Int, ny: Int) {
- print("start - fetchWeather(testDate:)")
- let baseDateTime: (String, String) = setBaseDateTime(testDate: testDate)
- guard let apiKey = apiKey else { return }
- let urlString = "\(weatherURL)&serviceKey=\(apiKey)&base_date=\(baseDateTime.0)&base_time=\(baseDateTime.1)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
- preformRequest(with: urlString)
- print(urlString)
- }
- 
- 
- func preformRequest(with urlString: String) {
- print("start - preformRequest(with:)")
- if let url = URL(string: urlString) {
- let session = URLSession(configuration: .default)
- 
- let task = session.dataTask(with: url) {
- (data, response, error) in
- if error != nil {
- print("error - don't start preformRequest(with:)")
- return
- }
- if let safeData = data {
- if let weather = parseJSON(weatherData: safeData) {
- delegate?.didUpdateWeather(self, weather: weather, tmp: WeatherTMPModel())
- }
- } else {
- print("error - don't start parseJSON(weatherData:)")
- }
- }
- task.resume()
- } else {
- print("error - url is wrong")
- }
- }
- 
- // JSON으로 받아온 데이터를 가공하기 위해 WeatherModel 구조체에 전달
- func parseJSON(weatherData: Data) -> WeatherModel? {
- print("start : parseJSON(weatherData:)")
- let decoder = JSONDecoder()
- do {
- let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
- let item = decodedData.response.body.items.item
- 
- print("우선 성공")
- let weather = WeatherModel(items: item)
- return weather
- } catch {
- do{
- let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
- delegate?.didFailWithError(error: error, errorMsg: decodedData.response.header.resultMsg)
- return nil
- }
- catch {
- print("error - can't get API data")
- return nil
- }
- }
- }
- }*/
 
 // WeatherTMPModel 구조체에 사용하기 위해 어제 날짜와 23시를 반환하는 함수
 func setYesterDayDateTime() -> (String, String) {
