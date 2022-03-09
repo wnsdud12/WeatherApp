@@ -15,9 +15,7 @@ import CoreLocation
 ///     2. lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기, 이미지가 애매하여 옆에 라벨로 무슨 상태인지도 같이 표시
 ///     3. UI 꾸미기
 ///     4. 백그라운드에서 계속 업데이트 해서 눈/비 알림
-///     5. baseTime의 한 시간 후부터의 데이터만 받아옴
-///         - 검색한 시간이 02:20(baseTime = 0200)일 때 받아온 데이터의 제일 처음 값은 03시의 값
-///     7. tableView에 표시되는 데이터 중 지난 시간의 데이터가 있음(baseTime이 3시간 간격이기 때문) -> 현재 시각 이후의 데이터만 보이게 수정해야 할듯
+///     5. tableView에 표시되는 데이터 중 지난 시간의 데이터가 있음(baseTime이 3시간 간격이기 때문) -> 현재 시각 이후의 데이터만 보이게 수정해야 할듯
 class ViewController: UIViewController {
     
     @IBOutlet weak var lblAddress: UILabel!
@@ -53,9 +51,15 @@ extension ViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             //TableView에 보여질 데이터 - WeatherModel
-            self.table_time = weather.table_time
+            self.table_time = weather.table_time.compactMap{
+                $0.compactMap{
+                    self.convertTimeString(fcstTime:$0)
+                }
+            }
             self.table_value = weather.table_value
-            self.table_date = weather.table_date
+            self.table_date = weather.table_date.map{
+                self.convertDateString(fcstDate: $0)
+            }
             
             self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }
@@ -115,7 +119,7 @@ extension ViewController: CLLocationManagerDelegate {
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-        cell.lblTime.text = convertTimeString(fcstTime: self.table_time[indexPath.section][indexPath.row])
+        cell.lblTime.text = self.table_time[indexPath.section][indexPath.row]
         cell.lblTMP.text = self.table_value[indexPath.section][indexPath.row]["TMP"]
         cell.lblSKY.text = self.table_value[indexPath.section][indexPath.row]["SKY"]
         cell.lblPOP.text = self.table_value[indexPath.section][indexPath.row]["POP"]
@@ -128,7 +132,7 @@ extension ViewController: UITableViewDataSource {
         return table_date.count
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return convertDateString(fcstDate: table_date[section])
+        return table_date[section]
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return table_time[section].count
