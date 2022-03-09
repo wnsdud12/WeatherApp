@@ -25,67 +25,65 @@ struct WeatherModel {
         case rain_shower
     }
     
-    var timeArray: [[String]]
-    var valueArray: [[ItemValue]]
-    var sections: [String]
+//    var timeArray: [[String]]
+//    var valueArray: [[ItemValue]]
+//    var sections: [String]
     var weatherIconString: String
     init(items: [Item]) {
-        // 시간 별 날씨 데이터 받아오기
-        var timeArray: [String] = []
-        var valueArray: [ItemValue] = []
-        var itemValue: ItemValue = [:]
         let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
-        //let useCategory: [String] = ["TMP"]
-        // ViewController에 보내 tableView에 표시해줄 데이터
+        // 날짜 배열 따로
+        var itemValue: ItemValue = [:]
+        var dateArray: [String] = []
+        var timeArray: [String] = []
         var returnTime: [[String]] = []
-        var returnValue: [[ItemValue]] = []
+        var valueArray: [ItemValue] = []
+        var time: String = ""
+        var isTimeChange: Bool = false
+        var isDateChange: Bool = false
         
-        // 날짜와 시간이 달라졌는지 확인할 변수
-        var isSameDate: Bool = true
-        var isSameTime: Bool = true
-        
-        var sections: [String] = [items[0].fcstDate]
-        
-        for i in items.indices where useCategory.contains(items[i].category) {
-            isSameDate = sections.last == items[i].fcstDate ? true : false
-            isSameTime = timeArray.last == items[i].fcstTime ? true : false
+        for i in 0..<items.count {
+            print("\(i)번째")
+            // 날짜 배열
+            if dateArray.last != items[i].fcstDate {
+                isDateChange = true
+                dateArray.append(items[i].fcstDate)
+                print("date : \(dateArray)")
+            } else {
+                isDateChange = false
+            }
             
-            print("date : \(isSameDate), time : \(isSameTime)")
-            
-            let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
-            
-            if !isSameTime {
-                if !isSameDate {
-                    sections.append(items[i].fcstDate)
-                    returnTime.append(timeArray)
-                    timeArray = []
-                }
+            // 시간 배열
+            if i == 0 {
                 timeArray.append(items[i].fcstTime)
             }
+            if items.count == i + 1 {
+                returnTime.append(timeArray)
+                print("return_time \(returnTime)")
+            }
             
-            if isSameTime {
-                itemValue[items[i].category] = value
-                print(itemValue)
-            } else {
-                if !isSameDate {
-                    returnValue.append(valueArray)
-                    print(returnValue)
-                    valueArray = []
+            if timeArray.last != items[i].fcstTime {
+                isTimeChange = true
+                if isDateChange == true {
+                    returnTime.append(timeArray)
+                    print("return_time \(returnTime)")
+                    timeArray = []
                 } else {
-                    itemValue[items[i].category] = value
-                    print(itemValue)
+                    timeArray.append(items[i].fcstTime)
+                    print("time\(timeArray)")
                 }
-                valueArray.append(itemValue)
-                print(valueArray)
+            } else {
+                isTimeChange = false
+            }
+            
+            // 값 배열
+            if useCategory.contains(items[i].category) {
+                if !isTimeChange {
+                    let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
+                    itemValue[items[i].category] = value
+                }
             }
         }
-        
-        returnTime.append(timeArray)
-        returnValue.append(valueArray)
-        print(returnValue)
-        self.timeArray = returnTime
-        self.valueArray = returnValue
-        self.sections = sections
+        print(valueArray)
         self.weatherIconString = ""
     }
     //    원본

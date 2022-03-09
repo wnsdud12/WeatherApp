@@ -27,6 +27,8 @@ import CoreLocation
 ///     6. 검색한 날짜의 최저/최고 기온이 확인이 안될 때가 있음(API상에서는 tmn-오전6시, tmx-오후3시에만 검색되는 듯함)
 ///         - 오전 6시 이전에 데이터를 검색하면 오늘의 최저/최고 기온이 모두 확인 가능하지만 다른 시간대엔 최고 기온만 확인 혹은 최저/최고 둘 다 확인 불가할 때가 있음
 ///     5, 6 완성은 했으나 수정 전 코드를 지우지 않았고 새 코드도 조금 다듬어야 할듯
+///
+///     WeatherModel에서 데이터를 받아올 때  첫 날 첫 시간의 데이터가 제대로 안들어옴
 class ViewController: UIViewController, UITableViewDataSource {
     
     
@@ -94,10 +96,10 @@ extension ViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             // TableView에 보여질 데이터 - WeatherModel
-            self.timeArray = weather.timeArray
-            self.valueArray = weather.valueArray
-            self.sections = weather.sections
-            
+//            self.timeArray = weather.timeArray
+//            self.valueArray = weather.valueArray
+//            self.sections = weather.sections
+//            
             
             //print(self.valueArray)
             
