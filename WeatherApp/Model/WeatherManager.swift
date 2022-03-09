@@ -34,15 +34,6 @@ struct WeatherManager {
         DispatchQueue.global().async {
             preformRequest(with: tmpURLString, make: false)
         }
-//        queue.async(group: group) {
-//            print("start preformRequest - weather")
-//            preformRequest(with: weatherURLString, make: true)
-//        }
-//        queue.async(group: group) {
-//            print("start preformRequest - tmp")
-//            preformRequest(with: tmpURLString, make: false)
-//        }
-        
     }
     func preformRequest(with urlString: String, make isWeatherModel: Bool) {
         

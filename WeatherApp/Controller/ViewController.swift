@@ -42,9 +42,9 @@ class ViewController: UIViewController, UITableViewDataSource {
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
     
-    var timeArray: [[String]] = []
-    var valueArray: [[ItemValue]] = []
-    var sections: [String] = []
+    var table_time: [[String]] = []
+    var table_value: [[ItemValue]] = []
+    var table_date: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,20 +67,20 @@ class ViewController: UIViewController, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
         //if sections[indexPath.section] != nil {
-            cell.lblTime.text = self.timeArray[indexPath.section][indexPath.row]
-            cell.lblTMP.text = self.valueArray[indexPath.section][indexPath.row]["TMP"]
-            cell.lblSKY.text = self.valueArray[indexPath.section][indexPath.row]["SKY"]
-            cell.lblPOP.text = self.valueArray[indexPath.section][indexPath.row]["POP"]
-            cell.lblPCP.text = self.valueArray[indexPath.section][indexPath.row]["PCP"]
+            cell.lblTime.text = self.table_time[indexPath.section][indexPath.row]
+            cell.lblTMP.text = self.table_value[indexPath.section][indexPath.row]["TMP"]
+            cell.lblSKY.text = self.table_value[indexPath.section][indexPath.row]["SKY"]
+            cell.lblPOP.text = self.table_value[indexPath.section][indexPath.row]["POP"]
+            cell.lblPCP.text = self.table_value[indexPath.section][indexPath.row]["PCP"]
         //}
         return cell
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return table_date.count
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section]
+        return table_date[section]
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        if sections[section] != nil {
@@ -88,20 +88,17 @@ class ViewController: UIViewController, UITableViewDataSource {
 //        } else {
 //            return 0
 //        }
-        return timeArray[section].count
+        return table_time[section].count
     }
 }
 extension ViewController: WeatherManagerDelegate {
     
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
-            // TableView에 보여질 데이터 - WeatherModel
-//            self.timeArray = weather.timeArray
-//            self.valueArray = weather.valueArray
-//            self.sections = weather.sections
-//            
-            
-            //print(self.valueArray)
+            //TableView에 보여질 데이터 - WeatherModel
+            self.table_time = weather.table_time
+            self.table_value = weather.table_value
+            self.table_date = weather.table_date
             
             self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }

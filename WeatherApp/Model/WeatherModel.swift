@@ -25,18 +25,23 @@ struct WeatherModel {
         case rain_shower
     }
     
-//    var timeArray: [[String]]
-//    var valueArray: [[ItemValue]]
-//    var sections: [String]
+    var table_time: [[String]]
+    var table_value: [[ItemValue]]
+    var table_date: [String]
     var weatherIconString: String
+    
     init(items: [Item]) {
         let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
         // 날짜 배열 따로
         var itemValue: ItemValue = [:]
-        var dateArray: [String] = []
+        
         var timeArray: [String] = []
-        var returnTime: [[String]] = []
         var valueArray: [ItemValue] = []
+        
+        var dateArray: [String] = []
+        var returnTime: [[String]] = []
+        var returnValue: [[ItemValue]] = []
+        
         var time: String = ""
         var isTimeChange: Bool = false
         var isDateChange: Bool = false
@@ -58,18 +63,15 @@ struct WeatherModel {
             }
             if items.count == i + 1 {
                 returnTime.append(timeArray)
-                print("return_time \(returnTime)")
             }
             
             if timeArray.last != items[i].fcstTime {
                 isTimeChange = true
                 if isDateChange == true {
                     returnTime.append(timeArray)
-                    print("return_time \(returnTime)")
                     timeArray = []
                 } else {
                     timeArray.append(items[i].fcstTime)
-                    print("time\(timeArray)")
                 }
             } else {
                 isTimeChange = false
@@ -77,13 +79,36 @@ struct WeatherModel {
             
             // 값 배열
             if useCategory.contains(items[i].category) {
+                let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
+                
                 if !isTimeChange {
-                    let value = setFcstValue(category: items[i].category, fcstValue: items[i].fcstValue)
                     itemValue[items[i].category] = value
+                    print("itemValue : \(itemValue)")
+                } else {
+                    if isDateChange {
+                        valueArray.append(itemValue)
+                        returnValue.append(valueArray)
+                        
+                        itemValue = [:]
+                        valueArray = []
+                        
+                        itemValue[items[i].category] = value
+                    } else {
+                        valueArray.append(itemValue)
+                        itemValue = [:]
+                        
+                        itemValue[items[i].category] = value
+                    }
                 }
             }
         }
-        print(valueArray)
+        
+        valueArray.append(itemValue)
+        returnValue.append(valueArray)
+        
+        self.table_date = dateArray
+        self.table_time = returnTime
+        self.table_value = returnValue
         self.weatherIconString = ""
     }
     //    원본
