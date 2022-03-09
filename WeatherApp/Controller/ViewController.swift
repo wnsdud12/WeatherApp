@@ -4,34 +4,21 @@
 //
 //  Created by sumwb on 2022/02/17.
 //
-// 제발 되어라
 
 import UIKit
 import CoreLocation
-
-/* 필요한 아이콘
- SKY(PTY가 없음일 때) 맑음(낮v,밤v), 구름많음(낮v,밤v), 흐림v
- PTY 비v, 비/눈, 눈v, 소나기
- */
-
 
 /// - 해야 할 것
 ///     1. 지역 검색 기능
 ///        - 전화번호 입력화면 같은 버튼 여러 개로 만들 생각
 ///        - juso.go.kr의 공공데이터 사용 필요할지 고민중
-///     2. lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기
+///     2. lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기, 이미지가 애매하여 옆에 라벨로 무슨 상태인지도 같이 표시
 ///     3. UI 꾸미기
 ///     4. 백그라운드에서 계속 업데이트 해서 눈/비 알림
 ///     5. baseTime의 한 시간 후부터의 데이터만 받아옴
 ///         - 검색한 시간이 02:20(baseTime = 0200)일 때 받아온 데이터의 제일 처음 값은 03시의 값
-///     6. 검색한 날짜의 최저/최고 기온이 확인이 안될 때가 있음(API상에서는 tmn-오전6시, tmx-오후3시에만 검색되는 듯함)
-///         - 오전 6시 이전에 데이터를 검색하면 오늘의 최저/최고 기온이 모두 확인 가능하지만 다른 시간대엔 최고 기온만 확인 혹은 최저/최고 둘 다 확인 불가할 때가 있음
-///     5, 6 완성은 했으나 수정 전 코드를 지우지 않았고 새 코드도 조금 다듬어야 할듯
-///
-///     WeatherModel에서 데이터를 받아올 때  첫 날 첫 시간의 데이터가 제대로 안들어옴
-class ViewController: UIViewController, UITableViewDataSource {
-    
-    
+///     7. tableView에 표시되는 데이터 중 지난 시간의 데이터가 있음(baseTime이 3시간 간격이기 때문) -> 현재 시각 이후의 데이터만 보이게 수정해야 할듯
+class ViewController: UIViewController {
     
     @IBOutlet weak var lblAddress: UILabel!
     @IBOutlet weak var lblTMPNow: UILabel!
@@ -58,39 +45,9 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         tableView.dataSource = self
     }
-    
-    //    // 나중에 다른 뷰에 갔다가 다시 돌아오는 상황을 만들게 되면 viewWillAppear에 코딩
-    //    override func viewWillAppear(_ animated: Bool) {
-    //        weatherManager.fetchWeather()
-    //    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-        //if sections[indexPath.section] != nil {
-            cell.lblTime.text = self.table_time[indexPath.section][indexPath.row]
-            cell.lblTMP.text = self.table_value[indexPath.section][indexPath.row]["TMP"]
-            cell.lblSKY.text = self.table_value[indexPath.section][indexPath.row]["SKY"]
-            cell.lblPOP.text = self.table_value[indexPath.section][indexPath.row]["POP"]
-            cell.lblPCP.text = self.table_value[indexPath.section][indexPath.row]["PCP"]
-        //}
-        return cell
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return table_date.count
-    }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return table_date[section]
-    }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if sections[section] != nil {
-//            return timeArray[section].count
-//        } else {
-//            return 0
-//        }
-        return table_time[section].count
-    }
 }
+
+
 extension ViewController: WeatherManagerDelegate {
     
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
@@ -117,6 +74,8 @@ extension ViewController: WeatherManagerDelegate {
         print(errorMsg)
     }
 }
+
+
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last{
@@ -149,5 +108,55 @@ extension ViewController: CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("location Error - \(error)")
+    }
+}
+
+
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
+        cell.lblTime.text = convertTimeString(fcstTime: self.table_time[indexPath.section][indexPath.row])
+        cell.lblTMP.text = self.table_value[indexPath.section][indexPath.row]["TMP"]
+        cell.lblSKY.text = self.table_value[indexPath.section][indexPath.row]["SKY"]
+        cell.lblPOP.text = self.table_value[indexPath.section][indexPath.row]["POP"]
+        cell.lblPCP.text = self.table_value[indexPath.section][indexPath.row]["PCP"]
+        
+        return cell
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return table_date.count
+    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return convertDateString(fcstDate: table_date[section])
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return table_time[section].count
+    }
+    
+    // fcstTime로 받아온 시간 문자열의 형식인 HHmm을 HH시로 반환
+    // ex) 1600 -> 16시
+    private func convertTimeString(fcstTime: String) -> String {
+        var timeString: String = ""
+        if var intTime = Int(fcstTime) {
+            intTime = intTime / 100
+            timeString = String(intTime)
+        }
+        return timeString + "시"
+    }
+    
+    // fcstDate로 받아온 날짜 문자열의 형식인 yyyyMMdd를 M월 d일 (E)로 변환
+    // ex) 20220309 -> 3월 9일 (수)
+    private func convertDateString(fcstDate: String) -> String {
+        var dateString: String = ""
+        var date: Date = Date()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyyMMdd"
+        date = formatter.date(from: fcstDate)!
+        
+        formatter.dateFormat = "M월 d일 (E)"
+        dateString = formatter.string(from: date)
+        return dateString
     }
 }

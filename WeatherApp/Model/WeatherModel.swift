@@ -32,7 +32,7 @@ struct WeatherModel {
     
     init(items: [Item]) {
         let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
-        // 날짜 배열 따로
+        
         var itemValue: ItemValue = [:]
         
         var timeArray: [String] = []
@@ -42,7 +42,6 @@ struct WeatherModel {
         var returnTime: [[String]] = []
         var returnValue: [[ItemValue]] = []
         
-        var time: String = ""
         var isTimeChange: Bool = false
         var isDateChange: Bool = false
         
@@ -111,47 +110,9 @@ struct WeatherModel {
         self.table_value = returnValue
         self.weatherIconString = ""
     }
-    //    원본
-    //    init(items: [Item]) {
-    //        // 시간 별 날씨 데이터 받아오기
-    //        var timeArray: [String] = [items[0].fcstTime]
-    //        var valueArray: [ItemValue] = []
-    //        var itemValue: ItemValue = [:]
-    //        let useCategory: [String] = ["POP","PTY","PCP","SKY","SNO","TMP"]
-    //
-    //        for item in items where useCategory.contains(item.category) {
-    //            let value = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-    //
-    //            if timeArray.last == item.fcstTime {
-    //                itemValue[item.category] = value
-    //            } else {
-    //                timeArray.append(item.fcstTime)
-    //                valueArray.append(itemValue)
-    //
-    //                itemValue = [:]
-    //                itemValue[item.category] = value
-    //            }
-    //        }
-    //        valueArray.append(itemValue)
-    //
-    //        self.timeArray = timeArray.map {
-    //            convertTimeString(fcstTime: $0)
-    //        }
-    //        self.valueArray = valueArray
-    //        self.weatherIconString = "" + ".png"
-    //    }
 }
 
-// fcstTime로 받아온 시간 문자열의 형식인 HHmm을 HH시로 바꿔서 반환
-// ex) 1600 -> 16시
-func convertTimeString(fcstTime: String) -> String {
-    var timeString: String = ""
-    if var intTime = Int(fcstTime) {
-        intTime = intTime / 100
-        timeString = String(intTime)
-    }
-    return timeString + "시"
-}
+
 // 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 반환해주는 함수
 func setFcstValue(category: String, fcstValue: String) -> String {
     var valueString: String = ""
