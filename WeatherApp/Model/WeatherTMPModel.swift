@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias LowHighTMP = (String, ItemValue)
+
 // 현재 시간으로 데이터를 받아오면 오늘의 최저/최고 기온을 받아오지 못 할 수도 있어 전날 23시 기준의 데이터를 받아와야 함
 struct WeatherTMPModel {
     

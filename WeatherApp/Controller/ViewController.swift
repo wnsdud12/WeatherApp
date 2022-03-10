@@ -12,7 +12,6 @@ import CoreLocation
 ///     1. 지역 검색 기능
 ///        - 전화번호 입력화면 같은 버튼 여러 개로 만들 생각
 ///        - juso.go.kr의 공공데이터 사용 필요할지 고민중
-///     2. lblSKY(하늘상태, 강수형태) -> 이미지뷰로 바꾸기, 이미지가 애매하여 옆에 라벨로 무슨 상태인지도 같이 표시
 ///     3. UI 꾸미기
 ///     4. 백그라운드에서 계속 업데이트 해서 눈/비 알림
 ///     5. tableView에 표시되는 데이터 중 지난 시간의 데이터가 있음(baseTime이 3시간 간격이기 때문) -> 현재 시각 이후의 데이터만 보이게 수정해야 할듯
@@ -60,6 +59,7 @@ extension ViewController: WeatherManagerDelegate {
             self.table_date = weather.table_date.map{
                 self.convertDateString(fcstDate: $0)
             }
+            print(self.table_time)
             
             self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }
@@ -119,11 +119,14 @@ extension ViewController: CLLocationManagerDelegate {
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: WeatherTableViewCell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
+        let skyAndPTY = setWeatherIcon(time: self.table_time[indexPath.section][indexPath.row], state: self.table_value[indexPath.section][indexPath.row])
         cell.lblTime.text = self.table_time[indexPath.section][indexPath.row]
         cell.lblTMP.text = self.table_value[indexPath.section][indexPath.row]["TMP"]
-        cell.lblSKY.text = self.table_value[indexPath.section][indexPath.row]["SKY"]
+        cell.lblSKY.text = skyAndPTY.txtSKY
         cell.lblPOP.text = self.table_value[indexPath.section][indexPath.row]["POP"]
         cell.lblPCP.text = self.table_value[indexPath.section][indexPath.row]["PCP"]
+        cell.imgSKY.image = skyAndPTY.image
+        
         
         return cell
     }
@@ -162,5 +165,47 @@ extension ViewController: UITableViewDataSource {
         formatter.dateFormat = "M월 d일 (E)"
         dateString = formatter.string(from: date)
         return dateString
+    }
+    
+    private func setWeatherIcon(time: String, state: ItemValue) -> (image: UIImage, txtSKY: String) {
+        var isDay: Bool
+        let time = time.dropLast()
+        var iconName: String = ""
+        var stateName: String = ""
+        if (6...20).contains(Int(time)!) {
+            isDay = true
+        } else {
+            isDay = false
+        }
+        
+        if state["PTY"] == "없음" {
+            stateName = state["SKY"]!
+            switch state["SKY"] {
+                case "맑음":
+                    iconName = isDay ? "sunny.png" : "night.png"
+                case "구름많음":
+                    iconName = isDay ? "cloud_sun.png" : "cloud_night.png"
+                case "흐림":
+                    iconName = "cloudy.png"
+                default:
+                    break
+            }
+        } else {
+            stateName = state["PTY"]!
+            switch state["PTY"] {
+                case "비":
+                    iconName = "rain.png"
+                case "비/눈":
+                    iconName = "rainyORsnowy.png"
+                case "눈":
+                    iconName = "snow.png"
+                case "소나기":
+                    iconName = "rain_shower.png"
+                default:
+                    break
+            }
+        }
+        let image: UIImage = UIImage(named: iconName) ?? UIImage()
+        return (image, stateName)
     }
 }
