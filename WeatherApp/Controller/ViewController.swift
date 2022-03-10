@@ -4,6 +4,7 @@
 //
 //  Created by sumwb on 2022/02/17.
 //
+// 이상 없는지 확인
 
 import UIKit
 import CoreLocation
