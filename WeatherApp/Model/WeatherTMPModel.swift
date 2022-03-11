@@ -25,9 +25,7 @@ struct WeatherTMPModel {
         var nowTMP: String = ""
         var todayTMPArray: [LowHighTMP] = []
         for item in items where item.fcstDate == baseDateTime.0 && item.fcstTime == baseDateTime.1 && item.category == "TMP" {
-            print(item.fcstDate, item.fcstTime, item.fcstValue)
             nowTMP = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-            
         }
         self.nowTMP = nowTMP
         

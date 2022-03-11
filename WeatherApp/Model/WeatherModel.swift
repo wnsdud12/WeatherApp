@@ -32,12 +32,10 @@ struct WeatherModel {
         var isDateChange: Bool = false
         
         for i in 0..<items.count {
-            print("\(i)번째")
             // 날짜 배열
             if dateArray.last != items[i].fcstDate {
                 isDateChange = true
                 dateArray.append(items[i].fcstDate)
-                print("date : \(dateArray)")
             } else {
                 isDateChange = false
             }
@@ -68,7 +66,6 @@ struct WeatherModel {
                 
                 if !isTimeChange {
                     itemValue[items[i].category] = value
-                    print("itemValue : \(itemValue)")
                 } else {
                     if isDateChange {
                         valueArray.append(itemValue)

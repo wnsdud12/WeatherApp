@@ -4,7 +4,6 @@
 //
 //  Created by sumwb on 2022/02/17.
 //
-// 이상 없는지 확인
 
 import UIKit
 import CoreLocation
@@ -60,7 +59,6 @@ extension ViewController: WeatherManagerDelegate {
             self.table_date = weather.table_date.map{
                 self.convertDateString(fcstDate: $0)
             }
-            print(self.table_time)
             
             self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }
@@ -103,7 +101,6 @@ extension ViewController: CLLocationManagerDelegate {
                         address += " " + pm.locality!
                     }
                     self.lblAddress.text = address
-                    print("현재 위치 : \(address)")
                 }
             }
             
@@ -168,6 +165,8 @@ extension ViewController: UITableViewDataSource {
         return dateString
     }
     
+    // 날씨에 맞는 아이콘과 날씨 상태 받아오기
+    // rain.png(비)와 rain_shower.png(소나기)의 이미지가 비슷해서 앱 이용자가 구분하기 힘들 가능성이 있어 텍스트도 같이 반환함
     private func setWeatherIcon(time: String, state: ItemValue) -> (image: UIImage, txtSKY: String) {
         var isDay: Bool
         let time = time.dropLast()

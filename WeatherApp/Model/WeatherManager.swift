@@ -118,7 +118,6 @@ func setBaseDateTime() -> (String, String) {
         if newIndex <= 0 { // 인덱스가 0보다 작아지면 하루 전의 마지막 base_time을 가져옴
             hour = baseTimeIntArray.last!
             base_date = setDateString(date: formatter.string(from: date), ago: -1)
-            print(base_date)
         } else {
             hour = baseTimeIntArray[newIndex]
             base_date = formatter.string(from: date)
@@ -145,7 +144,7 @@ func setBaseDateTime() -> (String, String) {
 ///     - testDate: yyyyMMdd HH:mm 형식.
 /// - returns: ( base_date, base_time)
 func setBaseDateTime(testDate: String) -> (String, String) {
-    print(testDate) //20220216 01:16
+    print(testDate) // ex) 20220216 01:16
     var base_date: String = ""
     var base_time: String = ""
     let formatter = DateFormatter()
