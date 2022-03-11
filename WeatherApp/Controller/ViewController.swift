@@ -59,6 +59,10 @@ extension ViewController: WeatherManagerDelegate {
             self.table_date = weather.table_date.map{
                 self.convertDateString(fcstDate: $0)
             }
+            self.removePastData(timeArray: self.table_time, valueArray: self.table_value)
+            print("\n\n\n---------")
+            print(self.table_time)
+            print("\n\n\n---------")
             
             self.tableView.reloadData() // 데이터가 다 들어오면 테이블뷰 reload -> API를 받아오는 것보다 테이블뷰가 로딩되는 속도가 더 빠르기 때문에 이 코드가 없으면 테이블뷰에 표시할 데이터를 받아와서 가공하기 전에 테이블뷰가 먼저 만들어져서 화면에 표시가 안됨
         }
@@ -207,5 +211,38 @@ extension ViewController: UITableViewDataSource {
         }
         let image: UIImage = UIImage(named: iconName) ?? UIImage()
         return (image, stateName)
+    }
+    func removePastData(timeArray: [[String]], valueArray: [[ItemValue]]) {
+        
+        var newTimeArray = timeArray[0].map{ Int($0.dropLast())! }
+        var newValueArray = valueArray[0]
+        
+        let time: Date = Date()
+        let formatter: DateFormatter = DateFormatter()
+        formatter.dateFormat = "H"
+        let nowTime = Int(formatter.string(from: time))!
+        
+        var newDict: Dictionary<Int,ItemValue> = [:]
+        
+        for i in newTimeArray.indices {
+            newDict[newTimeArray[i]] = newValueArray[i]
+        }
+        
+        let filter = newDict.filter{
+            $0.key > nowTime
+        }.sorted { $0.key < $1.key }
+        print(filter)
+        
+        let filterTime = filter.map{
+            String($0.key) + "시"
+        }
+        let filterValue = filter.map{
+            $0.value
+        }
+
+        print(filterTime)
+        
+        self.table_time[0] = filterTime
+        self.table_value[0] = filterValue
     }
 }
