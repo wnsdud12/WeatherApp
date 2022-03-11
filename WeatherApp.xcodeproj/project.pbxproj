@@ -31,6 +31,7 @@
 		BB44B96C27CC9B1B00BA8B7F /* cloud_night.png in Resources */ = {isa = PBXBuildFile; fileRef = BB44B96527CC9B1B00BA8B7F /* cloud_night.png */; };
 		BB44B96E27CC9B1B00BA8B7F /* cloud_sun.png in Resources */ = {isa = PBXBuildFile; fileRef = BB44B96727CC9B1B00BA8B7F /* cloud_sun.png */; };
 		BB44B96F27CC9B1B00BA8B7F /* snow.png in Resources */ = {isa = PBXBuildFile; fileRef = BB44B96827CC9B1B00BA8B7F /* snow.png */; };
+		BB9370C327DB1E87005F4C7E /* PopUp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB9370C227DB1E87005F4C7E /* PopUp.storyboard */; };
 		BBC36EC727CCA0B00004462B /* rainyORsnowy.png in Resources */ = {isa = PBXBuildFile; fileRef = BBC36EC627CCA0B00004462B /* rainyORsnowy.png */; };
 		BBC36EC927CCA1130004462B /* rain_shower.png in Resources */ = {isa = PBXBuildFile; fileRef = BBC36EC827CCA1130004462B /* rain_shower.png */; };
 /* End PBXBuildFile section */
@@ -82,6 +83,7 @@
 		BB44B96527CC9B1B00BA8B7F /* cloud_night.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_night.png; sourceTree = "<group>"; };
 		BB44B96727CC9B1B00BA8B7F /* cloud_sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_sun.png; sourceTree = "<group>"; };
 		BB44B96827CC9B1B00BA8B7F /* snow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow.png; sourceTree = "<group>"; };
+		BB9370C227DB1E87005F4C7E /* PopUp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PopUp.storyboard; sourceTree = "<group>"; };
 		BBC36EC627CCA0B00004462B /* rainyORsnowy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rainyORsnowy.png; sourceTree = "<group>"; };
 		BBC36EC827CCA1130004462B /* rain_shower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rain_shower.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -184,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				BB12195127BE6D0100EF331E /* Main.storyboard */,
+				BB9370C227DB1E87005F4C7E /* PopUp.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 				BB12195B27BE6D0200EF331E /* LaunchScreen.storyboard in Resources */,
 				BB44B96E27CC9B1B00BA8B7F /* cloud_sun.png in Resources */,
 				BBC36EC727CCA0B00004462B /* rainyORsnowy.png in Resources */,
+				BB9370C327DB1E87005F4C7E /* PopUp.storyboard in Resources */,
 				BB44B96C27CC9B1B00BA8B7F /* cloud_night.png in Resources */,
 				BB12199127C38BED00EF331E /* rain.png in Resources */,
 				BB12195827BE6D0200EF331E /* Assets.xcassets in Resources */,

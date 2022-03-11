@@ -10,11 +10,12 @@ import CoreLocation
 
 /// - 해야 할 것
 ///     1. 지역 검색 기능
+///        - 단순히 새로운 뷰를 띄우는 게 아닌 modal 스타일로 구현해볼 생각
+///             (transition style은 cover vertical로 -> 밑에서 위로 올라오는 뷰)
 ///        - 전화번호 입력화면 같은 버튼 여러 개로 만들 생각
 ///        - juso.go.kr의 공공데이터 사용 필요할지 고민중
 ///     3. UI 꾸미기
 ///     4. 백그라운드에서 계속 업데이트 해서 눈/비 알림
-///     5. tableView에 표시되는 데이터 중 지난 시간의 데이터가 있음(baseTime이 3시간 간격이기 때문) -> 현재 시각 이후의 데이터만 보이게 수정해야 할듯
 class ViewController: UIViewController {
     
     @IBOutlet weak var lblAddress: UILabel!
@@ -214,8 +215,8 @@ extension ViewController: UITableViewDataSource {
     }
     func removePastData(timeArray: [[String]], valueArray: [[ItemValue]]) {
         
-        var newTimeArray = timeArray[0].map{ Int($0.dropLast())! }
-        var newValueArray = valueArray[0]
+        let newTimeArray = timeArray[0].map{ Int($0.dropLast())! }
+        let newValueArray = valueArray[0]
         
         let time: Date = Date()
         let formatter: DateFormatter = DateFormatter()
