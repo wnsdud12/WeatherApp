@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 /// Weather API를 디코딩할 때 생성되는 JSON data
 struct WeatherData: Codable {
     let response: Response
