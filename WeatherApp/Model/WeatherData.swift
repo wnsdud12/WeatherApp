@@ -44,20 +44,3 @@ struct Item: Codable {
     let nx, ny: Int
     let category: String
 }
-
-/// - POP : 강수확률(%)
-/// - PTY : 강수형태(없음 = 0, 비 = 1, 비/눈 = 2, 눈 = 3, 소나기 = 4)
-/// - PCP : 1시간 강수량(mm)
-/// - SNO : 1시간 신적설(cm)
-/// - SKY : 하늘상태(맑음 =1, 구름많음(3), 흐림(4)
-/// - TMP : 현재 기온(℃)
-/// - TMN : 최저기온(℃)
-/// - TMX : 최고기온(℃)
-//enum Category: String, Codable {
-//    case POP, PTY, PCP, SNO, SKY, TMP, TMN, TMX
-//    case unknown
-//    
-//    init(from decoder: Decoder) throws {
-//        self = try Category(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .unknown
-//    }
-//}
