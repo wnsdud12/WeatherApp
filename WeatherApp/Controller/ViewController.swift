@@ -13,6 +13,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        let apikey: String = Bundle.main.infoDictionary?["API_KEY"] as! String
+        print(apikey)
     }
     
 
