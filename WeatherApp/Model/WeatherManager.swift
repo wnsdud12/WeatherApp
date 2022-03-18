@@ -10,7 +10,9 @@ import Alamofire
 
 //let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
 let UseCategory = ["TMP"]
-protocol WeatherManagerDelegate {}
+protocol WeatherManagerDelegate {
+    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
+}
 
 struct WeatherManager {
     var delegate: WeatherManagerDelegate?
@@ -72,9 +74,16 @@ struct WeatherManager {
                     array.append(value)
                     return array
                 }()
-                let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
+                if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
+                    let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
+
+                } else {
+                    print("error - 데이터가 빠진게 있습니다.")
+                }
+
             }
         }
+
     }
     func setBaseDate() -> String {
         let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
