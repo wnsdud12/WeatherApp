@@ -9,8 +9,9 @@ import UIKit
 import CoreLocation
 import Alamofire
 
-class ViewController: UIViewController, WeatherManagerDelegate {
+class ViewController: UIViewController {
     
+    @IBOutlet weak var weatherTable: UITableView!
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
     
@@ -20,23 +21,30 @@ class ViewController: UIViewController, WeatherManagerDelegate {
         locationManager.delegate = self
         weatherManager.delegate = self
         
+        let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
+        weatherTable.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
+        
+        weatherTable.delegate = self
+        weatherTable.dataSource = self
         
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestLocation()
         
     }
+}
+extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
+        cell.lblTime.text = "test"
+        cell.imgSKY.image = UIImage(named: "sunny.png")
+        return cell
+    }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }
 extension ViewController: CLLocationManagerDelegate {
@@ -71,4 +79,7 @@ extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("location Error - \(error)")
     }
+}
+extension ViewController: WeatherManagerDelegate {
+    
 }
