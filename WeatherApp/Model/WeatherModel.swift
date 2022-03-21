@@ -12,12 +12,18 @@ typealias WeatherValue = [String: String]
 typealias WeatherTableData = (date: String, time: String, value: WeatherValue)
 
 struct WeatherModel {
+    // tableView에 보여질 데이터
     var cellTime: [String]
     var cellTMP: [String]
     var cellImgSKY: [UIImage]
     var cellSKY: [String]
     var cellPOP: [String]
     var cellPCP: [String]
+
+    // 최저/최고 온도
+    var arrTMX: [String]
+    var arrTMN: [String]
+
     init(date:[String], time: [String], value: [WeatherValue]) {
         let tupleSKY = setSKY(value: value, time: time)
 
@@ -32,6 +38,9 @@ struct WeatherModel {
         self.cellSKY = tupleSKY.label
         self.cellPOP = value.map{ $0["POP"]! }
         self.cellPCP = value.map{ $0["PCP"]! }
+
+        self.arrTMN = value.map{ $0["TMN"]!}
+        self.arrTMX = value.map{ $0["TMX"]!}
     } // init()
 
 } // WeatherModel
@@ -40,6 +49,7 @@ func setSKY(value: [WeatherValue], time: [String]) -> (image: [String], label: [
     var newImg: [String] = []
     var newLabel: [String] = []
     for i in value.indices {
+        // 6시~20시의 데이터는 낮 / 나머지는 밤
         isDay = (6...20).contains(Int(time[i])!) ? true : false
         if value[i]["PTY"] == "없음" {
             newLabel.append(value[i]["SKY"]!)
@@ -69,4 +79,4 @@ func setSKY(value: [WeatherValue], time: [String]) -> (image: [String], label: [
         }
     }
     return (newImg, newLabel)
-    }
+}

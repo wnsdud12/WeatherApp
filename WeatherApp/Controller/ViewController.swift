@@ -82,7 +82,7 @@ extension ViewController: CLLocationManagerDelegate {
 }
 extension ViewController: WeatherManagerDelegate {
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        
+        print("success - didUpdateWeather")
     }
 
     

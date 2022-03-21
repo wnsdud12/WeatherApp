@@ -8,8 +8,8 @@
 import Foundation
 import Alamofire
 
-//let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
-let UseCategory = ["TMP"]
+let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
+//let UseCategory = ["POP", "PTY","PCP","REH","SNO","SKY","TMP","TMN","TMX","UUU","VVV","WAV","VEC","WSD"]
 protocol WeatherManagerDelegate {
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
 }
@@ -24,6 +24,7 @@ struct WeatherManager {
         "numOfRows": "1000",
         "dataType": "JSON"
     ]
+
     
     
     // URL을 만들 때 필요한 parameter 생성
@@ -36,23 +37,21 @@ struct WeatherManager {
         self.params["ny"] = ny
         preformRequest(url: url)
         print(nx,ny)
+
     }
     mutating func preformRequest(url: String) {
-        self.params["base_date"] = setBaseDate()
-        self.params["base_time"] = "2300"
-        
-        // test
-        //        print("test")
-        //        AF.request(url, parameters: self.params).responseString {res in print(res)}
-        //        print("\n\n\n\n")
-        
-        
+        let baseDateTime: (date: String, time: String) = setBaseDateTime(testDate: "20220321 01:00")
+        self.params["base_date"] = baseDateTime.date
+        self.params["base_time"] = baseDateTime.time
+
+
         AF.request(url, parameters: self.params, encoder: URLEncodedFormParameterEncoder.default).responseDecodable(of: WeatherData.self) {
             response in
+            print("URL\n\(response.request!)")
             if let data = response.value?.response.body.items.item {
                 // 데이터 가공하는 코드
                 let items = data.filter { UseCategory.contains($0.category) }
-                print(items)
+                //print(items)
 
                 let dateArray = items.map{ $0.fcstDate }
                 let timeArray = items.map{ $0.fcstTime }
@@ -74,6 +73,8 @@ struct WeatherManager {
                     array.append(value)
                     return array
                 }()
+                print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
+                print(valueArray)
                 if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
                     let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
 
@@ -81,21 +82,136 @@ struct WeatherManager {
                     print("error - 데이터가 빠진게 있습니다.")
                 }
 
+            } else {
+                print("response error")
             }
+
         }
 
     }
-    func setBaseDate() -> String {
-        let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd"
-        
-        let base_date = formatter.string(from: date)
-        
-        return base_date
-    }
 }
+// 혹시 저장할 때 "\(base_date)&base_time=\(base_time)" 으로 저장해도 되는지 확인
+func setBaseDateTime() -> (String, String) {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH"
+    var nowHour = Int(formatter.string(from: Date()))!
+    formatter.dateFormat = "mm"
+    let nowMinute = Int(formatter.string(from: Date()))!
 
+    let base_date: String = {
+        var base_date: String = ""
+        switch (nowHour, nowMinute) {
+            case (0...1, _):
+                fallthrough
+            case (2, 0..<10):
+                let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+                // format 과정은 따로 함수로 하자
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyyMMdd"
+                base_date = formatter.string(from: date)
+            default:
+                let date = Date()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyyMMdd"
+                base_date = formatter.string(from: date)
+        }
+        return base_date
+    }()
+
+    let base_time: String = {
+        var base_time: String = ""
+
+        let arrBaseDate: [Int] = [2,5,8,11,14,17,20,23] // base_time으로 사용 가능한 값의 배열
+
+        switch (arrBaseDate.contains(nowHour), nowMinute >= 10) {
+            case (true, true):
+                base_time = String(format: "%02d00", nowMinute)
+            case (true, false):
+                let newIndex = arrBaseDate.firstIndex(of: nowHour)! - 1
+                if newIndex <= 0 {
+                    base_time = "2300"
+                } else {
+                    base_time = String(format: "%02d00", arrBaseDate[newIndex])
+                }
+            case (false, _):
+                while arrBaseDate.contains(nowHour) == false {
+                    if nowHour > 0 {
+                        nowHour -= 1
+                    } else {
+                        nowHour = 23
+                    }
+                }
+                base_time = String(format: "%02d00", nowHour)
+        }
+
+        return base_time
+    }()
+    print("base date\n\(base_date)\nbase time\n\(base_time)")
+
+    return (base_date, base_time)
+}
+// 테스트용 코드
+func setBaseDateTime(testDate: String) -> (String, String) {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyyMMdd HH:mm"
+    let date = formatter.date(from: testDate)!
+    formatter.dateFormat = "HH"
+    var nowHour = Int(formatter.string(from: date))!
+    formatter.dateFormat = "mm"
+    let nowMinute = Int(formatter.string(from: date))!
+
+    let base_date: String = {
+        var base_date: String = ""
+        switch (nowHour, nowMinute) {
+            case (0...1, _):
+                fallthrough
+            case (2, 0..<10):
+                let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+                // format 과정은 따로 함수로 하자
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyyMMdd"
+                base_date = formatter.string(from: date)
+            default:
+                let date = Date()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyyMMdd"
+                base_date = formatter.string(from: date)
+        }
+        return base_date
+    }()
+
+    let base_time: String = {
+        var base_time: String = ""
+
+        let arrBaseDate: [Int] = [2,5,8,11,14,17,20,23] // base_time으로 사용 가능한 값의 배열
+
+        switch (arrBaseDate.contains(nowHour), nowMinute >= 10) {
+            case (true, true):
+                base_time = String(format: "%02d00", nowMinute)
+            case (true, false):
+                let newIndex = arrBaseDate.firstIndex(of: nowHour)! - 1
+                if newIndex <= 0 {
+                    base_time = "2300"
+                } else {
+                    base_time = String(format: "%02d00", arrBaseDate[newIndex])
+                }
+            case (false, _):
+                while arrBaseDate.contains(nowHour) == false {
+                    if nowHour > 0 {
+                        nowHour -= 1
+                    } else {
+                        nowHour = 23
+                    }
+                }
+                base_time = String(format: "%02d00", nowHour)
+        }
+
+        return base_time
+    }()
+    print("base date\n\(base_date)\nbase time\n\(base_time)")
+
+    return (base_date, base_time)
+}
 
 // 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 반환해주는 함수
 func setFcstValue(category: String, fcstValue: String) -> String {
