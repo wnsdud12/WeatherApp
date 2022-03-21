@@ -53,8 +53,10 @@ struct WeatherManager {
                 let items = data.filter { UseCategory.contains($0.category) }
                 //print(items)
 
-                let dateArray = items.map{ $0.fcstDate }
-                let timeArray = items.map{ $0.fcstTime }
+//                let dateArray = items.map{ $0.fcstDate }
+//                let timeArray = items.map{ $0.fcstTime }
+                var dateArray: [String] = []
+                var timeArray: [String] = []
                 let valueArray: [WeatherValue] = {
                     var fcstTime = items[0].fcstTime
                     var value: WeatherValue = [:]
@@ -68,8 +70,12 @@ struct WeatherManager {
                             array.append(value)
                             value = [:]
                             value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+                            dateArray.append(item.fcstDate)
+                            timeArray.append(item.fcstTime)
                         }
                     }
+                    dateArray.append(items.last!.fcstDate)
+                    timeArray.append(items.last!.fcstTime)
                     array.append(value)
                     return array
                 }()

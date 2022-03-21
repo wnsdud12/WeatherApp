@@ -39,8 +39,8 @@ struct WeatherModel {
         self.cellPOP = value.map{ $0["POP"]! }
         self.cellPCP = value.map{ $0["PCP"]! }
 
-        self.arrTMN = value.map{ $0["TMN"]!}
-        self.arrTMX = value.map{ $0["TMX"]!}
+        self.arrTMN = value.filter{$0["TMN"] != nil}.map{ $0["TMN"]!}
+        self.arrTMX = value.filter{$0["TMX"] != nil}.map{ $0["TMX"]!}
     } // init()
 
 } // WeatherModel
