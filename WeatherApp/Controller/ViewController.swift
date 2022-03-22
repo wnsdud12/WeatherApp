@@ -7,7 +7,7 @@
 
 import UIKit
 import CoreLocation
-import Alamofire
+
 
 class ViewController: UIViewController {
     
@@ -73,17 +73,22 @@ extension ViewController: CLLocationManagerDelegate {
             }
             
             let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
-            weatherManager.createParameter(nx: mapConvert.x, ny: mapConvert.y)
+            weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
         }
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("location Error - \(error)")
     }
 }
+
 extension ViewController: WeatherManagerDelegate {
-    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        print("success - didUpdateWeather")
+    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
+
     }
 
-    
+    func didFailWithError(error: Error, errorMsg: String) {
+        print(error)
+    }
+
 }
+

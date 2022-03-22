@@ -9,134 +9,88 @@ import Foundation
 import Alamofire
 
 //let UseCategory = ["POP", "PTY","PCP","REH","SNO","SKY","TMP","TMN","TMX","UUU","VVV","WAV","VEC","WSD"]
+
 protocol WeatherManagerDelegate {
-    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
+    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel)
+    func didFailWithError(error: Error, errorMsg: String)
 }
-
 struct WeatherManager {
+    let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
+    private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String
+
     var delegate: WeatherManagerDelegate?
-    
-    let url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
-    let API_KEY = Bundle.main.infoDictionary?["API_KEY"] as! String
-    var params: [String: String] = [
-        "pageNo": "1",
-        "numOfRows": "1000",
-        "dataType": "JSON"
-    ]
 
-    
-    // URL을 만들 때 필요한 parameter 생성
-    // base_date와 base_time은 매번 달라지기 때문에 나중에 초기화
-    mutating func createParameter(nx: Int, ny: Int) {
-        let nx: String = String(nx)
-        let ny: String = String(ny)
-        self.params["serviceKey"] = API_KEY.removingPercentEncoding
-        self.params["nx"] = nx
-        self.params["ny"] = ny
+    func fetchWeather(nx: Int, ny: Int) {
+        let baseDateTime: (date: String, time: String) = setBaseDateTime(testDate: "20220322 02:30")
 
-        preformRequest {
-            delegate?.didUpdateWeather(self, weather: weather)
-        }
-        print(nx,ny)
-
+        guard let apiKey = apiKey else { return print("URL이 이상해요") }
+        let weatherURLString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
+        print(weatherURLString)
+        preformRequest(with: weatherURLString)
     }
-    mutating func preformRequest(@escaping complition: () -> WeatherModel?) {
-        let baseDateTime: (date: String, time: String) = setBaseDateTime()
-        self.params["base_date"] = baseDateTime.date
-        self.params["base_time"] = baseDateTime.time
+    func preformRequest(with urlString: String) {
 
-        let request = AF.request(url, parameters: params)
-        request.responseDecodable(of: WeatherData.self) {
-            data in
-            if let safeData = data.value {
-                //let weather = parseJSON(decodedData: safeData)
-                //delegate?.didUpdateWeather(self, weather: weather!)
-            }
-        }
-    }
-    func parseJSON(decodedData: WeatherData) -> WeatherModel? {
-        let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
-        let weatherData = decodedData.response.body.items.item
-        let items = weatherData.filter{UseCategory.contains($0.category)}
-        var dateArray: [String] = []
-        var timeArray: [String] = []
-        let valueArray: [WeatherValue] = {
-            var fcstTime = items[0].fcstTime
-            var value: WeatherValue = [:]
-            var array: [WeatherValue] = []
-            for item in items {
-                if fcstTime == item.fcstTime {
-                    value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-                    fcstTime = item.fcstTime
-                } else {
-                    fcstTime = item.fcstTime
-                    array.append(value)
-                    value = [:]
-                    value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-                    dateArray.append(item.fcstDate)
-                    timeArray.append(item.fcstTime)
+        if let url = URL(string: urlString) {
+            let session = URLSession(configuration: .default)
+            let task = session.dataTask(with: url) {
+                data, response, error in
+                if error != nil {
+                    print("preformRequestError - \(error!.localizedDescription)")
+                    return
+                }
+                if let safeData = data {
+                    if let weather = parseJSON(weatherData: safeData) {
+                        delegate?.didUpdateWeatherTable(self, weather: weather)
+                    }
                 }
             }
-            dateArray.append(items.last!.fcstDate)
-            timeArray.append(items.last!.fcstTime)
-            array.append(value)
-            return array
-        }()
-        print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
-        print(valueArray)
-        if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
-            let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
-            return weather
+            task.resume()
         } else {
-            print("error - 데이터가 빠진게 있습니다.")
+            print("url error")
+        }
+    }
+    func parseJSON(weatherData: Data) -> WeatherModel? {
+        let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
+        var dateArray: [String] = []
+        var timeArray: [String] = []
+        let decoder = JSONDecoder()
+        do {
+            let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
+            let weatherData = decodedData.response.body.items.item
+            let items = weatherData.filter{UseCategory.contains($0.category)}
+            let valueArray: [WeatherValue] = {
+                var fcstTime = items[0].fcstTime
+                var value: WeatherValue = [:]
+                var array: [WeatherValue] = []
+                for item in items {
+                    if fcstTime == item.fcstTime {
+                        value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+                        fcstTime = item.fcstTime
+                    } else {
+                        fcstTime = item.fcstTime
+                        array.append(value)
+                        value = [:]
+                        value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+                        dateArray.append(item.fcstDate)
+                        timeArray.append(item.fcstTime)
+                    }
+                }
+                return array
+            }()
+            print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
+            if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
+                let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
+                return weather
+            } else {
+                print("error - 데이터가 빠진게 있습니다.")
+                return nil
+            }
+        }
+        catch {
+            print(error)
             return nil
         }
     }
-    func parseJSON2() {
-        let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
-        AF.request(url, parameters: self.params, encoder: URLEncodedFormParameterEncoder.default).responseDecodable(of: WeatherData.self) {
-            response in
-            print("URL\n\(response.request!)")
-            if let data = response.value?.response.body.items.item {
-                // 데이터 가공하는 코드
-                let items = data.filter { UseCategory.contains($0.category) }
-                //print(items)
-
-                var dateArray: [String] = []
-                var timeArray: [String] = []
-                let valueArray: [WeatherValue] = {
-                    var fcstTime = items[0].fcstTime
-                    var value: WeatherValue = [:]
-                    var array: [WeatherValue] = []
-                    for item in items {
-                        if fcstTime == item.fcstTime {
-                            value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-                            fcstTime = item.fcstTime
-                        } else {
-                            fcstTime = item.fcstTime
-                            array.append(value)
-                            value = [:]
-                            value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-                            dateArray.append(item.fcstDate)
-                            timeArray.append(item.fcstTime)
-                        }
-                    }
-                    dateArray.append(items.last!.fcstDate)
-                    timeArray.append(items.last!.fcstTime)
-                    array.append(value)
-                    return array
-                }()
-                print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
-                print(valueArray)
-
-                let _ = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
-            } else {
-                print("response error")
-            }
-        }
-
-    }
-
 }
 
 // 혹시 저장할 때 "\(base_date)&base_time=\(base_time)" 으로 저장해도 되는지 확인
@@ -174,7 +128,7 @@ func setBaseDateTime() -> (String, String) {
 
         switch (arrBaseDate.contains(nowHour), nowMinute >= 10) {
             case (true, true):
-                base_time = String(format: "%02d00", nowMinute)
+                base_time = String(format: "%02d00", nowHour)
             case (true, false):
                 let newIndex = arrBaseDate.firstIndex(of: nowHour)! - 1
                 if newIndex <= 0 {
@@ -211,20 +165,21 @@ func setBaseDateTime(testDate: String) -> (String, String) {
 
     let base_date: String = {
         var base_date: String = ""
+        print("base_date switch")
         switch (nowHour, nowMinute) {
             case (0...1, _):
+                print("case (0...1, _)")
                 fallthrough
             case (2, 0..<10):
+                print("case (2, 0..<10)")
                 let date = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-                // format 과정은 따로 함수로 하자
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyyMMdd"
                 base_date = formatter.string(from: date)
             default:
-                let date = Date()
-                let formatter = DateFormatter()
-                formatter.dateFormat = "yyyyMMdd"
-                base_date = formatter.string(from: date)
+                print("default case")
+                let arr = testDate.components(separatedBy: " ")
+                base_date = arr[0]
         }
         return base_date
     }()
@@ -233,18 +188,23 @@ func setBaseDateTime(testDate: String) -> (String, String) {
         var base_time: String = ""
 
         let arrBaseDate: [Int] = [2,5,8,11,14,17,20,23] // base_time으로 사용 가능한 값의 배열
-
+        print("base_time switch")
         switch (arrBaseDate.contains(nowHour), nowMinute >= 10) {
             case (true, true):
-                base_time = String(format: "%02d00", nowMinute)
+                print("case (true, true)")
+                base_time = String(format: "%02d00", nowHour)
             case (true, false):
+                print("case (true, false)")
                 let newIndex = arrBaseDate.firstIndex(of: nowHour)! - 1
                 if newIndex <= 0 {
+                    print("case (true, false) - if(true)")
                     base_time = "2300"
                 } else {
+                    print("case (true, false) - if(false)")
                     base_time = String(format: "%02d00", arrBaseDate[newIndex])
                 }
             case (false, _):
+                print("case (false, _)")
                 while arrBaseDate.contains(nowHour) == false {
                     if nowHour > 0 {
                         nowHour -= 1

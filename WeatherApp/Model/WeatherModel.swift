@@ -25,6 +25,10 @@ struct WeatherModel {
     var arrTMN: [String]
 
     init(date:[String], time: [String], value: [WeatherValue]) {
+        print("weatherModel create")
+        print("date\n\(date)\n\n")
+        print("time\n\(time)\n\n")
+        print("value\n\(value)\n\n")
         let tupleSKY = setSKY(value: value, time: time)
 
         self.cellTime = time.map {
