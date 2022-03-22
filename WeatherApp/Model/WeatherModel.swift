@@ -12,6 +12,9 @@ typealias WeatherValue = [String: String]
 typealias WeatherTableData = (date: String, time: String, value: WeatherValue)
 
 struct WeatherModel {
+    var sections: [String]
+    var time: [[String]]
+    var value: [[WeatherValue]]
     // tableView에 보여질 데이터
     var cellTime: [String]
     var cellTMP: [String]
@@ -45,9 +48,45 @@ struct WeatherModel {
 
         self.arrTMN = value.filter{$0["TMN"] != nil}.map{ $0["TMN"]!}
         self.arrTMX = value.filter{$0["TMX"] != nil}.map{ $0["TMX"]!}
+
+        // date array remove duplicate
+        let set = Set(date)
+        let sections = Array(set).sorted{ $0 < $1 }
+        self.sections = sections
+
+        let splitArrays: (time: [[String]], value: [[WeatherValue]]) = splitIndex(time: time, value: value)
+        self.time = splitArrays.time
+        self.value = splitArrays.value
+
     } // init()
 
 } // WeatherModel
+
+func splitIndex(time: [String], value: [WeatherValue]) -> ([[String]], [[WeatherValue]]) {
+    var newTime: [String] = []
+    var newValue: [WeatherValue] = []
+    var splitTime: [[String]] = []
+    var splitValue: [[WeatherValue]] = []
+
+    for i in time.indices {
+        if time[i] != "0000" {
+            newTime.append(time[i])
+            newValue.append(value[i])
+        } else if time[i] == "0000" {
+            splitTime.append(newTime)
+            splitValue.append(newValue)
+            newTime = []
+            newValue = []
+            newTime.append(time[i])
+            newValue.append(value[i])
+        }
+    }
+    splitTime.append(newTime)
+    splitValue.append(newValue)
+
+    return (splitTime, splitValue)
+}
+
 func setSKY(value: [WeatherValue], time: [String]) -> (image: [String], label: [String]) {
     var isDay: Bool
     var newImg: [String] = []

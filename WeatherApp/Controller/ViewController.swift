@@ -10,10 +10,15 @@ import CoreLocation
 
 
 class ViewController: UIViewController {
+
+
     
     @IBOutlet weak var weatherTable: UITableView!
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
+
+    var sections: [String] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,8 +49,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imgSKY.image = UIImage(named: "sunny.png")
         return cell
     }
-    
-    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section]
+    }
 }
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -82,8 +91,12 @@ extension ViewController: CLLocationManagerDelegate {
 }
 
 extension ViewController: WeatherManagerDelegate {
-    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
 
+    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
+        self.sections = weather.sections
+        DispatchQueue.main.async {
+            self.weatherTable.reloadData()
+        }
     }
 
     func didFailWithError(error: Error, errorMsg: String) {

@@ -21,7 +21,7 @@ struct WeatherManager {
     var delegate: WeatherManagerDelegate?
 
     func fetchWeather(nx: Int, ny: Int) {
-        let baseDateTime: (date: String, time: String) = setBaseDateTime(testDate: "20220322 02:30")
+        let baseDateTime: (date: String, time: String) = setBaseDateTime()
 
         guard let apiKey = apiKey else { return print("URL이 이상해요") }
         let weatherURLString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
@@ -78,13 +78,12 @@ struct WeatherManager {
                 return array
             }()
             print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
-            if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
-                let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
-                return weather
-            } else {
+            guard dateArray.count == timeArray.count, timeArray.count == valueArray.count else {
                 print("error - 데이터가 빠진게 있습니다.")
                 return nil
             }
+            let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
+            return weather
         }
         catch {
             print(error)
