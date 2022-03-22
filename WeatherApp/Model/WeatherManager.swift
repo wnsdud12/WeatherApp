@@ -8,7 +8,6 @@
 import Foundation
 import Alamofire
 
-let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
 //let UseCategory = ["POP", "PTY","PCP","REH","SNO","SKY","TMP","TMN","TMX","UUU","VVV","WAV","VEC","WSD"]
 protocol WeatherManagerDelegate {
     func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel)
@@ -26,7 +25,6 @@ struct WeatherManager {
     ]
 
     
-    
     // URL을 만들 때 필요한 parameter 생성
     // base_date와 base_time은 매번 달라지기 때문에 나중에 초기화
     mutating func createParameter(nx: Int, ny: Int) {
@@ -35,16 +33,67 @@ struct WeatherManager {
         self.params["serviceKey"] = API_KEY.removingPercentEncoding
         self.params["nx"] = nx
         self.params["ny"] = ny
-        preformRequest(url: url)
+
+        preformRequest {
+            delegate?.didUpdateWeather(self, weather: weather)
+        }
         print(nx,ny)
 
     }
-    mutating func preformRequest(url: String) {
-        let baseDateTime: (date: String, time: String) = setBaseDateTime(testDate: "20220321 01:00")
+    mutating func preformRequest(@escaping complition: () -> WeatherModel?) {
+        let baseDateTime: (date: String, time: String) = setBaseDateTime()
         self.params["base_date"] = baseDateTime.date
         self.params["base_time"] = baseDateTime.time
 
-
+        let request = AF.request(url, parameters: params)
+        request.responseDecodable(of: WeatherData.self) {
+            data in
+            if let safeData = data.value {
+                //let weather = parseJSON(decodedData: safeData)
+                //delegate?.didUpdateWeather(self, weather: weather!)
+            }
+        }
+    }
+    func parseJSON(decodedData: WeatherData) -> WeatherModel? {
+        let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
+        let weatherData = decodedData.response.body.items.item
+        let items = weatherData.filter{UseCategory.contains($0.category)}
+        var dateArray: [String] = []
+        var timeArray: [String] = []
+        let valueArray: [WeatherValue] = {
+            var fcstTime = items[0].fcstTime
+            var value: WeatherValue = [:]
+            var array: [WeatherValue] = []
+            for item in items {
+                if fcstTime == item.fcstTime {
+                    value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+                    fcstTime = item.fcstTime
+                } else {
+                    fcstTime = item.fcstTime
+                    array.append(value)
+                    value = [:]
+                    value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
+                    dateArray.append(item.fcstDate)
+                    timeArray.append(item.fcstTime)
+                }
+            }
+            dateArray.append(items.last!.fcstDate)
+            timeArray.append(items.last!.fcstTime)
+            array.append(value)
+            return array
+        }()
+        print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
+        print(valueArray)
+        if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
+            let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
+            return weather
+        } else {
+            print("error - 데이터가 빠진게 있습니다.")
+            return nil
+        }
+    }
+    func parseJSON2() {
+        let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
         AF.request(url, parameters: self.params, encoder: URLEncodedFormParameterEncoder.default).responseDecodable(of: WeatherData.self) {
             response in
             print("URL\n\(response.request!)")
@@ -53,8 +102,6 @@ struct WeatherManager {
                 let items = data.filter { UseCategory.contains($0.category) }
                 //print(items)
 
-//                let dateArray = items.map{ $0.fcstDate }
-//                let timeArray = items.map{ $0.fcstTime }
                 var dateArray: [String] = []
                 var timeArray: [String] = []
                 let valueArray: [WeatherValue] = {
@@ -81,21 +128,17 @@ struct WeatherManager {
                 }()
                 print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
                 print(valueArray)
-                if dateArray.count == timeArray.count, timeArray.count == valueArray.count {
-                    let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
 
-                } else {
-                    print("error - 데이터가 빠진게 있습니다.")
-                }
-
+                let _ = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
             } else {
                 print("response error")
             }
-
         }
 
     }
+
 }
+
 // 혹시 저장할 때 "\(base_date)&base_time=\(base_time)" 으로 저장해도 되는지 확인
 func setBaseDateTime() -> (String, String) {
     let formatter = DateFormatter()
