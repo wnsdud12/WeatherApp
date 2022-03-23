@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     var cellTime: [[String]] = []
     var cellTMP: [[String]] = []
     var cellImgSKY: [[UIImage]] = []
-    //var cellSKY: [[String]] = []/*SKY와 PTY가 같이 묶여 있어야 함*/
+    var cellSKYPTY: [[WeatherValue]] = []
     var cellPOP: [[String]] = []
     var cellPCP: [[String]] = []
     
@@ -53,10 +53,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     // tableView에 들어갈 데이터 설정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
+        let skyAndPTY = setWeatherIcon(time: self.cellTime[indexPath.section][indexPath.row], state: self.cellSKYPTY[indexPath.section][indexPath.row])
         cell.lblTime.text = self.cellTime[indexPath.section][indexPath.row]
         cell.lblTMP.text = self.cellTMP[indexPath.section][indexPath.row]
-        //cell.lblSKY.text = /*SKY와 PTY가 같이 묶여 있어야 함*/
-        cell.imgSKY.image = UIImage(named: "sunny.png") /*SKY와 PTY가 같이 묶여 있어야 함*/
+        cell.lblSKY.text = skyAndPTY.label
+        cell.imgSKY.image = skyAndPTY.image
         cell.lblPOP.text = self.cellPOP[indexPath.section][indexPath.row]
         cell.lblPCP.text = self.cellPCP[indexPath.section][indexPath.row]
         return cell
@@ -110,7 +111,7 @@ extension ViewController: WeatherManagerDelegate {
         self.sections = weather.sections
         self.cellTime = weather.cellTime
         self.cellTMP = weather.cellTMP
-        //self.cellSKY = weather.cellSKY /*SKY와 PTY가 같이 묶여 있어야 함*/
+        self.cellSKYPTY = weather.cellSKYPTY
         self.cellPOP = weather.cellPOP
         self.cellPCP = weather.cellPCP
         DispatchQueue.main.async {
@@ -126,7 +127,7 @@ extension ViewController: WeatherManagerDelegate {
 
 // 날씨에 맞는 아이콘과 날씨 상태 받아오기
 // rain.png(비)와 rain_shower.png(소나기)의 이미지가 비슷해서 앱 이용자가 구분하기 힘들 가능성이 있어 텍스트도 같이 반환함
-private func setWeatherIcon(time: String, state: WeatherValue) -> (image: UIImage, txtSKY: String) {
+private func setWeatherIcon(time: String, state: WeatherValue) -> (image: UIImage, label: String) {
     var isDay: Bool
     let time = time.dropLast()
     var iconName: String = ""

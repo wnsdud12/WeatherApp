@@ -15,7 +15,7 @@ struct WeatherModel {
     var sections: [String]
     var cellTime: [[String]]
     var cellTMP: [[String]]
-    //var cellSKY: [[String]]/*SKY와 PTY가 같이 묶여 있어야 함*/
+    var cellSKYPTY: [[WeatherValue]]
     var cellPOP: [[String]]
     var cellPCP: [[String]]
     init(date:[String], time: [String], value: [WeatherValue]) {
@@ -37,10 +37,9 @@ struct WeatherModel {
         let value: [[WeatherValue]] = splitArrays.value
 
         self.cellTMP = value.compactMap { $0.compactMap {$0["TMP"]} }
-        //self.cellSKY = value.compactMap { $0.compactMap {$0["SKY"]} }/*SKY와 PTY가 같이 묶여 있어야 함*/
+        self.cellSKYPTY = value.compactMap{ $0.compactMap { $0.filter{ $0.key == "SKY" || $0.key == "PTY" }}}
         self.cellPOP = value.compactMap { $0.compactMap {$0["POP"]} }
         self.cellPCP = value.compactMap { $0.compactMap {$0["PCP"]} }
-
     } // init()
 
 } // WeatherModel
