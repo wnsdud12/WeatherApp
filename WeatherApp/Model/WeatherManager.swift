@@ -55,6 +55,7 @@ struct WeatherManager {
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
             let weatherData = decodedData.response.body.items.item
             let items = weatherData.filter{UseCategory.contains($0.category)}
+
             let valueArray: [WeatherValue] = {
                 var fcstTime = items[0].fcstTime
                 var value: WeatherValue = [:]
@@ -93,9 +94,9 @@ struct WeatherManager {
 func setBaseDateTime() -> (String, String) {
     let formatter = DateFormatter()
     formatter.dateFormat = "HH"
-    var nowHour = Int(formatter.string(from: Date()))!
+    var nowHour = formatter.string(from: Date()).toInt
     formatter.dateFormat = "mm"
-    let nowMinute = Int(formatter.string(from: Date()))!
+    let nowMinute = formatter.string(from: Date()).toInt
 
     let base_date: String = {
         var base_date: String = ""
@@ -155,9 +156,9 @@ func setBaseDateTime(testDate: String) -> (String, String) {
     formatter.dateFormat = "yyyyMMdd HH:mm"
     let date = formatter.date(from: testDate)!
     formatter.dateFormat = "HH"
-    var nowHour = Int(formatter.string(from: date))!
+    var nowHour = formatter.string(from: date).toInt
     formatter.dateFormat = "mm"
-    let nowMinute = Int(formatter.string(from: date))!
+    let nowMinute = formatter.string(from: date).toInt
 
     let base_date: String = {
         var base_date: String = ""

@@ -18,9 +18,12 @@ struct WeatherModel {
     var cellSKYPTY: [[WeatherValue]]
     var cellPOP: [[String]]
     var cellPCP: [[String]]
+    var nowWeatherData: NowWeather
     init(date:[String], time: [String], value: [WeatherValue]) {
 
         print("init - WeatherModel")
+
+        nowWeatherData = NowWeather(date: date[0], time: time[0], value: value[0])
 
         // date array remove duplicate
         let set = Set(date)
@@ -47,6 +50,13 @@ struct WeatherModel {
     } // init()
 
 } // WeatherModel
+
+// 현재 시간의 날씨데이터
+struct NowWeather {
+    let date: String
+    let time: String
+    let value: WeatherValue
+}
 
 func splitIndex(time: [String], value: [WeatherValue]) -> ([[String]], [[WeatherValue]]) {
     var newTime: [String] = []
@@ -89,11 +99,11 @@ private func convertDateString(fcstDate: String) -> String {
 }
 // fcstTime로 받아온 시간 문자열의 형식인 HHmm을 HH시로 반환
 // ex) 1600 -> 16시
-private func convertTimeString(fcstTime: String) -> String {
+func convertTimeString(fcstTime: String) -> String {
     var timeString: String = ""
-    if var intTime = Int(fcstTime) {
-        intTime = intTime / 100
-        timeString = String(intTime)
-    }
+    var intTime: Int = fcstTime.toInt
+    intTime = intTime / 100
+    timeString = String(intTime)
+    
     return timeString + "시"
 }
