@@ -11,7 +11,6 @@ import CoreLocation
 
 class ViewController: UIViewController {
 
-
     @IBOutlet weak var lblAddress: UILabel!
     @IBOutlet weak var nowWeather: NowWeatherView!
     @IBOutlet weak var weatherTable: UITableView!
@@ -41,19 +40,23 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-
+  
         nowWeather.imgNowSKY.image = UIImage(named: "cloud_sun_svg.svg")
         nowWeather.imgNowSKY.frame.size = CGSize(width: 100, height: 100)
         locationManager.delegate = self
         weatherManager.delegate = self
+
+    
         
         let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
         weatherTable.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
-        
+
         weatherTable.delegate = self
         weatherTable.dataSource = self
 
-        weatherTable.backgroundColor = UIColor.lightGray
+        weatherTable.backgroundColor = UIColor.systemGray6
+
+        weatherTable.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
 
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -62,7 +65,15 @@ class ViewController: UIViewController {
     }
 }
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
-    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = weatherTable.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
+        header.headerDate.text = self.sections[section]
+        header.headerTMX.text = self.
+        return header
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
     // section별 데이터 수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellTime[section].count
@@ -71,10 +82,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
-    // section 제목 (날짜)
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section]
-    }
+//    // section 제목 (날짜)
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        return sections[section]
+//    }
     // tableView에 들어갈 데이터 설정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
