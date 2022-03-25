@@ -6,9 +6,6 @@
 //
 
 import Foundation
-import Alamofire
-
-//let UseCategory = ["POP", "PTY","PCP","REH","SNO","SKY","TMP","TMN","TMX","UUU","VVV","WAV","VEC","WSD"]
 
 protocol WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel)

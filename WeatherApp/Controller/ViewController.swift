@@ -12,7 +12,9 @@ import CoreLocation
 class ViewController: UIViewController {
 
 
+    @IBOutlet weak var lblAddress: UILabel!
     
+    @IBOutlet weak var nowWeather: NowWeatherView!
     @IBOutlet weak var weatherTable: UITableView!
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
@@ -25,11 +27,15 @@ class ViewController: UIViewController {
     var cellSKYPTY: [[WeatherValue]] = []
     var cellPOP: [[String]] = []
     var cellPCP: [[String]] = []
-    
+
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+
+        nowWeather.imgNowSKY.image = UIImage(named: "cloud_sun_svg.svg")
+        nowWeather.imgNowSKY.frame.size = CGSize(width: 100, height: 100)
         locationManager.delegate = self
         weatherManager.delegate = self
         
@@ -38,7 +44,9 @@ class ViewController: UIViewController {
         
         weatherTable.delegate = self
         weatherTable.dataSource = self
-        
+
+        weatherTable.backgroundColor = UIColor.lightGray
+
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestLocation()
@@ -60,6 +68,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.imgSKY.image = skyAndPTY.image
         cell.lblPOP.text = self.cellPOP[indexPath.section][indexPath.row]
         cell.lblPCP.text = self.cellPCP[indexPath.section][indexPath.row]
+        
         return cell
     }
     // section 갯수
@@ -92,7 +101,7 @@ extension ViewController: CLLocationManagerDelegate {
                     if pm.locality != nil {
                         address += " " + pm.locality!
                     }
-                    //self.lblAddress.text = address
+                    self.lblAddress.text = address
                 }
             }
             
@@ -108,15 +117,17 @@ extension ViewController: CLLocationManagerDelegate {
 extension ViewController: WeatherManagerDelegate {
 
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        self.sections = weather.sections
-        self.cellTime = weather.cellTime
-        self.cellTMP = weather.cellTMP
-        self.cellSKYPTY = weather.cellSKYPTY
-        self.cellPOP = weather.cellPOP
-        self.cellPCP = weather.cellPCP
         DispatchQueue.main.async {
+            print("didUpdateWeatherTable()")
+            self.sections = weather.sections
+            self.cellTime = weather.cellTime
+            self.cellTMP = weather.cellTMP
+            self.cellSKYPTY = weather.cellSKYPTY
+            self.cellPOP = weather.cellPOP
+            self.cellPCP = weather.cellPCP
             self.weatherTable.reloadData()
         }
+
     }
 
     func didFailWithError(error: Error, errorMsg: String) {

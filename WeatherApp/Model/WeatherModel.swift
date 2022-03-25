@@ -20,6 +20,8 @@ struct WeatherModel {
     var cellPCP: [[String]]
     init(date:[String], time: [String], value: [WeatherValue]) {
 
+        print("init - WeatherModel")
+
         // date array remove duplicate
         let set = Set(date)
         let sections = Array(set).sorted{ $0 < $1 }
@@ -40,6 +42,8 @@ struct WeatherModel {
         self.cellSKYPTY = value.compactMap{ $0.compactMap { $0.filter{ $0.key == "SKY" || $0.key == "PTY" }}}
         self.cellPOP = value.compactMap { $0.compactMap {$0["POP"]} }
         self.cellPCP = value.compactMap { $0.compactMap {$0["PCP"]} }
+        print(self.cellSKYPTY)
+        print("success - WeatherModel init")
     } // init()
 
 } // WeatherModel
