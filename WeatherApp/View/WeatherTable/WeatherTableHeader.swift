@@ -11,4 +11,5 @@ class WeatherTableHeader: UITableViewHeaderFooterView {
     
     @IBOutlet weak var headerDate: UILabel!
     @IBOutlet weak var headerTMX: UILabel!
+    @IBOutlet weak var headerTMN: UILabel!
 }

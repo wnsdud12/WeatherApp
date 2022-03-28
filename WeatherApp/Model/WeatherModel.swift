@@ -18,6 +18,7 @@ struct WeatherModel {
     var cellSKYPTY: [[WeatherValue]]
     var cellPOP: [[String]]
     var cellPCP: [[String]]
+    var headerTMXTMN: [WeatherValue]
     var nowWeatherData: NowWeather
     init(date:[String], time: [String], value: [WeatherValue]) {
 
@@ -39,13 +40,32 @@ struct WeatherModel {
         }
         self.cellTime = cellTime
 
-        let value: [[WeatherValue]] = splitArrays.value
+        let splitedValue: [[WeatherValue]] = splitArrays.value
 
-        self.cellTMP = value.compactMap { $0.compactMap {$0["TMP"]} }
-        self.cellSKYPTY = value.compactMap{ $0.compactMap { $0.filter{ $0.key == "SKY" || $0.key == "PTY" }}}
-        self.cellPOP = value.compactMap { $0.compactMap {$0["POP"]} }
-        self.cellPCP = value.compactMap { $0.compactMap {$0["PCP"]} }
-        print(self.cellSKYPTY)
+        self.cellTMP = splitedValue.compactMap { $0.compactMap {$0["TMP"]} }
+        self.cellSKYPTY = splitedValue.compactMap{ $0.compactMap { $0.filter{ $0.key == "SKY" || $0.key == "PTY" }}}
+        self.cellPOP = splitedValue.compactMap { $0.compactMap {$0["POP"]} }
+        self.cellPCP = splitedValue.compactMap { $0.compactMap {$0["PCP"]} }
+
+        let headerTMXTMN: [WeatherValue] = {
+            var newDictArr: [WeatherValue] = []
+            var newDict: WeatherValue = [:]
+            for i in splitedValue {
+                for j in i {
+                    if j["TMX"] != nil {
+                        newDict["TMX"] = j["TMX"]
+                    }
+                    if j["TMN"] != nil {
+                        newDict["TMN"] = j["TMN"]
+                    }
+                }
+                newDictArr.append(newDict)
+                newDict = [:]
+            }
+            return newDictArr
+        }()
+        print(headerTMXTMN)
+        self.headerTMXTMN = headerTMXTMN
         print("success - WeatherModel init")
     } // init()
 

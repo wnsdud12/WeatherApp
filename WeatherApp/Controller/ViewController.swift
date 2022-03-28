@@ -27,6 +27,8 @@ class ViewController: UIViewController {
     var cellPOP: [[String]] = []
     var cellPCP: [[String]] = []
 
+    var headerData: [WeatherValue] = []
+
     var nowWeatherData: NowWeather?
 
     let nowTime: Int = {
@@ -65,10 +67,16 @@ class ViewController: UIViewController {
     }
 }
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    // tableView footer 제거
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    // section header data
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = weatherTable.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
-        header.headerDate.text = self.sections[section]
-        header.headerTMX.text = self.
+        header.headerDate.text = convertDateString(fcstDate: sections[section])
+        header.headerTMX.text = headerData[section]["TMX"] ?? "-"
+        header.headerTMN.text = headerData[section]["TMN"] ?? "-"
         return header
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -154,6 +162,8 @@ extension ViewController: WeatherManagerDelegate {
             self.nowWeather.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
             self.nowWeather.imgNowSKY.image = setWeatherIcon(time: weather.nowWeatherData.time, state: weather.nowWeatherData.value).image
 
+            self.headerData = weather.headerTMXTMN
+
             self.weatherTable.reloadData()
         }
 
@@ -207,6 +217,20 @@ private func setWeatherIcon(time: String, state: WeatherValue) -> (image: UIImag
     }
     let image: UIImage = UIImage(named: iconName) ?? UIImage()
     return (image, stateName)
+}
+// fcstDate로 받아온 날짜 문자열의 형식인 yyyyMMdd를 M월 d일 (E)로 변환
+// ex) 20220309 -> 3월 9일 (수)
+private func convertDateString(fcstDate: String) -> String {
+    var dateString: String = ""
+    var date: Date = Date()
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "ko_KR")
+    formatter.dateFormat = "yyyyMMdd"
+    date = formatter.date(from: fcstDate)!
+
+    formatter.dateFormat = "M월 d일 (E)"
+    dateString = formatter.string(from: date)
+    return dateString
 }
 extension String {
     var toInt: Int {
