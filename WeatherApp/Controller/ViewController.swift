@@ -154,9 +154,10 @@ extension ViewController: WeatherManagerDelegate {
             self.cellPCP = weather.cellPCP
 
             print(weather.nowWeatherData.value)
+            let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value)
             self.nowWeather.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
-            self.nowWeather.imgNowSKY.image = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value).image
-            print(self.nowWeatherData)
+            self.nowWeather.imgNowSKY.image = nowSKY.image
+            self.nowWeather.lblNowSKY.text = nowSKY.label
             self.headerData = weather.headerTMXTMN
 
             self.weatherTable.reloadData()

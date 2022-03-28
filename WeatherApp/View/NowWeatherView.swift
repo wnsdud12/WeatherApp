@@ -10,6 +10,7 @@ import UIKit
 class NowWeatherView: UIView {
 
     @IBOutlet weak var lblNowTMP: UILabel!
+    @IBOutlet weak var lblNowSKY: UILabel!
     @IBOutlet weak var imgNowSKY: UIImageView!
 
     override init(frame: CGRect) {
