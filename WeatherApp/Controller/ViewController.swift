@@ -90,10 +90,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
-//    // section 제목 (날짜)
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        return sections[section]
-//    }
     // tableView에 들어갈 데이터 설정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
@@ -144,7 +140,6 @@ extension ViewController: CLLocationManagerDelegate {
 }
 
 extension ViewController: WeatherManagerDelegate {
-
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             print("didUpdateWeatherTable()")
@@ -160,19 +155,13 @@ extension ViewController: WeatherManagerDelegate {
 
             print(weather.nowWeatherData.value)
             self.nowWeather.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
-            self.nowWeather.imgNowSKY.image = setWeatherIcon(time: weather.nowWeatherData.time, state: weather.nowWeatherData.value).image
-
+            self.nowWeather.imgNowSKY.image = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value).image
+            print(self.nowWeatherData)
             self.headerData = weather.headerTMXTMN
 
             self.weatherTable.reloadData()
         }
-
     }
-
-    func didFailWithError(error: Error, errorMsg: String) {
-        print(error)
-    }
-
 }
 
 // 날씨에 맞는 아이콘과 날씨 상태 받아오기
@@ -233,6 +222,7 @@ private func convertDateString(fcstDate: String) -> String {
     return dateString
 }
 extension String {
+    // String 변수를 Int로 변경
     var toInt: Int {
         return Int(self)!
     }

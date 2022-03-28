@@ -9,7 +9,6 @@ import Foundation
 
 protocol WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel)
-    func didFailWithError(error: Error, errorMsg: String)
 }
 struct WeatherManager {
     let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
