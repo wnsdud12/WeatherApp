@@ -3,16 +3,15 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController id="Y6W-OH-hqX" customClass="ViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Y6W-OH-hqX" customClass="MainViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -38,7 +37,8 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="지역변경"/>
                                         <connections>
-                                            <segue destination="dca-UB-m6g" kind="presentation" id="fSX-cE-oO6"/>
+                                            <action selector="btnTest:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="ZSr-A8-RgX"/>
+                                            <segue destination="K5c-Py-jMp" kind="presentation" id="KkR-we-cjq"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -76,33 +76,50 @@
             </objects>
             <point key="canvasLocation" x="18.840579710144929" y="75.669642857142847"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="yyp-ob-jGC">
+        <!--Test-->
+        <scene sceneID="A6J-Xf-RNY">
             <objects>
-                <viewController id="dca-UB-m6g" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="QFz-gl-eGI">
+                <viewController title="Test" id="K5c-Py-jMp" customClass="SearchViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="bbx-Af-ERv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8D7-ea-ocd">
-                                <rect key="frame" x="47" y="75" width="320" height="34"/>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cCV-mH-HG4">
+                                <rect key="frame" x="20" y="44" width="374" height="764"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <imageReference key="background" image="folder" catalog="system" symbolScale="large"/>
-                            </textField>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="oF4-IM-OPt">
+                                        <rect key="frame" x="0.0" y="97" width="374" height="682"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="localeCell" id="Z54-bU-fGq">
+                                                <rect key="frame" x="0.0" y="44.5" width="374" height="43.5"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Z54-bU-fGq" id="GUb-5l-PWB">
+                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="tKw-zn-De8"/>
+                        <viewLayoutGuide key="safeArea" id="l1B-bT-r23"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="oF4-IM-OPt" id="kZg-Ob-9W5"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uQp-7D-HFx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="phl-0A-4zE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="757.97101449275374" y="75.669642857142847"/>
+            <point key="canvasLocation" x="746.37681159420299" y="85.714285714285708"/>
         </scene>
     </scenes>
     <resources>
-        <image name="folder" catalog="system" width="128" height="97"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -8,8 +8,12 @@
 import UIKit
 import CoreLocation
 
-
-class ViewController: UIViewController {
+///
+/// - Todo
+///   - 지역 변경 기능 추가
+///   - AutoLayout
+///
+class MainViewController: UIViewController {
 
     @IBOutlet weak var lblAddress: UILabel!
     @IBOutlet weak var nowWeather: NowWeatherView!
@@ -65,8 +69,18 @@ class ViewController: UIViewController {
         locationManager.requestLocation()
         
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let sidoVC = segue.destination
+        //sidoVC.modalPresentationStyle = .fullScreen
+        if segue.identifier == "segueTest" {
+            sidoVC.title = "테스트"
+        }
+    }
+    @IBAction func btnTest(_ sender: Any) {
+
+    }
 }
-extension ViewController: UITableViewDelegate, UITableViewDataSource {
+extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     // tableView footer 제거
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
@@ -105,7 +119,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
-extension ViewController: CLLocationManagerDelegate {
+extension MainViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last{
             locationManager.stopUpdatingLocation()
@@ -139,7 +153,7 @@ extension ViewController: CLLocationManagerDelegate {
     }
 }
 
-extension ViewController: WeatherManagerDelegate {
+extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
             print("didUpdateWeatherTable()")
