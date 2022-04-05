@@ -38,7 +38,7 @@
                                         <buttonConfiguration key="configuration" style="plain" title="지역변경"/>
                                         <connections>
                                             <action selector="btnTest:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="ZSr-A8-RgX"/>
-                                            <segue destination="K5c-Py-jMp" kind="presentation" id="KkR-we-cjq"/>
+                                            <segue destination="d24-U6-HSn" kind="presentation" id="Ygv-Pb-hJe"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -74,7 +74,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="18.840579710144929" y="75.669642857142847"/>
+            <point key="canvasLocation" x="-51" y="86"/>
         </scene>
         <!--Test-->
         <scene sceneID="A6J-Xf-RNY">
@@ -110,13 +110,32 @@
                         <viewLayoutGuide key="safeArea" id="l1B-bT-r23"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="fcZ-CG-Ywb"/>
                     <connections>
                         <outlet property="tableView" destination="oF4-IM-OPt" id="kZg-Ob-9W5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="phl-0A-4zE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="746.37681159420299" y="85.714285714285708"/>
+            <point key="canvasLocation" x="1368" y="86"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="p5A-1a-b4X">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="d24-U6-HSn" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="XpY-J0-acz">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="K5c-Py-jMp" kind="relationship" relationship="rootViewController" id="tx8-IV-k2I"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fdr-uT-4pg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="659" y="86"/>
         </scene>
     </scenes>
     <resources>

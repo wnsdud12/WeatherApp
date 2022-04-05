@@ -51,8 +51,6 @@ class MainViewController: UIViewController {
         nowWeather.imgNowSKY.frame.size = CGSize(width: 100, height: 100)
         locationManager.delegate = self
         weatherManager.delegate = self
-
-    
         
         let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
         weatherTable.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
