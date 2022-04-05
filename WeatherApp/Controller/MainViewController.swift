@@ -8,7 +8,9 @@
 import UIKit
 import CoreLocation
 
-/// 수정 이상 없나 테스트
+protocol SendDelegate: AnyObject {
+    func sendData(x: Int, y: Int)
+}
 /// - Todo
 ///   - 지역 변경 기능 추가
 ///   - AutoLayout
@@ -65,13 +67,12 @@ class MainViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestLocation()
-        
+
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let sidoVC = segue.destination
         //sidoVC.modalPresentationStyle = .fullScreen
-        if segue.identifier == "segueTest" {
-            sidoVC.title = "테스트"
+        if segue.identifier == "segueSidoVC" {
+            print(segue.identifier)
         }
     }
     @IBAction func btnTest(_ sender: Any) {
@@ -141,7 +142,6 @@ extension MainViewController: CLLocationManagerDelegate {
                     self.lblAddress.text = address
                 }
             }
-            
             let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
             weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
         }

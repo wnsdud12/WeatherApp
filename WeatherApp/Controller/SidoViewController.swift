@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+class SidoViewController: UIViewController {
     @IBOutlet var tableView: UITableView!
     var locales = [WeatherLocale]()
     var filteredLocales = [WeatherLocale]()
@@ -28,6 +28,21 @@ class SearchViewController: UIViewController {
         definesPresentationContext = true
 
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueGunguVC" {
+            if let indexPath = tableView.indexPathForSelectedRow {
+                let locale: WeatherLocale
+                if isFiltering() {
+                    locale = filteredLocales[indexPath.row]
+                } else {
+                    locale = locales[indexPath.row]
+                }
+                let controller = segue.destination as! GunguViewController
+                controller.locale = locale
+                print(locale)
+            }
+        }
+    }
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
@@ -42,7 +57,8 @@ class SearchViewController: UIViewController {
     }
 
 }
-extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
+extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
+    // MARK: - Table View
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
             return filteredLocales.count
@@ -72,7 +88,8 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 
 
 }
-extension SearchViewController: UISearchControllerDelegate, UISearchResultsUpdating {
+extension SidoViewController: UISearchControllerDelegate, UISearchResultsUpdating {
+    // MARK: - UISeearchBar Delegate
     func updateSearchResults(for searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
         print(filteredLocales)

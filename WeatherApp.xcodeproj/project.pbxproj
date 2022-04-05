@@ -29,13 +29,14 @@
 		BB44B96C27CC9B1B00BA8B7F /* cloud_night.png in Resources */ = {isa = PBXBuildFile; fileRef = BB44B96527CC9B1B00BA8B7F /* cloud_night.png */; };
 		BB44B96E27CC9B1B00BA8B7F /* cloud_sun.png in Resources */ = {isa = PBXBuildFile; fileRef = BB44B96727CC9B1B00BA8B7F /* cloud_sun.png */; };
 		BB44B96F27CC9B1B00BA8B7F /* snow.png in Resources */ = {isa = PBXBuildFile; fileRef = BB44B96827CC9B1B00BA8B7F /* snow.png */; };
+		BB584DEE27FBFEEB0087D60E /* GunguViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB584DED27FBFEEB0087D60E /* GunguViewController.swift */; };
 		BBA1BD8827EDA7AA009369BE /* WeatherTableHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA1BD8727EDA7AA009369BE /* WeatherTableHeader.swift */; };
 		BBA1BD8A27EDA7B6009369BE /* WeatherTableHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA1BD8927EDA7B6009369BE /* WeatherTableHeader.xib */; };
 		BBA1BDA827F41636009369BE /* WeatherLocale.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA1BDA727F41636009369BE /* WeatherLocale.swift */; };
 		BBA3EE9527E0DFCE00C13748 /* sunny.png in Resources */ = {isa = PBXBuildFile; fileRef = BBA3EE9427E0DFCE00C13748 /* sunny.png */; };
 		BBC36EC727CCA0B00004462B /* rainyORsnowy.png in Resources */ = {isa = PBXBuildFile; fileRef = BBC36EC627CCA0B00004462B /* rainyORsnowy.png */; };
 		BBC36EC927CCA1130004462B /* rain_shower.png in Resources */ = {isa = PBXBuildFile; fileRef = BBC36EC827CCA1130004462B /* rain_shower.png */; };
-		BBD024FD27FAD3A800640FF8 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBD024FC27FAD3A800640FF8 /* SearchViewController.swift */; };
+		BBD024FD27FAD3A800640FF8 /* SidoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBD024FC27FAD3A800640FF8 /* SidoViewController.swift */; };
 		BBD88B7327EC50F5009CACC2 /* NowWeatherView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBD88B7227EC50F5009CACC2 /* NowWeatherView.xib */; };
 		BBD88B7527EC5103009CACC2 /* NowWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBD88B7427EC5103009CACC2 /* NowWeatherView.swift */; };
 		BBD88B7927EC552C009CACC2 /* cloud_sun_128.png in Resources */ = {isa = PBXBuildFile; fileRef = BBD88B7827EC552C009CACC2 /* cloud_sun_128.png */; };
@@ -87,13 +88,14 @@
 		BB44B96527CC9B1B00BA8B7F /* cloud_night.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_night.png; sourceTree = "<group>"; };
 		BB44B96727CC9B1B00BA8B7F /* cloud_sun.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_sun.png; sourceTree = "<group>"; };
 		BB44B96827CC9B1B00BA8B7F /* snow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = snow.png; sourceTree = "<group>"; };
+		BB584DED27FBFEEB0087D60E /* GunguViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GunguViewController.swift; sourceTree = "<group>"; };
 		BBA1BD8727EDA7AA009369BE /* WeatherTableHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableHeader.swift; sourceTree = "<group>"; };
 		BBA1BD8927EDA7B6009369BE /* WeatherTableHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeatherTableHeader.xib; sourceTree = "<group>"; };
 		BBA1BDA727F41636009369BE /* WeatherLocale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocale.swift; sourceTree = "<group>"; };
 		BBA3EE9427E0DFCE00C13748 /* sunny.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sunny.png; sourceTree = "<group>"; };
 		BBC36EC627CCA0B00004462B /* rainyORsnowy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rainyORsnowy.png; sourceTree = "<group>"; };
 		BBC36EC827CCA1130004462B /* rain_shower.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rain_shower.png; sourceTree = "<group>"; };
-		BBD024FC27FAD3A800640FF8 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		BBD024FC27FAD3A800640FF8 /* SidoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidoViewController.swift; sourceTree = "<group>"; };
 		BBD88B7227EC50F5009CACC2 /* NowWeatherView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NowWeatherView.xib; sourceTree = "<group>"; };
 		BBD88B7427EC5103009CACC2 /* NowWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowWeatherView.swift; sourceTree = "<group>"; };
 		BBD88B7827EC552C009CACC2 /* cloud_sun_128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_sun_128.png; sourceTree = "<group>"; };
@@ -208,7 +210,8 @@
 			isa = PBXGroup;
 			children = (
 				BB03BE7727E1AEAE0019755C /* MainViewController.swift */,
-				BBD024FC27FAD3A800640FF8 /* SearchViewController.swift */,
+				BBD024FC27FAD3A800640FF8 /* SidoViewController.swift */,
+				BB584DED27FBFEEB0087D60E /* GunguViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -441,10 +444,11 @@
 				BBA1BD8827EDA7AA009369BE /* WeatherTableHeader.swift in Sources */,
 				BB10B30C27E305AF00926587 /* WeatherManager.swift in Sources */,
 				BB03BE7827E1AEAE0019755C /* MainViewController.swift in Sources */,
+				BB584DEE27FBFEEB0087D60E /* GunguViewController.swift in Sources */,
 				BBA1BDA827F41636009369BE /* WeatherLocale.swift in Sources */,
 				BB10B30F27E44A2000926587 /* WeatherTableViewCell.swift in Sources */,
 				BB44B95C27C4D69B00BA8B7F /* MapConvert.swift in Sources */,
-				BBD024FD27FAD3A800640FF8 /* SearchViewController.swift in Sources */,
+				BBD024FD27FAD3A800640FF8 /* SidoViewController.swift in Sources */,
 				BBD88B7527EC5103009CACC2 /* NowWeatherView.swift in Sources */,
 				BB12198227BE6F8500EF331E /* WeatherData.swift in Sources */,
 				BB12194C27BE6D0100EF331E /* AppDelegate.swift in Sources */,
