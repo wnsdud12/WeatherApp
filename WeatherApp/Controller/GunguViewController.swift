@@ -33,8 +33,8 @@ extension GunguViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //let point: Point<Int>
-        presentingViewController?.dismiss(animated: true)
+//        let MainVC = MainViewController()
+//        present(MainVC, animated: true)
 
     }
 }

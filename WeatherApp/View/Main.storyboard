@@ -11,7 +11,7 @@
         <!--Main View Controller-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController id="Y6W-OH-hqX" customClass="MainViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="mainView" id="Y6W-OH-hqX" customClass="MainViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -38,7 +38,7 @@
                                         <buttonConfiguration key="configuration" style="plain" title="지역변경"/>
                                         <connections>
                                             <action selector="btnTest:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="ZSr-A8-RgX"/>
-                                            <segue destination="d24-U6-HSn" kind="presentation" identifier="segueSidoVC" id="Ygv-Pb-hJe"/>
+                                            <segue destination="K5c-Py-jMp" kind="presentation" id="cb4-vX-2xP"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -66,6 +66,7 @@
                             <constraint firstItem="f5G-az-fH4" firstAttribute="top" secondItem="BYa-ak-Swi" secondAttribute="bottom" constant="20" id="yk0-iy-hVM"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="ZAQ-IP-sgS"/>
                     <connections>
                         <outlet property="lblAddress" destination="y3U-C0-VxY" id="zdY-Ll-cI3"/>
                         <outlet property="nowWeather" destination="f5G-az-fH4" id="8Mc-KI-seE"/>
@@ -74,44 +75,49 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-51" y="86"/>
+            <point key="canvasLocation" x="2444.9275362318845" y="85.714285714285708"/>
         </scene>
         <!--Sido View Controller-->
         <scene sceneID="A6J-Xf-RNY">
             <objects>
-                <viewController id="K5c-Py-jMp" customClass="SidoViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="sidoView" id="K5c-Py-jMp" customClass="SidoViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bbx-Af-ERv">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cCV-mH-HG4">
-                                <rect key="frame" x="20" y="44" width="374" height="764"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cCV-mH-HG4">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="oF4-IM-OPt">
-                                        <rect key="frame" x="0.0" y="20" width="374" height="759"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="oF4-IM-OPt">
+                                        <rect key="frame" x="0.0" y="30" width="414" height="768"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="localeCell" id="Z54-bU-fGq">
-                                                <rect key="frame" x="0.0" y="44.5" width="374" height="43.5"/>
+                                                <rect key="frame" x="0.0" y="44.5" width="414" height="43.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Z54-bU-fGq" id="GUb-5l-PWB">
-                                                    <rect key="frame" x="0.0" y="0.0" width="374" height="43.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </tableViewCellContentView>
-                                                <connections>
-                                                    <segue destination="om6-k6-Ykx" kind="show" identifier="segueGunguVC" id="Zx4-nY-hBQ"/>
-                                                </connections>
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="oF4-IM-OPt" firstAttribute="top" secondItem="cCV-mH-HG4" secondAttribute="top" constant="30" id="6KE-Tz-pF0"/>
+                                    <constraint firstItem="oF4-IM-OPt" firstAttribute="leading" secondItem="cCV-mH-HG4" secondAttribute="leading" id="7BM-Wm-j3b"/>
+                                    <constraint firstAttribute="bottom" secondItem="oF4-IM-OPt" secondAttribute="bottom" id="Bfd-46-h3d"/>
+                                    <constraint firstAttribute="trailing" secondItem="oF4-IM-OPt" secondAttribute="trailing" id="jHb-gk-Yen"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="l1B-bT-r23"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="cCV-mH-HG4" firstAttribute="width" secondItem="l1B-bT-r23" secondAttribute="width" id="hMB-o6-P9i"/>
+                            <constraint firstItem="cCV-mH-HG4" firstAttribute="height" secondItem="l1B-bT-r23" secondAttribute="height" id="iEa-RL-uWB"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="fcZ-CG-Ywb"/>
                     <connections>
@@ -120,14 +126,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="phl-0A-4zE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1366.6666666666667" y="85.714285714285708"/>
+            <point key="canvasLocation" x="3185.507246376812" y="85.714285714285708"/>
         </scene>
         <!--Gungu View Controller-->
         <scene sceneID="2rA-72-43B">
             <objects>
-                <viewController id="om6-k6-Ykx" customClass="GunguViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="gunguView" id="om6-k6-Ykx" customClass="GunguViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nER-U6-i3W">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Egh-Iw-jjT">
@@ -156,25 +162,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LjT-BL-aEw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2093" y="86"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="p5A-1a-b4X">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fdr-uT-4pg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="d24-U6-HSn" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="XpY-J0-acz">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="K5c-Py-jMp" kind="relationship" relationship="rootViewController" id="ojf-r4-Rsr"/>
-                    </connections>
-                </navigationController>
-            </objects>
-            <point key="canvasLocation" x="659" y="86"/>
+            <point key="canvasLocation" x="3913.04347826087" y="85.714285714285708"/>
         </scene>
     </scenes>
     <resources>

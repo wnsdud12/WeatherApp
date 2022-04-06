@@ -24,24 +24,10 @@ class SidoViewController: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "지역 검색"
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
+        //navigationItem.searchController = searchController
+        tableView.tableHeaderView = searchController.searchBar
+        definesPresentationContext = false
 
-    }
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "segueGunguVC" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let locale: WeatherLocale
-                if isFiltering() {
-                    locale = filteredLocales[indexPath.row]
-                } else {
-                    locale = locales[indexPath.row]
-                }
-                let controller = segue.destination as! GunguViewController
-                controller.locale = locale
-                print(locale)
-            }
-        }
     }
     func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
@@ -78,15 +64,21 @@ extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
         if isFiltering() {
             locale = filteredLocales[indexPath.row]
         } else {
-            
             // 여기서 선택하면 군/구 테이블 표시 및 검색기능 끄기
             locale = locales[indexPath.row]
         }
         cell.textLabel?.text = locale.sido.rawValue
         return cell
     }
-
-
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let locale = locales[indexPath.row]
+        UserDefaults.standard.set(locale.gungu.first?.value.x, forKey: "x")
+        UserDefaults.standard.set(locale.gungu.first?.value.y, forKey: "y")
+        UserDefaults.standard.set(locale.sido.rawValue, forKey: "address")
+        guard let mainVC = self.storyboard?.instantiateViewController(withIdentifier: "mainView") else { return }
+        mainVC.modalPresentationStyle = .fullScreen
+        present(mainVC, animated: true)
+    }
 }
 extension SidoViewController: UISearchControllerDelegate, UISearchResultsUpdating {
     // MARK: - UISeearchBar Delegate

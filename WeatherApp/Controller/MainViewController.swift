@@ -17,12 +17,11 @@ protocol SendDelegate: AnyObject {
 ///
 class MainViewController: UIViewController {
 
-    @IBOutlet weak var lblAddress: UILabel!
-    @IBOutlet weak var nowWeather: NowWeatherView!
-    @IBOutlet weak var weatherTable: UITableView!
+    @IBOutlet weak var lblAddress: UILabel?
+    @IBOutlet weak var nowWeather: NowWeatherView?
+    @IBOutlet weak var weatherTable: UITableView?
 
     var weatherManager = WeatherManager()
-    let locationManager = CLLocationManager()
 
     // TableView 관련 데이터
     var sections: [String] = []
@@ -46,37 +45,35 @@ class MainViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
+        print("Main-viewDidLoad")
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-  
-        nowWeather.imgNowSKY.image = UIImage(named: "cloud_sun_svg.svg")
-        nowWeather.imgNowSKY.frame.size = CGSize(width: 100, height: 100)
-        locationManager.delegate = self
+
         weatherManager.delegate = self
         
         let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
-        weatherTable.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
+        weatherTable?.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
 
-        weatherTable.delegate = self
-        weatherTable.dataSource = self
+        weatherTable?.delegate = self
+        weatherTable?.dataSource = self
 
-        weatherTable.backgroundColor = UIColor.systemGray6
+        weatherTable?.backgroundColor = UIColor.systemGray6
 
-        weatherTable.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
+        weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
 
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestLocation()
-
+        lblAddress?.text = UserDefaults.standard.string(forKey: "address")
     }
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //sidoVC.modalPresentationStyle = .fullScreen
-        if segue.identifier == "segueSidoVC" {
-            print(segue.identifier)
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        print("Main-viewWillAppear")
+        super.viewWillAppear(animated)
+        print(UserDefaults.standard.string(forKey: "address"))
+        print("X - \(UserDefaults.standard.integer(forKey: "x")), Y - \(UserDefaults.standard.integer(forKey: "y"))")
+        weatherManager.fetchWeather(nx: UserDefaults.standard.integer(forKey: "x"), ny: UserDefaults.standard.integer(forKey: "y"))
     }
     @IBAction func btnTest(_ sender: Any) {
-
+//        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "sidoView") else { return }
+//        nextVC.modalPresentationStyle = .fullScreen
+//        self.present(nextVC, animated: true)
     }
 }
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -86,7 +83,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     // section header data
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = weatherTable.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
+        let header = weatherTable?.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
         header.headerDate.text = convertDateString(fcstDate: sections[section])
         header.headerTMX.text = headerData[section]["TMX"] ?? "-"
         header.headerTMN.text = headerData[section]["TMN"] ?? "-"
@@ -118,38 +115,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
-extension MainViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last{
-            locationManager.stopUpdatingLocation()
-            
-            let lat = location.coordinate.latitude // 현재 위치의 위도
-            let lon = location.coordinate.longitude // 현재 위치의 경도
-            var address: String = ""
-            // 현재 위치 지명 표시
-            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
-                (placemarks, error) -> Void in
-                if let pm = placemarks?.last {
-                    if error != nil {
-                        print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
-                    }
-                    if pm.administrativeArea != nil {
-                        address += pm.administrativeArea!
-                    }
-                    if pm.locality != nil {
-                        address += " " + pm.locality!
-                    }
-                    self.lblAddress.text = address
-                }
-            }
-            let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
-            weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
-        }
-    }
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("location Error - \(error)")
-    }
-}
+
 
 extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
@@ -167,12 +133,12 @@ extension MainViewController: WeatherManagerDelegate {
 
             print(weather.nowWeatherData.value)
             let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value)
-            self.nowWeather.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
-            self.nowWeather.imgNowSKY.image = nowSKY.image
-            self.nowWeather.lblNowSKY.text = nowSKY.label
+            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
+            self.nowWeather?.imgNowSKY.image = nowSKY.image
+            self.nowWeather?.lblNowSKY.text = nowSKY.label
             self.headerData = weather.headerTMXTMN
 
-            self.weatherTable.reloadData()
+            self.weatherTable?.reloadData()
         }
     }
 }
