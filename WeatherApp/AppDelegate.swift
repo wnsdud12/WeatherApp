@@ -44,26 +44,31 @@ extension AppDelegate: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last{
             locationManager.stopUpdatingLocation()
-
+            print("location1")
+            print(location)
+            print("location2")
+            print(CLLocation(latitude: CLLocationDegrees(37.462627), longitude: CLLocationDegrees(126.725397)))
             let lat = location.coordinate.latitude // 현재 위치의 위도
             let lon = location.coordinate.longitude // 현재 위치의 경도
-//            var address: String = ""
-//            // 현재 위치 지명 표시
-//            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
-//                (placemarks, error) -> Void in
-//                if let pm = placemarks?.last {
-//                    if error != nil {
-//                        print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
-//                    }
-//                    if pm.administrativeArea != nil {
-//                        address += pm.administrativeArea!
-//                    }
-//                    if pm.locality != nil {
-//                        address += " " + pm.locality!
-//                    }
-//                }
-//            }
+            var address: String = ""
+            // 현재 위치 지명 표시
+            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
+                (placemarks, error) -> Void in
+                if let pm = placemarks?.last {
+                    if error != nil {
+                        print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
+                    }
+                    if pm.administrativeArea != nil {
+                        address += pm.administrativeArea!
+                    }
+                    if pm.locality != nil {
+                        address += " " + pm.locality!
+                    }
+                }
+            }
             let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
+            print("address")
+            print(findAddress(point: (mapConvert.x, mapConvert.y)))
         }
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

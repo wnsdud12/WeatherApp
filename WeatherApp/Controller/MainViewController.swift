@@ -43,7 +43,7 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         print("Main-viewDidLoad")
-        let a = WeatherLocales.test
+        
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         

@@ -8,23 +8,33 @@
 import Foundation
 
 struct WeatherLocales {
-    static var locales: [WeatherLocale] = [WeatherLocale]()
-    static let test = WeatherLocalesInit()
+    static var locales: [WeatherLocale] = WeatherLocalesInit()!
     private init() {}
 }
-private func WeatherLocalesInit() {
+func findAddress(point: Point<Int>) -> String {
+    var address: String = ""
+    for locale in WeatherLocales.locales {
+        if point == locale.point {
+            address = locale.address
+            break
+        }
+    }
+    return address
+}
+private func WeatherLocalesInit() -> [WeatherLocale]? {
     let localeList = parseCSV()
+    var locales: [WeatherLocale] = []
     if let localeList = localeList {
-        var sidoName: String
-        var gunguName: String
-        var dongName: String
+        var sido: String
+        var gugun: String
+        var eupmyeondong: String
         var x: Int
         var y: Int
         var point: Point<Int>
         for localeArr in localeList {
-            sidoName = localeArr[0]
-            gunguName = localeArr[1]
-            dongName = localeArr[2]
+            sido = localeArr[0]
+            gugun = localeArr[1]
+            eupmyeondong = localeArr[2]
             x = localeArr[3].toInt
             y = {
                 if localeArr[4].contains("\r") {
@@ -33,8 +43,12 @@ private func WeatherLocalesInit() {
                 return localeArr[4].toInt
             }()
             point = (x,y)
-            print("localeArr\n시/도 : \(sidoName), 군/구 : \(gunguName), 동 : \(dongName), 좌표 : \(point)")
+            locales.append(WeatherLocale(sido: sido, gugun: gugun, eupmyeondong: eupmyeondong, point: point))
         }
+        return locales
+    } else {
+        print("error - LocaleData를 받아올 수 없음")
+        return nil
     }
 }
 private func parseCSV() -> [[String]]? {
@@ -58,4 +72,9 @@ struct WeatherLocale {
     let gugun: String
     let eupmyeondong: String
     let point: Point<Int>
+    var address: String {
+        get {
+            return self.sido + self.gugun + self.eupmyeondong
+        }
+    }
 }
