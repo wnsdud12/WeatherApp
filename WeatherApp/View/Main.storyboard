@@ -128,10 +128,10 @@
             </objects>
             <point key="canvasLocation" x="3185.507246376812" y="85.714285714285708"/>
         </scene>
-        <!--Gungu View Controller-->
+        <!--Gugun View Controller-->
         <scene sceneID="2rA-72-43B">
             <objects>
-                <viewController storyboardIdentifier="gunguView" id="om6-k6-Ykx" customClass="GunguViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="gunguView" id="om6-k6-Ykx" customClass="GugunViewController" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nER-U6-i3W">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

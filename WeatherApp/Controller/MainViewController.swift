@@ -8,9 +8,6 @@
 import UIKit
 import CoreLocation
 
-protocol SendDelegate: AnyObject {
-    func sendData(x: Int, y: Int)
-}
 /// - Todo
 ///   - 지역 변경 기능 추가
 ///   - AutoLayout
@@ -46,9 +43,10 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         print("Main-viewDidLoad")
+        let a = WeatherLocales.test
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-
+        
         weatherManager.delegate = self
         
         let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
@@ -61,14 +59,11 @@ class MainViewController: UIViewController {
 
         weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
 
-        lblAddress?.text = UserDefaults.standard.string(forKey: "address")
     }
     override func viewWillAppear(_ animated: Bool) {
         print("Main-viewWillAppear")
         super.viewWillAppear(animated)
-        print(UserDefaults.standard.string(forKey: "address"))
-        print("X - \(UserDefaults.standard.integer(forKey: "x")), Y - \(UserDefaults.standard.integer(forKey: "y"))")
-        weatherManager.fetchWeather(nx: UserDefaults.standard.integer(forKey: "x"), ny: UserDefaults.standard.integer(forKey: "y"))
+        weatherManager.fetchWeather(nx: UserDefaults.Cooldinate_x, ny: UserDefaults.Cooldinate_y)
     }
     @IBAction func btnTest(_ sender: Any) {
 //        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "sidoView") else { return }
@@ -205,4 +200,28 @@ extension String {
     var toInt: Int {
         return Int(self)!
     }
+}
+
+@propertyWrapper
+struct UserDefault<T> {
+    let key: String
+    let defaultsValue: T
+    var container: UserDefaults = .standard
+
+    var wrappedValue: T {
+        get {
+            return container.object(forKey: key) as? T ?? defaultsValue
+        }
+        set {
+            container.set(newValue, forKey: key)
+        }
+    }
+}
+extension UserDefaults {
+    @UserDefault(key: "x", defaultsValue: 97)
+    static var Cooldinate_x: Int
+    @UserDefault(key: "y", defaultsValue: 74)
+    static var Cooldinate_y: Int
+    @UserDefault(key: "address", defaultsValue: "서울특별시 중구")
+    static var address: String
 }

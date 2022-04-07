@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let locationManager = CLLocationManager()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        print("start - appDelegate_didFinishLaunchingWithOptions")
         // Override point for customization after application launch.
         locationManager.delegate = self
 
@@ -46,28 +47,23 @@ extension AppDelegate: CLLocationManagerDelegate {
 
             let lat = location.coordinate.latitude // 현재 위치의 위도
             let lon = location.coordinate.longitude // 현재 위치의 경도
-            var address: String = ""
-            // 현재 위치 지명 표시
-            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
-                (placemarks, error) -> Void in
-                if let pm = placemarks?.last {
-                    if error != nil {
-                        print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
-                    }
-                    if pm.administrativeArea != nil {
-                        address += pm.administrativeArea!
-                    }
-                    if pm.locality != nil {
-                        address += " " + pm.locality!
-                    }
-                    //self.lblAddress.text = address
-                    UserDefaults.standard.set(address, forKey: "address")
-                }
-            }
+//            var address: String = ""
+//            // 현재 위치 지명 표시
+//            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
+//                (placemarks, error) -> Void in
+//                if let pm = placemarks?.last {
+//                    if error != nil {
+//                        print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
+//                    }
+//                    if pm.administrativeArea != nil {
+//                        address += pm.administrativeArea!
+//                    }
+//                    if pm.locality != nil {
+//                        address += " " + pm.locality!
+//                    }
+//                }
+//            }
             let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
-            UserDefaults.standard.set(mapConvert.x, forKey: "x")
-            UserDefaults.standard.set(mapConvert.y, forKey: "y")
-            //weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
         }
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

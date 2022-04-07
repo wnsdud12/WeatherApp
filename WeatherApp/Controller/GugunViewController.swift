@@ -1,5 +1,5 @@
 //
-//  GunguViewController.swift
+//  GugunViewController.swift
 //  WeatherApp
 //
 //  Created by 박준영 on 2022/04/05.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GunguViewController: UIViewController {
+class GugunViewController: UIViewController {
 
     @IBOutlet weak var gunguTable: UITableView!
     
@@ -23,7 +23,7 @@ class GunguViewController: UIViewController {
     }
     
 }
-extension GunguViewController: UITableViewDelegate, UITableViewDataSource {
+extension GugunViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
@@ -38,3 +38,4 @@ extension GunguViewController: UITableViewDelegate, UITableViewDataSource {
 
     }
 }
+
