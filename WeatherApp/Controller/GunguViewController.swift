@@ -10,7 +10,7 @@ import UIKit
 class GunguViewController: UIViewController {
 
     @IBOutlet weak var gunguTable: UITableView!
-    var locale: WeatherLocale?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
