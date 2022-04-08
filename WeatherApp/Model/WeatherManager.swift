@@ -145,7 +145,6 @@ func setBaseDateTime() -> (String, String) {
 
         return base_time
     }()
-    print("base date\n\(base_date)\nbase time\n\(base_time)")
 
     return (base_date, base_time)
 }

@@ -11,7 +11,7 @@ struct WeatherLocales {
     static var locales: [WeatherLocale] = WeatherLocalesInit()!
     private init() {}
 }
-func findAddress(point: Point<Int>) -> String {
+func findAddress(point: (Int, Int)) -> String {
     var address: String = ""
     for locale in WeatherLocales.locales {
         if point == locale.point {
@@ -30,7 +30,7 @@ private func WeatherLocalesInit() -> [WeatherLocale]? {
         var eupmyeondong: String
         var x: Int
         var y: Int
-        var point: Point<Int>
+        var point: (Int, Int)
         for localeArr in localeList {
             sido = localeArr[0]
             gugun = localeArr[1]
@@ -57,7 +57,7 @@ private func parseCSV() -> [[String]]? {
         let url = URL(fileURLWithPath: path)
         let data = try Data(contentsOf: url)
         let dataEncoded = String(data: data, encoding: .utf8)
-        if let localeList = dataEncoded?.components(separatedBy: "\n").map{$0.components(separatedBy: ",")} {
+        if let localeList = dataEncoded?.components(separatedBy: "\n").map({$0.components(separatedBy: ",")}) {
             return localeList
         } else {
             return nil
@@ -71,7 +71,7 @@ struct WeatherLocale {
     let sido: String
     let gugun: String
     let eupmyeondong: String
-    let point: Point<Int>
+    let point: (Int, Int)
     var address: String {
         get {
             return self.sido + self.gugun + self.eupmyeondong

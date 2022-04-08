@@ -64,7 +64,6 @@ struct WeatherModel {
             }
             return newDictArr
         }()
-        print(headerTMXTMN)
         self.headerTMXTMN = headerTMXTMN
         print("success - WeatherModel init")
     } // init()

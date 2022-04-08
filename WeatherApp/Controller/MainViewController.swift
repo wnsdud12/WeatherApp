@@ -18,7 +18,10 @@ class MainViewController: UIViewController {
     @IBOutlet weak var nowWeather: NowWeatherView?
     @IBOutlet weak var weatherTable: UITableView?
 
+    //let appDelegate = UIApplication.shared.delegate as? AppDelegate
+
     var weatherManager = WeatherManager()
+    let locationManager = CLLocationManager()
 
     // TableView 관련 데이터
     var sections: [String] = []
@@ -63,7 +66,14 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("Main-viewWillAppear")
         super.viewWillAppear(animated)
-        weatherManager.fetchWeather(nx: UserDefaults.Cooldinate_x, ny: UserDefaults.Cooldinate_y)
+        queue.async(group: group) {
+            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+        }
+
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        print("Main-viewDidAppear")
+        super.viewDidAppear(animated)
     }
     @IBAction func btnTest(_ sender: Any) {
 //        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "sidoView") else { return }
@@ -126,7 +136,6 @@ extension MainViewController: WeatherManagerDelegate {
             self.cellPOP = weather.cellPOP
             self.cellPCP = weather.cellPCP
 
-            print(weather.nowWeatherData.value)
             let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value)
             self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
             self.nowWeather?.imgNowSKY.image = nowSKY.image
@@ -194,34 +203,4 @@ private func convertDateString(fcstDate: String) -> String {
     formatter.dateFormat = "M월 d일 (E)"
     dateString = formatter.string(from: date)
     return dateString
-}
-extension String {
-    // String 변수를 Int로 변경
-    var toInt: Int {
-        return Int(self)!
-    }
-}
-
-@propertyWrapper
-struct UserDefault<T> {
-    let key: String
-    let defaultsValue: T
-    var container: UserDefaults = .standard
-
-    var wrappedValue: T {
-        get {
-            return container.object(forKey: key) as? T ?? defaultsValue
-        }
-        set {
-            container.set(newValue, forKey: key)
-        }
-    }
-}
-extension UserDefaults {
-    @UserDefault(key: "x", defaultsValue: 97)
-    static var Cooldinate_x: Int
-    @UserDefault(key: "y", defaultsValue: 74)
-    static var Cooldinate_y: Int
-    @UserDefault(key: "address", defaultsValue: "서울특별시 중구")
-    static var address: String
 }
