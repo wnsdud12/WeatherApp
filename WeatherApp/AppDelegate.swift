@@ -30,7 +30,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         if locationManager.authorizationStatus == .denied {
-            print("present")
             let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
             let sidoVC = storyboard.instantiateViewController(withIdentifier: "sidoView") as! SidoViewController
             window?.rootViewController = sidoVC
@@ -57,8 +56,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: CLLocationManagerDelegate {
     // MARK: - CLLocation Delegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-
-        print(locations)
         if let location = locations.last{
             self.locationManager.stopUpdatingLocation()
             //            print("location1 - 현재 위치")
@@ -69,7 +66,7 @@ extension AppDelegate: CLLocationManagerDelegate {
             UserDefaults.degree_lat = location.coordinate.latitude // 현재 위치의 위도
             UserDefaults.degree_lon = location.coordinate.longitude // 현재 위치의 경도
             lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
-            _ = searchAddress()
+            searchAddress()
             UserDefaults.printAll()
             NotificationCenter.default.post(name: .end_didUpdateLocations, object: nil)
         }
@@ -79,7 +76,6 @@ extension AppDelegate: CLLocationManagerDelegate {
         print("location Error - \(error)")
     }
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-
         switch manager.authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
                 locationManager.startUpdatingLocation()
@@ -89,7 +85,8 @@ extension AppDelegate: CLLocationManagerDelegate {
                 // 권한을 거부하면 SidoVC로 가서 지역 선택
                 // 다음에 다시 킬때는 선택했던 지역으로 날씨 정보 표시
                 UserDefaults.isDenied = true
-                NotificationCenter.default.post(name: .isDenied, object: nil)
+                UserDefaults.grid_x = 55
+                UserDefaults.grid_y = 127
             @unknown default:
                 break
         }

@@ -12,9 +12,10 @@ class SidoViewController: UIViewController {
 
     let searchController = UISearchController(searchResultsController: nil)
 
+    var sidoArr = removeDuplicate(WeatherLocales.locales.map{$0.sido}).sorted{$0 < $1}
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        print(sidoArr)
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
@@ -41,13 +42,13 @@ class SidoViewController: UIViewController {
 extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table View
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return sidoArr.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "localeCell", for: indexPath)
 
-        cell.textLabel?.text = "empty"
+        cell.textLabel?.text = sidoArr[indexPath.row]
         return cell
     }
 }

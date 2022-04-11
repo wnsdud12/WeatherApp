@@ -67,3 +67,8 @@ extension Notification.Name {
     static let end_didUpdateLocations = Notification.Name("end_didUpdateLocations")
     static let isDenied = Notification.Name("isDenied")
 }
+func removeDuplicate<T: Hashable>(_ array: [T]) -> [T] {
+    let set: Set<T> = Set(array)
+    let array = Array(set)
+    return array
+}

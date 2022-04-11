@@ -67,7 +67,11 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("Main-viewWillAppear")
         super.viewWillAppear(animated)
+        print(UserDefaults.isFirst)
         NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
+        if UserDefaults.isFirst != nil {
+            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+        }
     }
     @objc func fetch() {
         self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
@@ -142,6 +146,9 @@ extension MainViewController: WeatherManagerDelegate {
             self.nowWeather?.imgNowSKY.image = nowSKY.image
             self.nowWeather?.lblNowSKY.text = nowSKY.label
             self.headerData = weather.headerTMXTMN
+
+            searchAddress()
+            self.lblAddress?.text = UserDefaults.address
             print("reloadData")
             self.weatherTable?.reloadData()
         }

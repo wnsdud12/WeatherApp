@@ -88,6 +88,8 @@ func lamcproj<T>(lat: T, lon: T, isWantGrid: Bool) {
 
         let testString = "lon.= \(longitude), lat.= \(latitude) ---> X = \(grid.x), Y = \(grid.y)"
         print(testString)
+        UserDefaults.degree_lat = latitude
+        UserDefaults.degree_lon = longitude
         UserDefaults.grid_x = grid.x
         UserDefaults.grid_y = grid.y
     }
@@ -121,23 +123,26 @@ func lamcproj<T>(lat: T, lon: T, isWantGrid: Bool) {
 
         let testString = "X = \(x), Y = \(y) ---> lon.= \(degree.lon), lat.= \(degree.lat)"
         print(testString)
+        UserDefaults.grid_x = x
+        UserDefaults.grid_y = y
         UserDefaults.degree_lat = degree.lat
         UserDefaults.degree_lon = degree.lon
     }
 }
 /// UserDefaults에 저장된 lat, lon 데이터로 지명 정보를 저장
-func searchAddress() -> String {
-    print("start-searchAddress")
+func searchAddress() {
     let startTime = CFAbsoluteTimeGetCurrent()
+    print("start-searchAddress")
     var address: String = ""
     let lat = UserDefaults.degree_lat
     let lon = UserDefaults.degree_lon
     let location = CLLocation(latitude: lat, longitude: lon)
+
     CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
         (placemarks, error) -> Void in
         if let pm = placemarks?.last {
-            print("searchAddress test")
-            print(pm.administrativeArea!)
+
+            print(pm)
             if error != nil {
                 print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
             }
@@ -150,8 +155,7 @@ func searchAddress() -> String {
         }
         UserDefaults.address = address
     }
-    print(address)
+    
     let durationTime = CFAbsoluteTimeGetCurrent() - startTime
     print("경과 시간: \(durationTime)")
-    return address
 }
