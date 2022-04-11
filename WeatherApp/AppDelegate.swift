@@ -19,22 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("start - appDelegate_didFinishLaunchingWithOptions")
         // Override point for customization after application launch.
         locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-
-        switch locationManager.authorizationStatus {
-            case .authorizedWhenInUse, .authorizedAlways:
-                print("업데이트 시작")
-                queue.async(group: group) {
-                    self.locationManager.startUpdatingLocation()
-                }
-            case .restricted, .notDetermined:
-                print("대기중")
-            case .denied:
-                print("권한 없음")
-            @unknown default:
-                fatalError()
-        }
         //locationManager.startUpdatingLocation() // 얘가 있어야 locationManager(_,didUpdateLocations)가 실행됨
         return true
     }
@@ -57,25 +42,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: CLLocationManagerDelegate {
     // MARK: - CLLocation Delegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        queue.async(group: group) {
-            print(locations)
-            if let location = locations.last{
-                self.locationManager.stopUpdatingLocation()
-                //            print("location1 - 현재 위치")
-                //            print(location)
-                //            print("location2 - 임의로 설정한 새 위치(잘 입력 되나 테스트)")
-                //            print(CLLocation(latitude: CLLocationDegrees(37.462627), longitude: CLLocationDegrees(126.725397)))
 
-                UserDefaults.degree_lat = location.coordinate.latitude // 현재 위치의 위도
-                UserDefaults.degree_lon = location.coordinate.longitude // 현재 위치의 경도
-                lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
-                _ = searchAddress()
-                UserDefaults.printAll()
-            }
+        print(locations)
+        if let location = locations.last{
+            self.locationManager.stopUpdatingLocation()
+            //            print("location1 - 현재 위치")
+            //            print(location)
+            //            print("location2 - 임의로 설정한 새 위치(잘 입력 되나 테스트)")
+            //            print(CLLocation(latitude: CLLocationDegrees(37.462627), longitude: CLLocationDegrees(126.725397)))
+
+            UserDefaults.degree_lat = location.coordinate.latitude // 현재 위치의 위도
+            UserDefaults.degree_lon = location.coordinate.longitude // 현재 위치의 경도
+            lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
+            _ = searchAddress()
+            UserDefaults.printAll()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "end_didUpdateLocations"), object: nil)
         }
+    } // locationManager(_:didUpdateLocations:)
 
-    }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("location Error - \(error)")
+    }
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+
+        switch manager.authorizationStatus {
+            case .authorizedWhenInUse, .authorizedAlways:
+                locationManager.startUpdatingLocation()
+            case .restricted, .notDetermined:
+                locationManager.requestWhenInUseAuthorization()
+            case .denied:
+                // 권한을 거부하면 SidoVC로 가서 지역 선택
+                // 다음에 다시 킬때는 선택했던 지역으로 날씨 정보 표시
+
+                break
+            @unknown default:
+                break
+        }
+
+
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 let group = DispatchGroup()
-let queue = DispatchQueue.global()
+let queue = DispatchQueue.main
 extension String {
     // String 변수를 Int로 변경
     var toInt: Int {

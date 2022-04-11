@@ -63,13 +63,15 @@ class MainViewController: UIViewController {
         weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
 
     }
+
     override func viewWillAppear(_ animated: Bool) {
         print("Main-viewWillAppear")
         super.viewWillAppear(animated)
-        queue.async(group: group) {
-            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: NSNotification.Name("end_didUpdateLocations"), object: nil)
+    }
+    @objc func fetch() {
 
+        self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
     }
     override func viewDidAppear(_ animated: Bool) {
         print("Main-viewDidAppear")
@@ -141,7 +143,7 @@ extension MainViewController: WeatherManagerDelegate {
             self.nowWeather?.imgNowSKY.image = nowSKY.image
             self.nowWeather?.lblNowSKY.text = nowSKY.label
             self.headerData = weather.headerTMXTMN
-
+            print("reloadData")
             self.weatherTable?.reloadData()
         }
     }
