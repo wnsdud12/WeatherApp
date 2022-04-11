@@ -10,6 +10,7 @@ import CoreLocation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
     let locationManager = CLLocationManager()
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         return true
@@ -20,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        //locationManager.startUpdatingLocation() // 얘가 있어야 locationManager(_,didUpdateLocations)가 실행됨
         return true
     }
 
@@ -73,12 +73,12 @@ extension AppDelegate: CLLocationManagerDelegate {
             case .denied:
                 // 권한을 거부하면 SidoVC로 가서 지역 선택
                 // 다음에 다시 킬때는 선택했던 지역으로 날씨 정보 표시
-
                 break
             @unknown default:
                 break
         }
-
-
     }
+}
+extension AppDelegate {
+
 }
