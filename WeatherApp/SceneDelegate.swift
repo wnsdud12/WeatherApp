@@ -6,19 +6,27 @@
 //
 
 import UIKit
+import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    let locationManager = CLLocationManager()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        print("sceneDelegate_scene")
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
-    }
 
+        // 앱이 처음 실행되었고 권한을 거부했을 시에 SidoVC로 이동
+        if UserDefaults.isFirst == nil, locationManager.authorizationStatus == .denied {
+            setRootViewController(scene, isFirst: true)
+        } else {
+            setRootViewController(scene, isFirst: false)
+        }
+    }
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -51,4 +59,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
+}
+extension SceneDelegate {
+    private func setRootViewController(_ scene: UIScene, isFirst: Bool) {
+        if isFirst {
+            setRootViewController(scene, identifier: "sidoView")
+        } else {
+            setRootViewController(scene, identifier: "mainView")
+        }
+    }
+    private func setRootViewController(_ scene: UIScene, identifier: String) {
+        if let windowScene = scene as? UIWindowScene {
+            let window = UIWindow(windowScene: windowScene)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = storyboard.instantiateViewController(withIdentifier: identifier)
+            window.rootViewController = viewController
+            self.window = window
+            window.makeKeyAndVisible()
+        }
+    }
 }

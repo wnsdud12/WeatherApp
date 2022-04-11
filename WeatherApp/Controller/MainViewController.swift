@@ -67,10 +67,9 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         print("Main-viewWillAppear")
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: NSNotification.Name("end_didUpdateLocations"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
     }
     @objc func fetch() {
-
         self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
     }
     override func viewDidAppear(_ animated: Bool) {

@@ -19,8 +19,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("start - appDelegate_didFinishLaunchingWithOptions")
         // Override point for customization after application launch.
+
+        // 앱 최초 실행여부 확인
+        if UserDefaults.isFirst == nil {
+            UserDefaults.isFirst = true
+        }
+        print(locationManager.authorizationStatus.rawValue)
+//        let navigationController = UINavigationController(rootViewController: MainViewController())
+//        window?.rootViewController = navigationController
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        if locationManager.authorizationStatus == .denied {
+            print("present")
+            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+            let sidoVC = storyboard.instantiateViewController(withIdentifier: "sidoView") as! SidoViewController
+            window?.rootViewController = sidoVC
+            window?.makeKeyAndVisible()
+        }
         return true
     }
 
@@ -56,7 +71,7 @@ extension AppDelegate: CLLocationManagerDelegate {
             lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
             _ = searchAddress()
             UserDefaults.printAll()
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "end_didUpdateLocations"), object: nil)
+            NotificationCenter.default.post(name: .end_didUpdateLocations, object: nil)
         }
     } // locationManager(_:didUpdateLocations:)
 
@@ -73,7 +88,8 @@ extension AppDelegate: CLLocationManagerDelegate {
             case .denied:
                 // 권한을 거부하면 SidoVC로 가서 지역 선택
                 // 다음에 다시 킬때는 선택했던 지역으로 날씨 정보 표시
-                break
+                UserDefaults.isDenied = true
+                NotificationCenter.default.post(name: .isDenied, object: nil)
             @unknown default:
                 break
         }
