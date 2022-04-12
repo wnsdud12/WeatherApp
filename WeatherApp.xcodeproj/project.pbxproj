@@ -33,6 +33,7 @@
 		BB584E4F27FEA0D80087D60E /* WeatherLocales.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB584E4E27FEA0D80087D60E /* WeatherLocales.swift */; };
 		BB584E5C27FEB66A0087D60E /* LocaleData.csv in Resources */ = {isa = PBXBuildFile; fileRef = BB584E5B27FEB66A0087D60E /* LocaleData.csv */; };
 		BB693D41280001390032C4E7 /* Extenstions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB693D40280001390032C4E7 /* Extenstions.swift */; };
+		BB693D9228053B560032C4E7 /* EupmyeondongViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB693D9128053B560032C4E7 /* EupmyeondongViewController.swift */; };
 		BBA1BD8827EDA7AA009369BE /* WeatherTableHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA1BD8727EDA7AA009369BE /* WeatherTableHeader.swift */; };
 		BBA1BD8A27EDA7B6009369BE /* WeatherTableHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = BBA1BD8927EDA7B6009369BE /* WeatherTableHeader.xib */; };
 		BBA1BDA827F41636009369BE /* WeatherLocaleReplace.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBA1BDA727F41636009369BE /* WeatherLocaleReplace.swift */; };
@@ -95,6 +96,7 @@
 		BB584E4E27FEA0D80087D60E /* WeatherLocales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocales.swift; sourceTree = "<group>"; };
 		BB584E5B27FEB66A0087D60E /* LocaleData.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LocaleData.csv; sourceTree = "<group>"; };
 		BB693D40280001390032C4E7 /* Extenstions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extenstions.swift; sourceTree = "<group>"; };
+		BB693D9128053B560032C4E7 /* EupmyeondongViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EupmyeondongViewController.swift; sourceTree = "<group>"; };
 		BBA1BD8727EDA7AA009369BE /* WeatherTableHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableHeader.swift; sourceTree = "<group>"; };
 		BBA1BD8927EDA7B6009369BE /* WeatherTableHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeatherTableHeader.xib; sourceTree = "<group>"; };
 		BBA1BDA727F41636009369BE /* WeatherLocaleReplace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLocaleReplace.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 				BB03BE7727E1AEAE0019755C /* MainViewController.swift */,
 				BBD024FC27FAD3A800640FF8 /* SidoViewController.swift */,
 				BB584DED27FBFEEB0087D60E /* GugunViewController.swift */,
+				BB693D9128053B560032C4E7 /* EupmyeondongViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				BB584E4F27FEA0D80087D60E /* WeatherLocales.swift in Sources */,
 				BBA1BDA827F41636009369BE /* WeatherLocaleReplace.swift in Sources */,
 				BB10B30F27E44A2000926587 /* WeatherTableViewCell.swift in Sources */,
+				BB693D9228053B560032C4E7 /* EupmyeondongViewController.swift in Sources */,
 				BB44B95C27C4D69B00BA8B7F /* MapConvert.swift in Sources */,
 				BBD024FD27FAD3A800640FF8 /* SidoViewController.swift in Sources */,
 				BBD88B7527EC5103009CACC2 /* NowWeatherView.swift in Sources */,

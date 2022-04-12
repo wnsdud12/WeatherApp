@@ -8,7 +8,7 @@
 import UIKit
 
 class SidoViewController: UIViewController {
-    @IBOutlet var tableView: UITableView!
+    @IBOutlet var sidoTable: UITableView!
 
     let searchController = UISearchController(searchResultsController: nil)
 
@@ -20,8 +20,8 @@ class SidoViewController: UIViewController {
         print("start sido-viewDidLoad")
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        tableView.delegate = self
-        tableView.dataSource = self
+        sidoTable.delegate = self
+        sidoTable.dataSource = self
 
         // Setup the Search Controller
         searchController.delegate = self
@@ -29,7 +29,7 @@ class SidoViewController: UIViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "지역 검색"
         //navigationItem.searchController = searchController
-        tableView.tableHeaderView = searchController.searchBar
+        sidoTable.tableHeaderView = searchController.searchBar
         definesPresentationContext = false
 
     }
@@ -40,7 +40,7 @@ class SidoViewController: UIViewController {
         filteredLocales = locales.filter({ (locale: WeatherLocale) -> Bool in
             return locale.address.contains(searchText)
         })
-        tableView.reloadData()
+        sidoTable.reloadData()
     }
     func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
