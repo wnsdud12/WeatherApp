@@ -46,7 +46,6 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         print("Main-viewDidLoad")
-        
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
@@ -61,17 +60,17 @@ class MainViewController: UIViewController {
         weatherTable?.backgroundColor = UIColor.systemGray6
 
         weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
-
+        print("end Main-viewDidLoad")
     }
 
     override func viewWillAppear(_ animated: Bool) {
         print("Main-viewWillAppear")
         super.viewWillAppear(animated)
-        print(UserDefaults.isFirst)
-        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
         if UserDefaults.isFirst != nil {
             self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
+        print("end Main-viewWillAppear")
     }
     @objc func fetch() {
         self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)

@@ -133,6 +133,7 @@ func lamcproj<T>(lat: T, lon: T, isWantGrid: Bool) {
 func searchAddress() {
     let startTime = CFAbsoluteTimeGetCurrent()
     print("start-searchAddress")
+    UserDefaults.printAll()
     var address: String = ""
     let lat = UserDefaults.degree_lat
     let lon = UserDefaults.degree_lon

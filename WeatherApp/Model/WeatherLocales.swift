@@ -71,10 +71,10 @@ struct WeatherLocale {
     let sido: String
     let gugun: String
     let eupmyeondong: String
-    let point: (Int, Int)
+    let point: (x: Int, y: Int)
     var address: String {
         get {
-            return self.sido + self.gugun + self.eupmyeondong
+            return self.sido + " " + self.gugun + " " + self.eupmyeondong
         }
     }
 }

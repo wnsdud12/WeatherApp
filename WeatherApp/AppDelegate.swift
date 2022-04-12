@@ -12,9 +12,6 @@ import CoreLocation
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     let locationManager = CLLocationManager()
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        return true
-    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("start - appDelegate_didFinishLaunchingWithOptions")
@@ -24,9 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if UserDefaults.isFirst == nil {
             UserDefaults.isFirst = true
         }
-        print(locationManager.authorizationStatus.rawValue)
-//        let navigationController = UINavigationController(rootViewController: MainViewController())
-//        window?.rootViewController = navigationController
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         if locationManager.authorizationStatus == .denied {
@@ -35,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController = sidoVC
             window?.makeKeyAndVisible()
         }
+        print("end - appDelegate_didFinishLaunchingWithOptions")
         return true
     }
 
@@ -56,13 +51,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: CLLocationManagerDelegate {
     // MARK: - CLLocation Delegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("start - locationManager")
         if let location = locations.last{
             self.locationManager.stopUpdatingLocation()
-            //            print("location1 - 현재 위치")
-            //            print(location)
-            //            print("location2 - 임의로 설정한 새 위치(잘 입력 되나 테스트)")
-            //            print(CLLocation(latitude: CLLocationDegrees(37.462627), longitude: CLLocationDegrees(126.725397)))
-
             UserDefaults.degree_lat = location.coordinate.latitude // 현재 위치의 위도
             UserDefaults.degree_lon = location.coordinate.longitude // 현재 위치의 경도
             lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
@@ -70,6 +61,7 @@ extension AppDelegate: CLLocationManagerDelegate {
             UserDefaults.printAll()
             NotificationCenter.default.post(name: .end_didUpdateLocations, object: nil)
         }
+        print("end - locationManager")
     } // locationManager(_:didUpdateLocations:)
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
