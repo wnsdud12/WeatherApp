@@ -5,8 +5,6 @@
 //  Created by sumwb on 2022/02/17.
 //
 
-// 테스트
-
 import UIKit
 import CoreLocation
 
@@ -18,19 +16,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("start - appDelegate_didFinishLaunchingWithOptions")
         // Override point for customization after application launch.
-
-        // 앱 최초 실행여부 확인
-        if UserDefaults.isFirst == nil {
-            UserDefaults.isFirst = true
-        }
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        if locationManager.authorizationStatus == .denied {
-            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-            let sidoVC = storyboard.instantiateViewController(withIdentifier: "sidoView") as! SidoViewController
-            window?.rootViewController = sidoVC
-            window?.makeKeyAndVisible()
+
+        // 앱 최초 실행여부 확인
+        print("")
+        print("==============")
+        print("\(UserDefaults.isFirst == nil ? "첫 실행" : "실행한 적 있음")")
+        print("==============")
+        print("")
+        if UserDefaults.isFirst == nil {
+            locationManager.requestWhenInUseAuthorization()
+            UserDefaults.isFirst = true
+        } else {
+            print("")
+            print("==============\nauthorizationStatus")
+            print("""
+                authorizationStatus.rawValue
+                0 - notDetermined
+                1 - restricted
+                2 - denied
+                3 - authorizedAlways
+                4 - authorizedWhenInUse
+                """)
+            print("value => \(locationManager.authorizationStatus.rawValue)")
+            print("==============")
+            print("")
+            switch locationManager.authorizationStatus {
+                case .authorizedAlways, .authorizedWhenInUse:
+                    break
+                case .notDetermined, .restricted:
+                    locationManager.requestWhenInUseAuthorization()
+                case .denied:
+                    let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+                    let sidoVC = storyboard.instantiateViewController(withIdentifier: "sidoView") as! SidoViewController
+//                    window?.rootViewController = sidoVC
+//                    window?.makeKeyAndVisible()
+                    window?.rootViewController?.dismiss(animated: true)
+                    window?.rootViewController?.present(sidoVC, animated: true)
+                @unknown default:
+                    break
+            }
         }
+
         print("end - appDelegate_didFinishLaunchingWithOptions")
         return true
     }
@@ -86,7 +114,4 @@ extension AppDelegate: CLLocationManagerDelegate {
                 break
         }
     }
-}
-extension AppDelegate {
-
 }

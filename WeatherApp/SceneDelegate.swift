@@ -21,11 +21,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
 
         // 앱이 처음 실행되었고 권한을 거부했을 시에 SidoVC로 이동
-        if UserDefaults.isFirst == nil, locationManager.authorizationStatus == .denied {
-            setRootViewController(scene, isFirst: true)
-        } else {
-            setRootViewController(scene, isFirst: false)
-        }
+        print("scene delegate state")
+        print(locationManager.authorizationStatus.rawValue)
+        print("scene delegate isFirst")
+        print(UserDefaults.isFirst)
+        //if UserDefaults.isFirst == nil, locationManager.authorizationStatus == .denied {
+        // 권한 거부했을 때 이미 MainView가 보이면 SidoView로 안넘어가는듯함
+//        if locationManager.authorizationStatus == .denied {
+//            setRootViewController(scene, isFirst: true)
+//        } else {
+//            setRootViewController(scene, isFirst: false)
+//        }
     }
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
