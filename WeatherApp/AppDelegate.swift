@@ -5,6 +5,8 @@
 //  Created by sumwb on 2022/02/17.
 //
 
+// 테스트
+
 import UIKit
 import CoreLocation
 
@@ -56,7 +58,8 @@ extension AppDelegate: CLLocationManagerDelegate {
             self.locationManager.stopUpdatingLocation()
             UserDefaults.degree_lat = location.coordinate.latitude // 현재 위치의 위도
             UserDefaults.degree_lon = location.coordinate.longitude // 현재 위치의 경도
-            lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
+            //lamcproj(lat: UserDefaults.degree_lat, lon: UserDefaults.degree_lon, isWantGrid: true)
+            lamcproj(lon_x: UserDefaults.degree_lon, lat_y: UserDefaults.degree_lat, isWantGrid: true) // 현재 위치의 위/경도를 격자 X/Y로 변환
             searchAddress()
             UserDefaults.printAll()
             NotificationCenter.default.post(name: .end_didUpdateLocations, object: nil)

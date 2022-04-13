@@ -43,7 +43,7 @@ struct Map {
         self.yo = yo
     }
 }
-func lamcproj<T>(lat: T, lon: T, isWantGrid: Bool) {
+func lamcproj<T>(lon_x: T, lat_y: T, isWantGrid: Bool) {
 
     let map = Map.shared
     let PI = asin(1.0) * 2.0
@@ -68,12 +68,12 @@ func lamcproj<T>(lat: T, lon: T, isWantGrid: Bool) {
 
     switch isWantGrid {
         case true: // (lon, lat) -> (x, y)
-            convertToGrid(latitude: lat as! Double, longitude: lon as! Double)
+            convertToGrid(longitude: lon_x as! Double, latitude: lat_y as! Double)
         case false:// (x, y) -> (lon, lat)
             // 4/7 18:10 저장 - 다시 키면 여기부터 구현 및 true일 때 결괏값 테스트
-            convertToDegree(x: lat as! Int, y: lon as! Int)
+            convertToDegree(x: lon_x as! Int, y: lat_y as! Int)
     }
-    func convertToGrid(latitude: Double, longitude: Double) {
+    func convertToGrid(longitude: Double, latitude: Double) {
         var ra = tan(PI * 0.25 + latitude * DEGRAD * 0.5)
         ra = re*sf/pow(ra,sn)
         var theta = (longitude) * DEGRAD - olon
@@ -142,8 +142,6 @@ func searchAddress() {
     CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
         (placemarks, error) -> Void in
         if let pm = placemarks?.last {
-
-            print(pm)
             if error != nil {
                 print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
             }
