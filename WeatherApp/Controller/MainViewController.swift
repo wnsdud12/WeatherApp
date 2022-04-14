@@ -8,18 +8,18 @@
 import UIKit
 import CoreLocation
 
-protocol SendDelegate: AnyObject {
-    func sendData(x: Int, y: Int)
-}
+
 /// - Todo
 ///   - 지역 변경 기능 추가
 ///   - AutoLayout
 ///
 class MainViewController: UIViewController {
 
-    @IBOutlet weak var lblAddress: UILabel!
-    @IBOutlet weak var nowWeather: NowWeatherView!
-    @IBOutlet weak var weatherTable: UITableView!
+    @IBOutlet weak var lblAddress: UILabel?
+    @IBOutlet weak var nowWeather: NowWeatherView?
+    @IBOutlet weak var weatherTable: UITableView?
+
+    //let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
@@ -48,35 +48,42 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-  
-        nowWeather.imgNowSKY.image = UIImage(named: "cloud_sun_svg.svg")
-        nowWeather.imgNowSKY.frame.size = CGSize(width: 100, height: 100)
-        locationManager.delegate = self
+
+
+        lblAddress?.adjustsFontSizeToFitWidth = true // 글씨 잘릴 때 자동으로 조정
+        
         weatherManager.delegate = self
         
         let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
-        weatherTable.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
+        weatherTable?.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
 
-        weatherTable.delegate = self
-        weatherTable.dataSource = self
+        weatherTable?.delegate = self
+        weatherTable?.dataSource = self
 
-        weatherTable.backgroundColor = UIColor.systemGray6
+        weatherTable?.backgroundColor = UIColor.systemGray6
 
-        weatherTable.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
+        weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
+    }
 
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestLocation()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+//        if UserDefaults.isFirst != nil {
+//            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+//        }
+//        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
+        self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
 
     }
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //sidoVC.modalPresentationStyle = .fullScreen
-        if segue.identifier == "segueSidoVC" {
-            print(segue.identifier)
-        }
+    @objc func fetch() {
+        self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     @IBAction func btnTest(_ sender: Any) {
-
+//        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "sidoView") else { return }
+//        nextVC.modalPresentationStyle = .fullScreen
+//        self.present(nextVC, animated: true)
     }
 }
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -86,7 +93,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     // section header data
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = weatherTable.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
+        let header = weatherTable?.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
         header.headerDate.text = convertDateString(fcstDate: sections[section])
         header.headerTMX.text = headerData[section]["TMX"] ?? "-"
         header.headerTMN.text = headerData[section]["TMN"] ?? "-"
@@ -118,44 +125,11 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
-extension MainViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last{
-            locationManager.stopUpdatingLocation()
-            
-            let lat = location.coordinate.latitude // 현재 위치의 위도
-            let lon = location.coordinate.longitude // 현재 위치의 경도
-            var address: String = ""
-            // 현재 위치 지명 표시
-            CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
-                (placemarks, error) -> Void in
-                if let pm = placemarks?.last {
-                    if error != nil {
-                        print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
-                    }
-                    if pm.administrativeArea != nil {
-                        address += pm.administrativeArea!
-                    }
-                    if pm.locality != nil {
-                        address += " " + pm.locality!
-                    }
-                    self.lblAddress.text = address
-                }
-            }
-            let mapConvert = MapConvert(lon: lon, lat: lat) // 현재 위치의 위/경도를 격자 X/Y로 변환
-            weatherManager.fetchWeather(nx: mapConvert.x, ny: mapConvert.y)
-        }
-    }
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("location Error - \(error)")
-    }
-}
+
 
 extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
-            print("didUpdateWeatherTable()")
-
             self.nowWeatherData = weather.nowWeatherData
 
             self.sections = weather.sections
@@ -165,14 +139,15 @@ extension MainViewController: WeatherManagerDelegate {
             self.cellPOP = weather.cellPOP
             self.cellPCP = weather.cellPCP
 
-            print(weather.nowWeatherData.value)
             let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value)
-            self.nowWeather.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
-            self.nowWeather.imgNowSKY.image = nowSKY.image
-            self.nowWeather.lblNowSKY.text = nowSKY.label
+            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
+            self.nowWeather?.imgNowSKY.image = nowSKY.image
+            self.nowWeather?.lblNowSKY.text = nowSKY.label
             self.headerData = weather.headerTMXTMN
 
-            self.weatherTable.reloadData()
+            self.lblAddress?.text = UserDefaults.address
+            
+            self.weatherTable?.reloadData()
         }
     }
 }
@@ -233,10 +208,4 @@ private func convertDateString(fcstDate: String) -> String {
     formatter.dateFormat = "M월 d일 (E)"
     dateString = formatter.string(from: date)
     return dateString
-}
-extension String {
-    // String 변수를 Int로 변경
-    var toInt: Int {
-        return Int(self)!
-    }
 }

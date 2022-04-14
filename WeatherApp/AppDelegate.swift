@@ -6,16 +6,26 @@
 //
 
 import UIKit
+import CoreLocation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
+    var window: UIWindow?
+    let locationManager = CLLocationManager()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        print("AppDelegate")
+        UserDefaults.printAll()
         return true
     }
+    func applicationWillTerminate(_ application: UIApplication) {
+        // 앱을 사용하는 동안만 권한을 승인해줄 때, 앱을 종료하면 데이터 지우기
+        if locationManager.authorizationStatus == .authorizedWhenInUse {
+            UserDefaults.delete()
+        }
+    }
+    
 
     // MARK: UISceneSession Lifecycle
 
@@ -31,4 +41,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 }
-

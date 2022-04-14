@@ -21,9 +21,6 @@ struct WeatherModel {
     var headerTMXTMN: [WeatherValue]
     var nowWeatherData: NowWeather
     init(date:[String], time: [String], value: [WeatherValue]) {
-
-        print("init - WeatherModel")
-
         nowWeatherData = NowWeather(date: date[0], time: time[0], value: value[0])
 
         // date array remove duplicate
@@ -64,9 +61,7 @@ struct WeatherModel {
             }
             return newDictArr
         }()
-        print(headerTMXTMN)
         self.headerTMXTMN = headerTMXTMN
-        print("success - WeatherModel init")
     } // init()
 
 } // WeatherModel
