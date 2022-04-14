@@ -45,9 +45,10 @@ class MainViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        print("Main-viewDidLoad")
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+
+        lblAddress?.adjustsFontSizeToFitWidth = true // 글씨 잘릴 때 자동으로 조정
         
         weatherManager.delegate = self
         
@@ -60,23 +61,21 @@ class MainViewController: UIViewController {
         weatherTable?.backgroundColor = UIColor.systemGray6
 
         weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
-        print("end Main-viewDidLoad")
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        print("Main-viewWillAppear")
         super.viewWillAppear(animated)
-        if UserDefaults.isFirst != nil {
-            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
-        }
-        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
-        print("end Main-viewWillAppear")
+//        if UserDefaults.isFirst != nil {
+//            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+//        }
+//        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
+        self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+
     }
     @objc func fetch() {
         self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
     }
     override func viewDidAppear(_ animated: Bool) {
-        print("Main-viewDidAppear")
         super.viewDidAppear(animated)
     }
     @IBAction func btnTest(_ sender: Any) {
@@ -129,8 +128,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
         DispatchQueue.main.async {
-            print("didUpdateWeatherTable()")
-
             self.nowWeatherData = weather.nowWeatherData
 
             self.sections = weather.sections
@@ -146,9 +143,7 @@ extension MainViewController: WeatherManagerDelegate {
             self.nowWeather?.lblNowSKY.text = nowSKY.label
             self.headerData = weather.headerTMXTMN
 
-            searchAddress()
             self.lblAddress?.text = UserDefaults.address
-            print("reloadData")
             self.weatherTable?.reloadData()
         }
     }

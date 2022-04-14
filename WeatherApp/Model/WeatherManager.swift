@@ -74,7 +74,6 @@ struct WeatherManager {
                 }
                 return array
             }()
-            print("date : \(dateArray.count), time : \(timeArray.count), value : \(valueArray.count)")
             guard dateArray.count == timeArray.count, timeArray.count == valueArray.count else {
                 print("error - 데이터가 빠진게 있습니다.")
                 return nil

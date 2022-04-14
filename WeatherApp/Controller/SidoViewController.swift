@@ -17,7 +17,6 @@ class SidoViewController: UIViewController {
 
     var sortedSidoArray = removeDuplicate(WeatherLocales.locales.map{$0.sido}).sorted{$0 < $1}
     override func viewDidLoad() {
-        print("start sido-viewDidLoad")
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         sidoTable.delegate = self
@@ -70,7 +69,6 @@ extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("sido - tableView.didSelectRowAt")
         if isFiltering() { // 검색으로 지역을 찾았을 때, 셀을 선택하면 위치의 위경도 반환 후 메인으로
             let locale: WeatherLocale
             locale = filteredLocales[indexPath.row]
@@ -78,7 +76,6 @@ extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
             UserDefaults.grid_y = locale.point.y
             UserDefaults.address = locale.address
 
-            print(locale)
             let nextVC = self.storyboard?.instantiateViewController(identifier: "mainView") as! MainViewController
             UserDefaults.printAll()
             dismiss(animated: true)
@@ -87,7 +84,7 @@ extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
         } else { // 검색 없이 셀을 선택 했을 시, 선택한 시/도의 구/군 테이블
             let sido: String
             sido = sortedSidoArray[indexPath.row]
-            print(sido)
+            
             let nextVC = self.storyboard?.instantiateViewController(identifier: "gugunView") as! GugunViewController
             nextVC.selectedSido = sido
             self.present(nextVC, animated: true)

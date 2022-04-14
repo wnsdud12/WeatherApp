@@ -42,7 +42,7 @@ extension GugunViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let gugun: String
         gugun = sortedGugunArray[indexPath.row]
-        print(gugun)
+        
         let nextVC = self.storyboard?.instantiateViewController(identifier: "eupmyeondongView") as! EupmyeondongViewController
         nextVC.selectedGugun = gugun
         nextVC.gugunArray = gugunArray

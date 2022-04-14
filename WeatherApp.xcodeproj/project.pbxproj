@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BB01A74C2806C42A007A525D /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB01A74B2806C42A007A525D /* LaunchViewController.swift */; };
 		BB03BE7627E1ADF50019755C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB03BE7527E1ADF50019755C /* Main.storyboard */; };
 		BB03BE7827E1AEAE0019755C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB03BE7727E1AEAE0019755C /* MainViewController.swift */; };
 		BB10B30C27E305AF00926587 /* WeatherManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB10B30B27E305AF00926587 /* WeatherManager.swift */; };
@@ -65,6 +66,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BB01A74B2806C42A007A525D /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		BB03BE7527E1ADF50019755C /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		BB03BE7727E1AEAE0019755C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		BB10B30A27E3003A00926587 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				BBD024FC27FAD3A800640FF8 /* SidoViewController.swift */,
 				BB584DED27FBFEEB0087D60E /* GugunViewController.swift */,
 				BB693D9128053B560032C4E7 /* EupmyeondongViewController.swift */,
+				BB01A74B2806C42A007A525D /* LaunchViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -455,6 +458,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBA1BD8827EDA7AA009369BE /* WeatherTableHeader.swift in Sources */,
+				BB01A74C2806C42A007A525D /* LaunchViewController.swift in Sources */,
 				BB693D41280001390032C4E7 /* Extenstions.swift in Sources */,
 				BB10B30C27E305AF00926587 /* WeatherManager.swift in Sources */,
 				BB03BE7827E1AEAE0019755C /* MainViewController.swift in Sources */,

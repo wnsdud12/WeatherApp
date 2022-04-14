@@ -87,7 +87,6 @@ func lamcproj<T>(lon_x: T, lat_y: T, isWantGrid: Bool) {
         grid.y = Int(y + 1.5)
 
         let testString = "lon.= \(longitude), lat.= \(latitude) ---> X = \(grid.x), Y = \(grid.y)"
-        print(testString)
         UserDefaults.degree_lat = latitude
         UserDefaults.degree_lon = longitude
         UserDefaults.grid_x = grid.x
@@ -122,7 +121,6 @@ func lamcproj<T>(lon_x: T, lat_y: T, isWantGrid: Bool) {
         degree.lon = Double(alon * RADDEG)
 
         let testString = "X = \(x), Y = \(y) ---> lon.= \(degree.lon), lat.= \(degree.lat)"
-        print(testString)
         UserDefaults.grid_x = x
         UserDefaults.grid_y = y
         UserDefaults.degree_lat = degree.lat
@@ -131,8 +129,6 @@ func lamcproj<T>(lon_x: T, lat_y: T, isWantGrid: Bool) {
 }
 /// UserDefaults에 저장된 lat, lon 데이터로 지명 정보를 저장
 func searchAddress() {
-    let startTime = CFAbsoluteTimeGetCurrent()
-    print("start-searchAddress")
     UserDefaults.printAll()
     var address: String = ""
     let lat = UserDefaults.degree_lat
@@ -141,6 +137,8 @@ func searchAddress() {
 
     CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
         (placemarks, error) -> Void in
+
+        // searchbar로 지역 선택했을 때의 주소와 재시작 해서 fetchWeather로 주소 받아올 때 내용이 다름
         if let pm = placemarks?.last {
             if error != nil {
                 print("현재 위치를 받아올 수 없음 \(error.debugDescription)")
@@ -151,10 +149,10 @@ func searchAddress() {
             if pm.locality != nil {
                 address += " " + pm.locality!
             }
+            if pm.thoroughfare != nil {
+                address += " " + pm.thoroughfare!
+            }
         }
         UserDefaults.address = address
     }
-    
-    let durationTime = CFAbsoluteTimeGetCurrent() - startTime
-    print("경과 시간: \(durationTime)")
 }

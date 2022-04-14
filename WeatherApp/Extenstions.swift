@@ -43,8 +43,6 @@ extension UserDefaults {
     static var degree_lon: Double
     @UserDefault(key: keyEnum.isFirst.rawValue, defaultsValue: nil)
     static var isFirst: Bool? // 앱 첫 실행 여부
-    @UserDefault(key: keyEnum.isDenied.rawValue, defaultsValue: nil)
-    static var isDenied: Bool? // 권한이 거부되었는지 여부
     enum keyEnum: String {
         case grid_x
         case grid_y
@@ -52,7 +50,6 @@ extension UserDefaults {
         case degree_lon
         case address
         case isFirst
-        case isDenied
     }
     class func printAll() {
         print("UserDefaults All value print")
@@ -65,7 +62,6 @@ extension UserDefaults {
 }
 extension Notification.Name {
     static let end_didUpdateLocations = Notification.Name("end_didUpdateLocations")
-    static let isDenied = Notification.Name("isDenied")
 }
 func removeDuplicate<T: Hashable>(_ array: [T]) -> [T] {
     let set: Set<T> = Set(array)
