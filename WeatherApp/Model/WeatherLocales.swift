@@ -11,16 +11,6 @@ struct WeatherLocales {
     static var locales: [WeatherLocale] = WeatherLocalesInit()!
     private init() {}
 }
-func findAddress(point: (Int, Int)) -> String {
-    var address: String = ""
-    for locale in WeatherLocales.locales {
-        if point == locale.point {
-            address = locale.address
-            break
-        }
-    }
-    return address
-}
 private func WeatherLocalesInit() -> [WeatherLocale]? {
     let localeList = parseCSV()
     var locales: [WeatherLocale] = []
