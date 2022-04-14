@@ -6,6 +6,7 @@
 //
 
 
+
 import UIKit
 import CoreLocation
 
@@ -15,12 +16,14 @@ class LaunchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("// LaunchViewController - viewDidLoad //")
 
         // Do any additional setup after loading the view.
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     override func viewWillAppear(_ animated: Bool) {
+        print("// LaunchViewController - viewWillAppear //")
         let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
 
         // 앱 최초 실행여부 확인
@@ -47,24 +50,24 @@ class LaunchViewController: UIViewController {
             print("")
             switch locationManager.authorizationStatus {
                 case .authorizedAlways, .authorizedWhenInUse:
-                    let mainVC = storyboard.instantiateViewController(identifier: "mainView") as! MainViewController
-                    present(mainVC, animated: true)
+                    locationManager.startUpdatingLocation()
                 case .notDetermined, .restricted:
                     locationManager.requestWhenInUseAuthorization()
                 case .denied:
-                    let sidoVC = storyboard.instantiateViewController(withIdentifier: "sidoView") as! SidoViewController
-                    present(sidoVC, animated: true)
+                    print("denied")
                 @unknown default:
                     break
             }
         }
 
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(endLocation), name: .end_didUpdateLocations, object: nil)
     }
+    override func viewDidAppear(_ animated: Bool) {
+        print("// LaunchViewController - viewDidAppear //")
+        super.viewDidAppear(animated)
+    }
     @objc func endLocation() {
+        print("addObserver")
         let mainVC = storyboard?.instantiateViewController(identifier: "mainView") as! MainViewController
         mainVC.modalPresentationStyle = .fullScreen
         mainVC.modalTransitionStyle = .crossDissolve
@@ -75,6 +78,7 @@ class LaunchViewController: UIViewController {
 extension LaunchViewController: CLLocationManagerDelegate {
     // MARK: - CLLocation Delegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("start update location")
         if let location = locations.last{
             self.locationManager.stopUpdatingLocation()
             UserDefaults.degree_lat = location.coordinate.latitude // 현재 위치의 위도
@@ -91,7 +95,6 @@ extension LaunchViewController: CLLocationManagerDelegate {
         print("location Error - \(error)")
     }
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        print("isFirst? \(UserDefaults.isFirst)")
         switch manager.authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
                 locationManager.startUpdatingLocation()
@@ -100,7 +103,7 @@ extension LaunchViewController: CLLocationManagerDelegate {
             case .denied:
                 // 권한을 거부하면 SidoVC로 가서 지역 선택
                 // 다음에 다시 킬때는 선택했던 지역으로 날씨 정보 표시
-                if UserDefaults.isFirst == nil {
+                if (UserDefaults.isFirst == nil) || (UserDefaults.grid_x == 0) {
                     UserDefaults.isFirst = true
                     let sidoVC = storyboard?.instantiateViewController(identifier: "sidoView") as! SidoViewController
                     sidoVC.modalPresentationStyle = .fullScreen

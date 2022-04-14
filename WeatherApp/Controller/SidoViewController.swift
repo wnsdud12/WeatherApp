@@ -27,6 +27,7 @@ class SidoViewController: UIViewController {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "지역 검색"
+
         //navigationItem.searchController = searchController
         sidoTable.tableHeaderView = searchController.searchBar
         definesPresentationContext = false
