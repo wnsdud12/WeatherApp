@@ -47,6 +47,7 @@
 		BBD88B7527EC5103009CACC2 /* NowWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBD88B7427EC5103009CACC2 /* NowWeatherView.swift */; };
 		BBD88B7927EC552C009CACC2 /* cloud_sun_128.png in Resources */ = {isa = PBXBuildFile; fileRef = BBD88B7827EC552C009CACC2 /* cloud_sun_128.png */; };
 		BBD88B7B27EC5574009CACC2 /* cloud_sun.svg in Resources */ = {isa = PBXBuildFile; fileRef = BBD88B7A27EC5574009CACC2 /* cloud_sun.svg */; };
+		BBFCD16828080940008999D1 /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = BBFCD16728080940008999D1 /* Secrets.xcconfig */; };
 		CDB1C3DBA3E2515CBC3B435D /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA13EF5FAD13FBAC523FDCD4 /* Pods_WeatherApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -75,7 +76,6 @@
 		BB01A74B2806C42A007A525D /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		BB03BE7527E1ADF50019755C /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		BB03BE7727E1AEAE0019755C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		BB10B30A27E3003A00926587 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		BB10B30B27E305AF00926587 /* WeatherManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManager.swift; sourceTree = "<group>"; };
 		BB10B30D27E44A2000926587 /* WeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTableViewCell.swift; sourceTree = "<group>"; };
 		BB10B30E27E44A2000926587 /* WeatherTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeatherTableViewCell.xib; sourceTree = "<group>"; };
@@ -115,6 +115,7 @@
 		BBD88B7427EC5103009CACC2 /* NowWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowWeatherView.swift; sourceTree = "<group>"; };
 		BBD88B7827EC552C009CACC2 /* cloud_sun_128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud_sun_128.png; sourceTree = "<group>"; };
 		BBD88B7A27EC5574009CACC2 /* cloud_sun.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = cloud_sun.svg; sourceTree = "<group>"; };
+		BBFCD16728080940008999D1 /* Secrets.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		BEE05E56961FFD77BC4405D8 /* Pods_WeatherApp_WeatherAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WeatherApp_WeatherAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45D112F25A2B46215F2C9DA /* Pods-WeatherApp-WeatherAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp-WeatherAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-WeatherApp-WeatherAppUITests/Pods-WeatherApp-WeatherAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		D868D82293E33973D44952CB /* Pods-WeatherAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherAppTests.debug.xcconfig"; path = "Target Support Files/Pods-WeatherAppTests/Pods-WeatherAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -161,7 +162,6 @@
 				D868D82293E33973D44952CB /* Pods-WeatherAppTests.debug.xcconfig */,
 				E5B2E1119C14A7DB80D7187F /* Pods-WeatherAppTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -206,7 +206,7 @@
 				BB12197F27BE6D9300EF331E /* View */,
 				BB12197E27BE6D8D00EF331E /* Model */,
 				BB12194B27BE6D0100EF331E /* AppDelegate.swift */,
-				BB10B30A27E3003A00926587 /* Secrets.xcconfig */,
+				BBFCD16728080940008999D1 /* Secrets.xcconfig */,
 				BB12194D27BE6D0100EF331E /* SceneDelegate.swift */,
 				BB12195727BE6D0200EF331E /* Assets.xcassets */,
 				BB12195927BE6D0200EF331E /* LaunchScreen.storyboard */,
@@ -395,7 +395,7 @@
 			);
 			mainGroup = BB12193F27BE6D0100EF331E;
 			packageReferences = (
-				BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics.git" */,
+				BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics" */,
 			);
 			productRefGroup = BB12194927BE6D0100EF331E /* Products */;
 			projectDirPath = "";
@@ -427,6 +427,7 @@
 				BBA1BD8A27EDA7B6009369BE /* WeatherTableHeader.xib in Resources */,
 				BB10B31027E44A2000926587 /* WeatherTableViewCell.xib in Resources */,
 				BB44B96C27CC9B1B00BA8B7F /* cloud_night.png in Resources */,
+				BBFCD16828080940008999D1 /* Secrets.xcconfig in Resources */,
 				BB584E5C27FEB66A0087D60E /* LocaleData.csv in Resources */,
 				BB12199127C38BED00EF331E /* rain.png in Resources */,
 				BB12195827BE6D0200EF331E /* Assets.xcassets in Resources */,
@@ -623,7 +624,6 @@
 /* Begin XCBuildConfiguration section */
 		BB12197327BE6D0200EF331E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -685,7 +685,6 @@
 		};
 		BB12197427BE6D0200EF331E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -741,7 +740,6 @@
 		};
 		BB12197627BE6D0200EF331E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -771,7 +769,6 @@
 		};
 		BB12197727BE6D0200EF331E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -801,7 +798,6 @@
 		};
 		BB12197927BE6D0200EF331E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -826,7 +822,6 @@
 		};
 		BB12197A27BE6D0200EF331E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -851,7 +846,6 @@
 		};
 		BB12197C27BE6D0200EF331E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
@@ -874,7 +868,6 @@
 		};
 		BB12197D27BE6D0200EF331E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BB10B30A27E3003A00926587 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
@@ -937,7 +930,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics.git" */ = {
+		BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-numerics.git";
 			requirement = {
@@ -950,7 +943,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		BB44B95E27C4D6FB00BA8B7F /* Numerics */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics.git" */;
+			package = BB44B95D27C4D6FB00BA8B7F /* XCRemoteSwiftPackageReference "swift-numerics" */;
 			productName = Numerics;
 		};
 /* End XCSwiftPackageProductDependency section */

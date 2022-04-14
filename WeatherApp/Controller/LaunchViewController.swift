@@ -9,7 +9,7 @@
 
 import UIKit
 import CoreLocation
-
+// test
 class LaunchViewController: UIViewController {
 
     let locationManager = CLLocationManager()
