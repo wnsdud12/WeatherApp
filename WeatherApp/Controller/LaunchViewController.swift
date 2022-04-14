@@ -4,7 +4,7 @@
 //
 //  Created by 박준영 on 2022/04/13.
 //
-// commit test
+
 
 import UIKit
 import CoreLocation
@@ -21,36 +21,37 @@ class LaunchViewController: UIViewController {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
     override func viewWillAppear(_ animated: Bool) {
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
 
         // 앱 최초 실행여부 확인
-//        print("")
-//        print("==============")
-//        print("\(UserDefaults.isFirst == nil ? "첫 실행" : "실행한 적 있음")")
-//        print("==============")
-//        print("")
+        print("")
+        print("==============")
+        print("\(UserDefaults.isFirst == nil ? "첫 실행" : "실행한 적 있음")")
+        print("==============")
+        print("")
         if UserDefaults.isFirst == nil {
             locationManager.requestWhenInUseAuthorization()
         } else {
-//            print("")
-//            print("==============\nauthorizationStatus")
-//            print("""
-//                authorizationStatus.rawValue
-//                0 - notDetermined
-//                1 - restricted
-//                2 - denied
-//                3 - authorizedAlways
-//                4 - authorizedWhenInUse
-//                """)
-//            print("value => \(locationManager.authorizationStatus.rawValue)")
-//            print("==============")
-//            print("")
+            print("")
+            print("==============")
+            print("""
+                authorizationStatus.rawValue
+                0 - notDetermined
+                1 - restricted
+                2 - denied
+                3 - authorizedAlways
+                4 - authorizedWhenInUse
+                """)
+            print("value => \(locationManager.authorizationStatus.rawValue)")
+            print("==============")
+            print("")
             switch locationManager.authorizationStatus {
                 case .authorizedAlways, .authorizedWhenInUse:
-                    break
+                    let mainVC = storyboard.instantiateViewController(identifier: "mainView") as! MainViewController
+                    present(mainVC, animated: true)
                 case .notDetermined, .restricted:
                     locationManager.requestWhenInUseAuthorization()
                 case .denied:
-                    let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
                     let sidoVC = storyboard.instantiateViewController(withIdentifier: "sidoView") as! SidoViewController
                     present(sidoVC, animated: true)
                 @unknown default:
@@ -90,6 +91,7 @@ extension LaunchViewController: CLLocationManagerDelegate {
         print("location Error - \(error)")
     }
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        print("isFirst? \(UserDefaults.isFirst)")
         switch manager.authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
                 locationManager.startUpdatingLocation()

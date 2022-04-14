@@ -51,13 +51,26 @@ extension UserDefaults {
         case address
         case isFirst
     }
+    class func delete() {
+        print("UserDefaults의 지역 관련 데이터 삭제")
+        self.address = ""
+        self.degree_lat = 0
+        self.degree_lon = 0
+        self.grid_x = 0
+        self.grid_y = 0
+    }
     class func printAll() {
+        print("")
+        print("==============")
         print("UserDefaults All value print")
-        print("grid_x - \(UserDefaults.grid_x)")
-        print("grid_y - \(UserDefaults.grid_y)")
-        print("degree_lat - \(UserDefaults.degree_lat)")
-        print("degree_lon - \(UserDefaults.degree_lon)")
-        print("address - \(UserDefaults.address)")
+        print("grid_x - \(self.grid_x)")
+        print("grid_y - \(self.grid_y)")
+        print("degree_lat - \(self.degree_lat)")
+        print("degree_lon - \(self.degree_lon)")
+        print("address - \(self.address)")
+        print("isFirst - \(self.isFirst)")
+        print("==============")
+        print("")
     }
 }
 extension Notification.Name {
