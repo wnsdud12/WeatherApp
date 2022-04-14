@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreLocation
+import SkeletonView
 
 /// - Todo
 ///   - 지역 변경 기능 추가
@@ -47,6 +48,14 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+
+        // MARK: - SkeletonView Setting
+        lblAddress?.isSkeletonable = true
+        nowWeather?.isSkeletonable = true
+        weatherTable?.isSkeletonable = true
+        view.isSkeletonable = true
+        let skeletonAnimation = SkeletonAnimationBuilder().makeSlidingAnimation(withDirection: .leftRight)
+        view.showAnimatedGradientSkeleton(usingGradient: .init(colors: [.lightGray, .gray]), animation: skeletonAnimation, transition: .none)
 
         lblAddress?.adjustsFontSizeToFitWidth = true // 글씨 잘릴 때 자동으로 조정
         
@@ -144,6 +153,7 @@ extension MainViewController: WeatherManagerDelegate {
             self.headerData = weather.headerTMXTMN
 
             self.lblAddress?.text = UserDefaults.address
+            self.view.hideSkeleton()
             self.weatherTable?.reloadData()
         }
     }
