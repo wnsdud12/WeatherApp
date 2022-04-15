@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SkeletonView
 
 class NowWeatherView: UIView {
 
@@ -26,5 +27,6 @@ class NowWeatherView: UIView {
             view.frame = self.bounds
             addSubview(view)
         }
+
     }
 }

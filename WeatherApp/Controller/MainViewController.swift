@@ -8,11 +8,7 @@
 import UIKit
 import CoreLocation
 
-// test
-/// - Todo
-///   - 지역 변경 기능 추가
-///   - AutoLayout
-///
+
 class MainViewController: UIViewController {
 
     @IBOutlet weak var lblAddress: UILabel?
@@ -48,7 +44,6 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-
 
         lblAddress?.adjustsFontSizeToFitWidth = true // 글씨 잘릴 때 자동으로 조정
         
