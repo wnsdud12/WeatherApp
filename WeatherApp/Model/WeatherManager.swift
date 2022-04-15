@@ -2,13 +2,13 @@
 //  WeatherManager.swift
 //  WeatherApp
 //
-//  Created by 박준영 on 2022/03/17.
+//  Created by 박준영 on 2022/04/15.
 //
 
 import Foundation
 
 protocol WeatherManagerDelegate {
-    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel)
+    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel])
 }
 struct WeatherManager {
     let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
@@ -40,58 +40,120 @@ struct WeatherManager {
                     return
                 }
                 if let safeData = data {
-                    if let weather = parseJSON(weatherData: safeData) {
-                        delegate?.didUpdateWeatherTable(self, weather: weather)
+                    let weather = parseJSON(weatherData: safeData)
+                    print("""
+                    날짜가 안맞음
+                    ///////////////
+                    """)
+                    for i in weather {
+                        print(i)
                     }
+                    print("""
+                    ///////////////
+
+                    """)
+                    delegate?.didUpdateWeatherTable(self, weather: weather)
                 }
             }
             task.resume()
         } else {
             print("url error")
         }
-    }
-    func parseJSON(weatherData: Data) -> WeatherModel? {
-        let UseCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
-        var dateArray: [String] = []
-        var timeArray: [String] = []
+    }// performRequest
+    func parseJSON(weatherData: Data) -> [WeatherModel] {
+        let useCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
+        //let useCategory = ["TMP"]
         let decoder = JSONDecoder()
+        var weatherArray: [WeatherModel] = []
         do {
             let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
             let weatherData = decodedData.response.body.items.item
-            let items = weatherData.filter{UseCategory.contains($0.category)}
+            let items = weatherData.filter{useCategory.contains($0.category)}
+            var date: String = items[0].fcstDate
+            var time: String = items[0].fcstTime
+            var weatherValue: WeatherValue = [:]
 
-            let valueArray: [WeatherValue] = {
-                var fcstTime = items[0].fcstTime
-                var value: WeatherValue = [:]
-                var array: [WeatherValue] = []
-                for item in items {
-                    if fcstTime == item.fcstTime {
-                        value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-                        fcstTime = item.fcstTime
-                    } else {
-                        fcstTime = item.fcstTime
-                        array.append(value)
-                        value = [:]
-                        value[item.category] = setFcstValue(category: item.category, fcstValue: item.fcstValue)
-                        dateArray.append(item.fcstDate)
-                        timeArray.append(item.fcstTime)
-                    }
+            for i in items.indices {
+                let category = items[i].category
+                let value = setFcstValue(category: category, fcstValue: items[i].fcstValue)
+                if time == items[i].fcstTime {
+                    weatherValue[category] = value
+                } else {
+                    weatherArray.append(WeatherModel.init(date: date, time: time, value: weatherValue))
+                    weatherValue = [:]
+                    weatherValue[category] = value
+                    time = items[i].fcstTime
+                    date = items[i].fcstDate
                 }
-                return array
-            }()
-            guard dateArray.count == timeArray.count, timeArray.count == valueArray.count else {
-                print("error - 데이터가 빠진게 있습니다.")
-                return nil
+//                if i + 1 == items.count {
+//                    weatherArray.append(WeatherModel.init(date: date, time: time, value: weatherValue))
+//                }
+
             }
-            let weather = WeatherModel(date: dateArray, time: timeArray, value: valueArray)
-            return weather
         }
         catch {
             print(error)
-            return nil
         }
+        return weatherArray
     }
 }
+
+// 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 반환해주는 함수
+func setFcstValue(category: String, fcstValue: String) -> String {
+    var valueString: String = ""
+    switch category {
+        case "POP": //강수확률
+            valueString = fcstValue + "%"
+        case "PTY": // 강수형태
+            valueString = {
+                var value_PTY: String
+                switch fcstValue {
+                    case "0":
+                        value_PTY = "없음"
+                    case "1":
+                        value_PTY = "비"
+                    case "2":
+                        value_PTY = "비/눈"
+                    case "3":
+                        value_PTY = "눈"
+                    case "4":
+                        value_PTY = "소나기"
+                    default:
+                        value_PTY = "error"
+                }
+                return value_PTY
+            }()
+        case "PCP": // 강수량
+            fallthrough
+        case "SNO": // 신적설
+            valueString = fcstValue
+        case "SKY": // 하늘상태
+            valueString = {
+                var value_SKY: String
+                switch fcstValue {
+                    case "1":
+                        value_SKY = "맑음"
+                    case "3":
+                        value_SKY = "구름많음"
+                    case "4":
+                        value_SKY = "흐림"
+                    default:
+                        value_SKY = "error"
+                }
+                return value_SKY
+            }()
+        case "TMP": // 기온
+            fallthrough
+        case "TMN": // 최저기온
+            fallthrough
+        case "TMX": // 최고기온
+            valueString = fcstValue + "º"
+        default:
+            break
+    }
+    return valueString
+}
+
 
 // 혹시 저장할 때 "\(base_date)&base_time=\(base_time)" 으로 저장해도 되는지 확인
 func setBaseDateTime() -> (String, String) {
@@ -220,60 +282,3 @@ func setBaseDateTime(testDate: String) -> (String, String) {
 
     return (base_date, base_time)
 }
-
-// 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 반환해주는 함수
-func setFcstValue(category: String, fcstValue: String) -> String {
-    var valueString: String = ""
-    switch category {
-        case "POP": //강수확률
-            valueString = fcstValue + "%"
-        case "PTY": // 강수형태
-            valueString = {
-                var value_PTY: String
-                switch fcstValue {
-                    case "0":
-                        value_PTY = "없음"
-                    case "1":
-                        value_PTY = "비"
-                    case "2":
-                        value_PTY = "비/눈"
-                    case "3":
-                        value_PTY = "눈"
-                    case "4":
-                        value_PTY = "소나기"
-                    default:
-                        value_PTY = "error"
-                }
-                return value_PTY
-            }()
-        case "PCP": // 강수량
-            fallthrough
-        case "SNO": // 신적설
-            valueString = fcstValue
-        case "SKY": // 하늘상태
-            valueString = {
-                var value_SKY: String
-                switch fcstValue {
-                    case "1":
-                        value_SKY = "맑음"
-                    case "3":
-                        value_SKY = "구름많음"
-                    case "4":
-                        value_SKY = "흐림"
-                    default:
-                        value_SKY = "error"
-                }
-                return value_SKY
-            }()
-        case "TMP": // 기온
-            fallthrough
-        case "TMN": // 최저기온
-            fallthrough
-        case "TMX": // 최고기온
-            valueString = fcstValue + "º"
-        default:
-            break
-    }
-    return valueString
-}
-
