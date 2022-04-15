@@ -204,4 +204,3 @@ private func convertDateString(fcstDate: String) -> String {
     dateString = formatter.string(from: date)
     return dateString
 }
-//test2
