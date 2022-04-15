@@ -41,17 +41,6 @@ struct WeatherManager {
                 }
                 if let safeData = data {
                     let weather = parseJSON(weatherData: safeData)
-                    print("""
-                    날짜가 안맞음
-                    ///////////////
-                    """)
-                    for i in weather {
-                        print(i)
-                    }
-                    print("""
-                    ///////////////
-
-                    """)
                     delegate?.didUpdateWeatherTable(self, weather: weather)
                 }
             }

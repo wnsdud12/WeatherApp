@@ -23,9 +23,9 @@ class MainViewController: UIViewController {
     // TableView 관련 데이터
     var sections: [String] = []
     var weatherArray: [WeatherModel]?
+    var headerData: WeatherModel?
 
-    var headerData: [WeatherValue] = []
-
+    var nowWeatherData: WeatherModel?
 
     let nowTime: Int = {
         let date = Date.now
@@ -56,10 +56,6 @@ class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        if UserDefaults.isFirst != nil {
-//            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
-//        }
-//        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
         self.lblAddress?.text = UserDefaults.address
         self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
 
@@ -71,9 +67,6 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
     }
     @IBAction func btnTest(_ sender: Any) {
-//        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "sidoView") else { return }
-//        nextVC.modalPresentationStyle = .fullScreen
-//        self.present(nextVC, animated: true)
     }
 }
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -121,10 +114,15 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel]) {
         DispatchQueue.main.async {
+            var weather = weather
 
+            self.nowWeatherData = weather.removeFirst()
+            var nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
+            self.nowWeather?.lblNowSKY.text = nowSKY.label
+            self.nowWeather?.imgNowSKY.image = nowSKY.image
+            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
             self.weatherArray = weather
             self.sections = removeDuplicate(weather.map { $0.date }).sorted { $0 < $1 }
-            
             self.weatherTable?.reloadData()
         }
     }
