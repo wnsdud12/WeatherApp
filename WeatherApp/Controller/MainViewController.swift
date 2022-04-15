@@ -105,7 +105,14 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     // tableView에 들어갈 데이터 설정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-        cell.lblTime.text = self.weatherArray!.filter{ $0.date == sections[indexPath.section]}[indexPath.row].time
+        let row = self.weatherArray!.filter{ $0.date == sections[indexPath.section]}[indexPath.row]
+        let skyAndPTY = setWeatherIcon(time: convertTimeString(fcstTime: row.time), state: row.value)
+        cell.lblTime.text = convertTimeString(fcstTime: row.time)
+        cell.lblTMP.text = row.value["TMP"]
+        cell.lblPCP.text = row.value["PCP"]
+        cell.lblPOP.text = row.value["POP"]
+        cell.lblSKY.text = skyAndPTY.label
+        cell.imgSKY.image = skyAndPTY.image
         return cell
     }
 }
