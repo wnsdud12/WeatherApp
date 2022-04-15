@@ -22,16 +22,10 @@ class MainViewController: UIViewController {
 
     // TableView 관련 데이터
     var sections: [String] = []
-    var cellTime: [[String]] = []
-    var cellTMP: [[String]] = []
-    var cellImgSKY: [[UIImage]] = []
-    var cellSKYPTY: [[WeatherValue]] = []
-    var cellPOP: [[String]] = []
-    var cellPCP: [[String]] = []
+    var weatherArray: [WeatherModel]?
+    var headerData: WeatherModel?
 
-    var headerData: [WeatherValue] = []
-
-    var nowWeatherData: NowWeather?
+    var nowWeatherData: WeatherModel?
 
     let nowTime: Int = {
         let date = Date.now
@@ -62,10 +56,7 @@ class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        if UserDefaults.isFirst != nil {
-//            self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
-//        }
-//        NotificationCenter.default.addObserver(self, selector: #selector(fetch), name: .end_didUpdateLocations, object: nil)
+        self.lblAddress?.text = UserDefaults.address
         self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
 
     }
@@ -76,9 +67,6 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
     }
     @IBAction func btnTest(_ sender: Any) {
-//        guard let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "sidoView") else { return }
-//        nextVC.modalPresentationStyle = .fullScreen
-//        self.present(nextVC, animated: true)
     }
 }
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -90,8 +78,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = weatherTable?.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
         header.headerDate.text = convertDateString(fcstDate: sections[section])
-        header.headerTMX.text = headerData[section]["TMX"] ?? "-"
-        header.headerTMN.text = headerData[section]["TMN"] ?? "-"
+//        header.headerTMX.text = headerData[section]["TMX"] ?? "-"
+//        header.headerTMN.text = headerData[section]["TMN"] ?? "-"
         return header
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -99,7 +87,9 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     // section별 데이터 수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellTime[section].count
+        let times = self.weatherArray!.filter{ $0.date == sections[section] }.count
+        print(times)
+        return times
     }
     // section 갯수
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -108,40 +98,31 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     // tableView에 들어갈 데이터 설정
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherCell", for: indexPath) as! WeatherTableViewCell
-
-        let skyAndPTY = setWeatherIcon(time: self.cellTime[indexPath.section][indexPath.row], state: self.cellSKYPTY[indexPath.section][indexPath.row])
-        cell.lblTime.text = self.cellTime[indexPath.section][indexPath.row]
-        cell.lblTMP.text = self.cellTMP[indexPath.section][indexPath.row]
+        let row = self.weatherArray!.filter{ $0.date == sections[indexPath.section]}[indexPath.row]
+        let skyAndPTY = setWeatherIcon(time: convertTimeString(fcstTime: row.time), state: row.value)
+        cell.lblTime.text = convertTimeString(fcstTime: row.time)
+        cell.lblTMP.text = row.value["TMP"]
+        cell.lblPCP.text = row.value["PCP"]
+        cell.lblPOP.text = row.value["POP"]
         cell.lblSKY.text = skyAndPTY.label
         cell.imgSKY.image = skyAndPTY.image
-        cell.lblPOP.text = self.cellPOP[indexPath.section][indexPath.row]
-        cell.lblPCP.text = self.cellPCP[indexPath.section][indexPath.row]
-
         return cell
     }
 }
 
 
 extension MainViewController: WeatherManagerDelegate {
-    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: WeatherModel) {
+    func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel]) {
         DispatchQueue.main.async {
-            self.nowWeatherData = weather.nowWeatherData
+            var weather = weather
 
-            self.sections = weather.sections
-            self.cellTime = weather.cellTime
-            self.cellTMP = weather.cellTMP
-            self.cellSKYPTY = weather.cellSKYPTY
-            self.cellPOP = weather.cellPOP
-            self.cellPCP = weather.cellPCP
-
-            let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: weather.nowWeatherData.time), state: weather.nowWeatherData.value)
-            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
-            self.nowWeather?.imgNowSKY.image = nowSKY.image
+            self.nowWeatherData = weather.removeFirst()
+            var nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
             self.nowWeather?.lblNowSKY.text = nowSKY.label
-            self.headerData = weather.headerTMXTMN
-
-            self.lblAddress?.text = UserDefaults.address
-            
+            self.nowWeather?.imgNowSKY.image = nowSKY.image
+            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
+            self.weatherArray = weather
+            self.sections = removeDuplicate(weather.map { $0.date }).sorted { $0 < $1 }
             self.weatherTable?.reloadData()
         }
     }
