@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreLocation
+import SkeletonView
 
 
 class MainViewController: UIViewController {
@@ -116,8 +117,14 @@ extension MainViewController: WeatherManagerDelegate {
         DispatchQueue.main.async {
             var weather = weather
 
-            self.nowWeatherData = weather.removeFirst()
-            var nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
+            weather.forEach { (model: WeatherModel) in
+                if (model.time.toInt / 100) != self.nowTime {
+
+                }
+            }
+            self.nowWeatherData = weather[0]
+            //self.nowWeatherData = weather.removeFirst()
+            let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
             self.nowWeather?.lblNowSKY.text = nowSKY.label
             self.nowWeather?.imgNowSKY.image = nowSKY.image
             self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]

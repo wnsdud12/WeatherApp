@@ -11,7 +11,7 @@ protocol WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel])
 }
 struct WeatherManager {
-    let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?"
+    let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
     private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String
 
     var delegate: WeatherManagerDelegate?
@@ -20,18 +20,22 @@ struct WeatherManager {
         let baseDateTime: (date: String, time: String) = setBaseDateTime()
 
         guard let apiKey = apiKey else { return print("URL이 이상해요") }
-        let weatherURLString = "\(weatherURL)serviceKey=\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
+        let vilageFcstURL = "\(weatherURL)getVilageFcst?serviceKey=\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
+        let ultraSrcNcstURL = "\(weatherURL)getUltraSrtNcst?serviceKe\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=100&pageNo=1&dataType=JSON"
 
         print("")
         print("==============")
-        print("url\n\(weatherURLString)")
+        print("url\n\(vilageFcstURL)")
         print("==============")
         print("")
-        preformRequest(with: weatherURLString)
+        preformRequest(vilageFcstURL: vilageFcstURL, ultraSrcNcstURL: ultraSrcNcstURL)
     }
-    func preformRequest(with urlString: String) {
+    func preformRequest(vilageFcstURL: String, ultraSrcNcstURL: String) {
 
-        if let url = URL(string: urlString) {
+        if let url = URL(string: ultraSrcNcstURL) {
+
+        }
+        if let url = URL(string: vilageFcstURL) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) {
                 data, response, error in
