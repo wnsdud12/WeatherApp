@@ -57,12 +57,16 @@ class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.lblAddress?.text = UserDefaults.address
-        self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+        Task {
+            await self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+
+            self.lblAddress?.text = UserDefaults.address
+        }
+
 
     }
-    @objc func fetch() {
-        self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
+    @objc func fetch() async {
+        await self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -79,8 +83,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = weatherTable?.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
         header.headerDate.text = convertDateString(fcstDate: sections[section])
-//        header.headerTMX.text = headerData[section]["TMX"] ?? "-"
-//        header.headerTMN.text = headerData[section]["TMN"] ?? "-"
+        //        header.headerTMX.text = headerData[section]["TMX"] ?? "-"
+        //        header.headerTMN.text = headerData[section]["TMN"] ?? "-"
         return header
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -117,20 +121,77 @@ extension MainViewController: WeatherManagerDelegate {
         DispatchQueue.main.async {
             var weather = weather
 
-            weather.forEach { (model: WeatherModel) in
-                if (model.time.toInt / 100) != self.nowTime {
 
-                }
-            }
-            self.nowWeatherData = weather[0]
-            //self.nowWeatherData = weather.removeFirst()
-            let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
-            self.nowWeather?.lblNowSKY.text = nowSKY.label
-            self.nowWeather?.imgNowSKY.image = nowSKY.image
-            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
+            //            self.nowWeatherData = weather[0]
+            //            //self.nowWeatherData = weather.removeFirst()
+            //            let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
+            //            self.nowWeather?.lblNowSKY.text = nowSKY.label
+            //            self.nowWeather?.imgNowSKY.image = nowSKY.image
+            //            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
             self.weatherArray = weather
             self.sections = removeDuplicate(weather.map { $0.date }).sorted { $0 < $1 }
             self.weatherTable?.reloadData()
+        }
+    }
+    func didUpdateNowWeatherData(_ weatherManager: WeatherManager, nowWeatherData: WeatherModel?) {
+        DispatchQueue.main.async {
+            if let nowWeatherData = nowWeatherData {
+                var image: UIImage?
+
+                for item in nowWeatherData.value {
+                    switch item.key {
+                        case "T1H":
+                            self.nowWeather?.lblNowTMP.text = item.value + "º"
+                        case "RN1":
+                            switch item.value.toDouble {
+                                case 0:
+                                    self.nowWeather?.lblNowSKY.text = "강수없음"
+                                case (0.1 ..< 1.0):
+                                    self.nowWeather?.lblNowSKY.text = "1.0mm 미만"
+                                case (1.0 ..< 30.0):
+                                    self.nowWeather?.lblNowSKY.text = item.value + "mm"
+                                case (30.0 ..< 50.0):
+                                    self.nowWeather?.lblNowSKY.text = "30.0~50.0mm"
+                                case (50.0 ... Double.infinity) :
+                                    self.nowWeather?.lblNowSKY.text = "50.0mm 이상"
+                                default:
+                                    break
+                            }
+                            if item.value == "0" {
+                                self.nowWeather?.lblNowSKY.text = "강수없음"
+
+                            } else {
+                                self.nowWeather?.lblNowSKY.text = "강수량 : " + item.value
+                            }
+                        case "PTY":
+                            switch item.value.toInt {
+                                case 0:
+                                    if (600...2000).contains(nowWeatherData.time.toInt) {
+                                        image = UIImage(named: "sunny.png")
+                                    } else {
+                                        image = UIImage(named: "night.png")
+                                    }
+                                case 1:
+                                    fallthrough
+                                case 5:
+                                    image = UIImage(named: "rain.png")
+                                case 2:
+                                    fallthrough
+                                case 6:
+                                    image = UIImage(named: "rainORsnowy.png")
+                                case 3:
+                                    fallthrough
+                                case 7:
+                                    image = UIImage(named: "snow.png")
+                                default:
+                                    break
+                            }
+                            self.nowWeather?.imgNowSKY.image = image
+                        default:
+                            break
+                    }
+                }
+            }
         }
     }
 }

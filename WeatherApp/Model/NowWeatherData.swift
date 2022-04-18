@@ -28,4 +28,5 @@ struct NowItem: Codable {
     let category: String
     let obsrValue: String
     let nx, ny: Int
+    let baseDate, baseTime: String
 }

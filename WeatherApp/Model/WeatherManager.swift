@@ -9,6 +9,7 @@ import Foundation
 
 protocol WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel])
+    func didUpdateNowWeatherData(_ weatherManager: WeatherManager, nowWeatherData: WeatherModel?)
 }
 struct WeatherManager {
     let weatherURL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/"
@@ -16,25 +17,46 @@ struct WeatherManager {
 
     var delegate: WeatherManagerDelegate?
 
-    func fetchWeather(nx: Int, ny: Int) {
-        let baseDateTime: (date: String, time: String) = setBaseDateTime()
+    func fetchWeather(nx: Int, ny: Int) async {
+        let fcstBaseDateTime: (date: String, time: String) = setBaseDateTime()
+        let ncstBaseDateTime: (date: String, time: String) = setNcstBaseDateTime(testDate: "20220417 21:50")
 
         guard let apiKey = apiKey else { return print("URL이 이상해요") }
-        let vilageFcstURL = "\(weatherURL)getVilageFcst?serviceKey=\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
-        let ultraSrcNcstURL = "\(weatherURL)getUltraSrtNcst?serviceKe\(apiKey)&base_date=\(baseDateTime.date)&base_time=\(baseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=100&pageNo=1&dataType=JSON"
+        let fcstURL = "\(weatherURL)getVilageFcst?serviceKey=\(apiKey)&base_date=\(fcstBaseDateTime.date)&base_time=\(fcstBaseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
+        let ncstURL = "\(weatherURL)getUltraSrtNcst?serviceKey=\(apiKey)&base_date=\(ncstBaseDateTime.date)&base_time=\(ncstBaseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=100&pageNo=1&dataType=JSON"
 
         print("")
         print("==============")
-        print("url\n\(vilageFcstURL)")
+        print("fcstURL\n\(fcstURL)")
         print("==============")
         print("")
-        preformRequest(vilageFcstURL: vilageFcstURL, ultraSrcNcstURL: ultraSrcNcstURL)
+        print("")
+        print("==============")
+        print("ncstURL\n\(ncstURL)")
+        print("==============")
+        print("")
+        await preformRequest(fcstURL: fcstURL, ncstURL: ncstURL)
     }
-    func preformRequest(vilageFcstURL: String, ultraSrcNcstURL: String) {
-
-        if let url = URL(string: ultraSrcNcstURL) {
+    func preformRequest(fcstURL: String, ncstURL: String) async {
+        do {
+            guard let url = URL(string: fcstURL) else { return }
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let weather = parseJSON(fcstData: data)
+            delegate?.didUpdateWeatherTable(self, weather: weather)
+        } catch {
+            print(error)
+        }
+        do {
+            guard let url = URL(string: ncstURL) else { return }
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let nowWeather = parseJSON(ncstData: data)
+            delegate?.didUpdateNowWeatherData(self, nowWeatherData: nowWeather)
+        } catch {
 
         }
+    }
+    func preformRequest(with vilageFcstURL: String) {
+
         if let url = URL(string: vilageFcstURL) {
             let session = URLSession(configuration: .default)
             let task = session.dataTask(with: url) {
@@ -44,7 +66,7 @@ struct WeatherManager {
                     return
                 }
                 if let safeData = data {
-                    let weather = parseJSON(weatherData: safeData)
+                    let weather = parseJSON(fcstData: safeData)
                     delegate?.didUpdateWeatherTable(self, weather: weather)
                 }
             }
@@ -53,13 +75,13 @@ struct WeatherManager {
             print("url error")
         }
     }// performRequest
-    func parseJSON(weatherData: Data) -> [WeatherModel] {
+    func parseJSON(fcstData: Data) -> [WeatherModel] {
         let useCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
         //let useCategory = ["TMP"]
         let decoder = JSONDecoder()
         var weatherArray: [WeatherModel] = []
         do {
-            let decodedData = try decoder.decode(WeatherData.self, from: weatherData)
+            let decodedData = try decoder.decode(WeatherData.self, from: fcstData)
             let weatherData = decodedData.response.body.items.item
             let items = weatherData.filter{useCategory.contains($0.category)}
             var date: String = items[0].fcstDate
@@ -78,16 +100,39 @@ struct WeatherManager {
                     time = items[i].fcstTime
                     date = items[i].fcstDate
                 }
-//                if i + 1 == items.count {
-//                    weatherArray.append(WeatherModel.init(date: date, time: time, value: weatherValue))
-//                }
-
             }
         }
         catch {
             print(error)
         }
         return weatherArray
+    }
+    func parseJSON(ncstData: Data) -> WeatherModel? {
+        let decoder = JSONDecoder()
+        do {
+            let decodedData = try decoder.decode(NowWeatherData.self, from: ncstData)
+            let nowWeatherData = decodedData.response.body.items.item
+            let date = nowWeatherData[0].baseDate
+            let time = nowWeatherData[0].baseTime
+            var value: WeatherValue = [:]
+            for item in nowWeatherData {
+                switch item.category {
+                    case "T1H": // 기온
+                        value["T1H"] = item.obsrValue
+                    case "RN1": // 1시간 강수량
+                        value["RN1"] = item.obsrValue
+                    case "PTY": // 강수형태
+                        value["PTY"] = item.obsrValue
+                    default:
+                        break
+                }
+            }
+            let nowWeather = WeatherModel(date: date, time: time, value: value)
+            return nowWeather
+        } catch {
+            print(error)
+            return nil
+        }
     }
 }
 
@@ -273,5 +318,98 @@ func setBaseDateTime(testDate: String) -> (String, String) {
     }()
     print("base date\n\(base_date)\nbase time\n\(base_time)")
 
+    return (base_date, base_time)
+}
+
+func setNcstBaseDateTime() -> (String, String) {
+    let now = Date.now
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH"
+    var hour = formatter.string(from: now).toInt
+    formatter.dateFormat = "mm"
+    let minute = formatter.string(from: now).toInt
+
+    let base_date: String = {
+        var base_date = ""
+        formatter.dateFormat = "yyyyMMdd"
+        switch (hour, minute) {
+            case (0, 0 ..< 40):
+                let date = Calendar.current.date(byAdding: .day, value: -1, to: now)!
+                base_date = formatter.string(from: date)
+            case (_, 40 ..< 59):
+                base_date = formatter.string(from: now)
+            case (_, 0 ..< 40):
+                let date = Calendar.current.date(byAdding: .hour, value: -1, to: now)!
+                base_date = formatter.string(from: date)
+            default:
+                break
+        }
+        return base_date
+    }()
+    let base_time: String = {
+        var base_time = ""
+        if minute > 40 {
+            if hour == 0 {
+                base_time = "0000"
+            } else {
+                base_time = String(format: "%02d00", hour)
+            }
+        } else {
+            if hour == 0 {
+                base_time = "2300"
+            } else {
+                hour -= 1
+                base_time = String(format: "%02d00", hour)
+            }
+        }
+        return base_time
+    }()
+    return (base_date, base_time)
+}
+
+func setNcstBaseDateTime(testDate: String) -> (String, String) {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyyMMdd HH:mm"
+    let date = formatter.date(from: testDate)!
+    formatter.dateFormat = "HH"
+    var hour = formatter.string(from: date).toInt
+    formatter.dateFormat = "mm"
+    let minute = formatter.string(from: date).toInt
+
+    let base_date: String = {
+        var base_date = ""
+        formatter.dateFormat = "yyyyMMdd"
+        switch (hour, minute) {
+            case (0, 0 ..< 40):
+                let date = Calendar.current.date(byAdding: .day, value: -1, to: date)!
+                base_date = formatter.string(from: date)
+            case (_, 40 ..< 59):
+                base_date = formatter.string(from: date)
+            case (_, 0 ..< 40):
+                let date = Calendar.current.date(byAdding: .hour, value: -1, to: date)!
+                base_date = formatter.string(from: date)
+            default:
+                break
+        }
+        return base_date
+    }()
+    let base_time: String = {
+        var base_time = ""
+        if minute > 40 {
+            if hour == 0 {
+                base_time = "0000"
+            } else {
+                base_time = String(format: "%02d00", hour)
+            }
+        } else {
+            if hour == 0 {
+                base_time = "2300"
+            } else {
+                hour -= 1
+                base_time = String(format: "%02d00", hour)
+            }
+        }
+        return base_time
+    }()
     return (base_date, base_time)
 }

@@ -13,6 +13,9 @@ extension String {
     var toInt: Int {
         return Int(self)!
     }
+    var toDouble: Double {
+        return Double(self)!
+    }
 }
 
 @propertyWrapper
