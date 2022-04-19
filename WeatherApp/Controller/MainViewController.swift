@@ -72,8 +72,6 @@ class MainViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
-    @IBAction func btnTest(_ sender: Any) {
-    }
 }
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     // tableView footer 제거
@@ -84,10 +82,11 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = weatherTable?.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
         header.headerDate.text = convertDateString(fcstDate: sections[section])
-        //        header.headerTMX.text = headerData[section]["TMX"] ?? "-"
-        //        header.headerTMN.text = headerData[section]["TMN"] ?? "-"
+        header.headerTMX.text = self.weatherArray!.filter{ $0.date == sections[section]}.filter{ $0.value["TMX"] != nil}.first?.value["TMX"] ?? "-"
+        header.headerTMN.text = self.weatherArray!.filter{ $0.date == sections[section]}.filter{ $0.value["TMN"] != nil}.first?.value["TMN"] ?? "-"
         return header
     }
+    // section 높이
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 50
     }

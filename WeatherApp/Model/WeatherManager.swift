@@ -52,26 +52,7 @@ struct WeatherManager {
             print(error)
         }
     }
-    func preformRequest(with vilageFcstURL: String) {
 
-        if let url = URL(string: vilageFcstURL) {
-            let session = URLSession(configuration: .default)
-            let task = session.dataTask(with: url) {
-                data, response, error in
-                if error != nil {
-                    print("preformRequestError - \(error!.localizedDescription)")
-                    return
-                }
-                if let safeData = data {
-                    let weather = parseJSON(fcstData: safeData)
-                    delegate?.didUpdateWeatherTable(self, weather: weather)
-                }
-            }
-            task.resume()
-        } else {
-            print("url error")
-        }
-    }// performRequest
     func parseJSON(fcstData: Data) -> [WeatherModel] {
         let nowTime: Int = { // baseTime은 14시일 때 1400, 15시일 때 1500의 형식으로 나오기 때문에 비교할 때 편하게 하기 위해 100을 곱해줌
             let date = Date.now

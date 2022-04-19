@@ -24,7 +24,6 @@ class LaunchViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         print("// LaunchViewController - viewWillAppear //")
-        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
 
         // 앱 최초 실행여부 확인
         print("")
@@ -71,7 +70,9 @@ class LaunchViewController: UIViewController {
         let mainVC = storyboard?.instantiateViewController(identifier: "mainView") as! MainViewController
         mainVC.modalPresentationStyle = .fullScreen
         mainVC.modalTransitionStyle = .crossDissolve
-        present(mainVC, animated: true)
+        DispatchQueue.main.async {
+            self.present(mainVC, animated: true)
+        }
     }
 }
 
@@ -108,12 +109,16 @@ extension LaunchViewController: CLLocationManagerDelegate {
                     let sidoVC = storyboard?.instantiateViewController(identifier: "sidoView") as! SidoViewController
                     sidoVC.modalPresentationStyle = .fullScreen
                     sidoVC.modalTransitionStyle = .crossDissolve
-                    present(sidoVC, animated: true)
+                    DispatchQueue.main.async {
+                        self.present(sidoVC, animated: true)
+                    }
                 } else {
                     let mainVC = storyboard?.instantiateViewController(identifier: "mainView") as! MainViewController
                     mainVC.modalPresentationStyle = .fullScreen
                     mainVC.modalTransitionStyle = .crossDissolve
-                    present(mainVC, animated: true)
+                    DispatchQueue.main.async {
+                        self.present(mainVC, animated: true)
+                    }
                 }
             @unknown default:
                 break

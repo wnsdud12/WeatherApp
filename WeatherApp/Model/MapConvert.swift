@@ -86,7 +86,6 @@ func lamcproj<T>(lon_x: T, lat_y: T, isWantGrid: Bool) {
         grid.x = Int(x + 1.5)
         grid.y = Int(y + 1.5)
 
-        let testString = "lon.= \(longitude), lat.= \(latitude) ---> X = \(grid.x), Y = \(grid.y)"
         UserDefaults.degree_lat = latitude
         UserDefaults.degree_lon = longitude
         UserDefaults.grid_x = grid.x
@@ -120,7 +119,6 @@ func lamcproj<T>(lon_x: T, lat_y: T, isWantGrid: Bool) {
         degree.lat = Double(alat * RADDEG)
         degree.lon = Double(alon * RADDEG)
 
-        let testString = "X = \(x), Y = \(y) ---> lon.= \(degree.lon), lat.= \(degree.lat)"
         UserDefaults.grid_x = x
         UserDefaults.grid_y = y
         UserDefaults.degree_lat = degree.lat

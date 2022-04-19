@@ -10,8 +10,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="WeatherTableHeader" customModule="WeatherApp" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="345" height="50"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <rect key="frame" x="0.0" y="0.0" width="358" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wjb-Iw-ccR">
                     <rect key="frame" x="20" y="15" width="156" height="21"/>
@@ -56,7 +56,7 @@
                 <outlet property="headerTMN" destination="Pcw-nN-P02" id="TiK-Zg-TBI"/>
                 <outlet property="headerTMX" destination="D0T-eE-XjR" id="Tph-Yk-TXv"/>
             </connections>
-            <point key="canvasLocation" x="87.681159420289859" y="90.401785714285708"/>
+            <point key="canvasLocation" x="78.260869565217391" y="90.401785714285708"/>
         </view>
     </objects>
 </document>
