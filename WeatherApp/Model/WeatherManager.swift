@@ -19,7 +19,7 @@ struct WeatherManager {
 
     func fetchWeather(nx: Int, ny: Int) async {
         let fcstBaseDateTime: (date: String, time: String) = setBaseDateTime()
-        let ncstBaseDateTime: (date: String, time: String) = setNcstBaseDateTime(testDate: "20220417 21:50")
+        let ncstBaseDateTime: (date: String, time: String) = setNcstBaseDateTime()
 
         guard let apiKey = apiKey else { return print("URL이 이상해요") }
         let fcstURL = "\(weatherURL)getVilageFcst?serviceKey=\(apiKey)&base_date=\(fcstBaseDateTime.date)&base_time=\(fcstBaseDateTime.time)&nx=\(nx)&ny=\(ny)&numOfRows=1000&pageNo=1&dataType=JSON"
@@ -43,16 +43,13 @@ struct WeatherManager {
             let (data, _) = try await URLSession.shared.data(from: url)
             let weather = parseJSON(fcstData: data)
             delegate?.didUpdateWeatherTable(self, weather: weather)
-        } catch {
-            print(error)
-        }
-        do {
+
             guard let url = URL(string: ncstURL) else { return }
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let nowWeather = parseJSON(ncstData: data)
+            let (data2, _) = try await URLSession.shared.data(from: url)
+            let nowWeather = parseJSON(ncstData: data2)
             delegate?.didUpdateNowWeatherData(self, nowWeatherData: nowWeather)
         } catch {
-
+            print(error)
         }
     }
     func preformRequest(with vilageFcstURL: String) {
@@ -76,8 +73,14 @@ struct WeatherManager {
         }
     }// performRequest
     func parseJSON(fcstData: Data) -> [WeatherModel] {
+        let nowTime: Int = { // baseTime은 14시일 때 1400, 15시일 때 1500의 형식으로 나오기 때문에 비교할 때 편하게 하기 위해 100을 곱해줌
+            let date = Date.now
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH"
+            let nowTime = formatter.string(from: date).toInt * 100
+            return nowTime
+        }()
         let useCategory = ["TMX", "TMN", "TMP", "SKY", "PTY", "PCP", "SNO", "POP"]
-        //let useCategory = ["TMP"]
         let decoder = JSONDecoder()
         var weatherArray: [WeatherModel] = []
         do {
@@ -105,7 +108,18 @@ struct WeatherManager {
         catch {
             print(error)
         }
-        return weatherArray
+        let weather = weatherArray.filter{ // 과거 데이터는 보이지 않게
+            if $0.date <= weatherArray[0].date {
+                if $0.time.toInt <= nowTime {
+                    return false
+                } else {
+                    return true
+                }
+            } else {
+                return true
+            }
+        }
+        return weather
     }
     func parseJSON(ncstData: Data) -> WeatherModel? {
         let decoder = JSONDecoder()

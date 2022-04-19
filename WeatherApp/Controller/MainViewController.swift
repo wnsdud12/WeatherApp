@@ -28,12 +28,13 @@ class MainViewController: UIViewController {
 
     var nowWeatherData: WeatherModel?
 
-    let nowTime: Int = {
+   
+    let nowDate: String = {
         let date = Date.now
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH"
-        let nowTime = formatter.string(from: date).toInt
-        return nowTime
+        let formater = DateFormatter()
+        formater.dateFormat = "yyyyMMdd"
+        let nowDate = formater.string(from: date)
+        return nowDate
     }()
     
     override func viewDidLoad() {
@@ -119,15 +120,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel]) {
         DispatchQueue.main.async {
-            var weather = weather
 
-
-            //            self.nowWeatherData = weather[0]
-            //            //self.nowWeatherData = weather.removeFirst()
-            //            let nowSKY = setWeatherIcon(time: convertTimeString(fcstTime: self.nowWeatherData!.time), state: self.nowWeatherData!.value)
-            //            self.nowWeather?.lblNowSKY.text = nowSKY.label
-            //            self.nowWeather?.imgNowSKY.image = nowSKY.image
-            //            self.nowWeather?.lblNowTMP.text = self.nowWeatherData?.value["TMP"]
             self.weatherArray = weather
             self.sections = removeDuplicate(weather.map { $0.date }).sorted { $0 < $1 }
             self.weatherTable?.reloadData()
