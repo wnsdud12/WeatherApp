@@ -7,16 +7,12 @@
 
 import UIKit
 import CoreLocation
-import SkeletonView
-
 
 class MainViewController: UIViewController {
 
     @IBOutlet weak var lblAddress: UILabel?
     @IBOutlet weak var nowWeather: NowWeatherView?
     @IBOutlet weak var weatherTable: UITableView?
-
-    //let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
     var weatherManager = WeatherManager()
     let locationManager = CLLocationManager()
