@@ -31,9 +31,9 @@ class LaunchViewController: UIViewController {
         print("\(UserDefaults.isFirst == nil ? "첫 실행" : "실행한 적 있음")")
         print("==============")
         print("")
-        if UserDefaults.isFirst == nil {
+        if UserDefaults.isFirst == nil { // 첫 실행이라면 현재위치 조회 권한을 요청
             locationManager.requestWhenInUseAuthorization()
-        } else {
+        } else { // 아니라면 저번 실행 때의 권한 상태를 확인
             print("")
             print("==============")
             print("""
@@ -48,7 +48,7 @@ class LaunchViewController: UIViewController {
             print("==============")
             print("")
             switch locationManager.authorizationStatus {
-                case .authorizedAlways, .authorizedWhenInUse:
+                case .authorizedAlways, .authorizedWhenInUse: 
                     locationManager.startUpdatingLocation()
                 case .notDetermined, .restricted:
                     locationManager.requestWhenInUseAuthorization()

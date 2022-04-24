@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// 기상청에서 엑셀 파일로 제공해준 지명 및 좌표 데이터를 사용하기 위해 엑셀 파일을 배열로 바꿔서 저장해놓은 싱글톤 객체
 struct WeatherLocales {
     static var locales: [WeatherLocale] = WeatherLocalesInit()!
     private init() {}
@@ -57,6 +57,7 @@ private func parseCSV() -> [[String]]? {
         return nil
     }
 }
+
 struct WeatherLocale {
     let sido: String
     let gugun: String

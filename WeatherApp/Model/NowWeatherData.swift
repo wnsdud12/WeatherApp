@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// 초단기실황조회 데이터
 struct NowWeatherData: Codable {
     let response: NowResponse
 }

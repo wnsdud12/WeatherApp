@@ -6,9 +6,9 @@
 //
 
 import Foundation
-typealias WeatherValue = [String: String]
-typealias WeatherTableData = (date: String, time: String, value: WeatherValue)
+typealias WeatherValue = [String: String] // key : 자료구분문자(category), value : 예보 값(fcstValue)
 
+// 날씨 데이터를 저장하기 위한 구조체
 struct WeatherModel {
     let date: String
     let time: String

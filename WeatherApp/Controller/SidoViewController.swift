@@ -28,8 +28,12 @@ class SidoViewController: UIViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "지역 검색"
 
+        //-----------------------------------------------------
+        // 네비게이션에 서치바를 넣는건 안되는데 이유를 모르겠다
+        // 우선은 테이블의 헤더에 넣어서 사용
         //navigationItem.searchController = searchController
         sidoTable.tableHeaderView = searchController.searchBar
+        //-----------------------------------------------------
         definesPresentationContext = false
 
     }
@@ -48,7 +52,7 @@ class SidoViewController: UIViewController {
 
 }
 extension SidoViewController: UITableViewDelegate, UITableViewDataSource {
-    // MARK: - Table View
+    // MARK: - TableView Delegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
             return filteredLocales.count

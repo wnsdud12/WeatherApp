@@ -18,10 +18,6 @@ import Numerics
 typealias Grid = (x: Int, y: Int)
 typealias Degree = (lat: Double, lon: Double)
 
-protocol MapConvertType {}
-extension Int: MapConvertType {}
-extension Double: MapConvertType {}
-
 struct Map {
     static var shared = Map()
     let NX: Int = 149 // X축 격자점 수
@@ -135,8 +131,6 @@ func searchAddress() {
 
     CLGeocoder().reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "Ko-kr")) {
         (placemarks, error) -> Void in
-
-        // searchbar로 지역 선택했을 때의 주소와 재시작 해서 fetchWeather로 주소 받아올 때 내용이 다름
         if let pm = placemarks?.last {
             if error != nil {
                 print("현재 위치를 받아올 수 없음 \(error.debugDescription)")

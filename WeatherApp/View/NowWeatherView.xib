@@ -10,9 +10,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NowWeatherView" customModule="WeatherApp" customModuleProvider="target">
             <connections>
-                <outlet property="imgNowSKY" destination="m5Z-qD-M7z" id="4ls-lZ-d5h"/>
-                <outlet property="lblNowSKY" destination="nc7-SN-oFo" id="okj-g7-6xN"/>
-                <outlet property="lblNowTMP" destination="mNo-ft-ad4" id="V3e-fC-wOA"/>
+                <outlet property="imgNowPTY" destination="m5Z-qD-M7z" id="TCa-49-1Qc"/>
+                <outlet property="lblNowRN1" destination="nc7-SN-oFo" id="Qjg-Ew-l7k"/>
+                <outlet property="lblNowT1H" destination="mNo-ft-ad4" id="eIT-DZ-HGY"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

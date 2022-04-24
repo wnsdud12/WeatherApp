@@ -22,9 +22,10 @@ class MainViewController: UIViewController {
     var weatherArray: [WeatherModel]?
     var headerData: WeatherModel?
 
+    // 현재 시간의 날씨 데이터
     var nowWeatherData: WeatherModel?
 
-   
+
     let nowDate: String = {
         let date = Date.now
         let formater = DateFormatter()
@@ -44,11 +45,10 @@ class MainViewController: UIViewController {
         let weatherTableXib = UINib(nibName: "WeatherTableViewCell", bundle: nil)
         weatherTable?.register(weatherTableXib, forCellReuseIdentifier: "weatherCell")
 
+        // MARK: - TableView Setup
         weatherTable?.delegate = self
         weatherTable?.dataSource = self
-
         weatherTable?.backgroundColor = UIColor.systemGray6
-
         weatherTable?.register(UINib(nibName: "WeatherTableHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "WeatherTableHeader")
     }
 
@@ -59,16 +59,13 @@ class MainViewController: UIViewController {
 
             self.lblAddress?.text = UserDefaults.address
         }
-
-
     }
     @objc func fetch() async {
         await self.weatherManager.fetchWeather(nx: UserDefaults.grid_x, ny: UserDefaults.grid_y)
     }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
+
 }
+// MARK: - TableView Delegate
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     // tableView footer 제거
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -78,6 +75,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = weatherTable?.dequeueReusableHeaderFooterView(withIdentifier: "WeatherTableHeader") as! WeatherTableHeader
         header.headerDate.text = convertDateString(fcstDate: sections[section])
+
+        // 기상청에서 제공하는 데이터에서 특정 시간(최저기온 - 오전6시, 최고기온 - 오후3시)에만 최저/최고기온 데이터를 제공해주기 때문에 데이터를 받아올 수 없는 시간대면 - 표시
         header.headerTMX.text = self.weatherArray!.filter{ $0.date == sections[section]}.filter{ $0.value["TMX"] != nil}.first?.value["TMX"] ?? "-"
         header.headerTMN.text = self.weatherArray!.filter{ $0.date == sections[section]}.filter{ $0.value["TMN"] != nil}.first?.value["TMN"] ?? "-"
         return header
@@ -88,9 +87,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     // section별 데이터 수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let times = self.weatherArray!.filter{ $0.date == sections[section] }.count
-        print(times)
-        return times
+        let dates = self.weatherArray!.filter{ $0.date == sections[section] }.count
+        return dates
     }
     // section 갯수
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -111,12 +109,12 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-
+// MARK: - WeatherManager Delegate
 extension MainViewController: WeatherManagerDelegate {
     func didUpdateWeatherTable(_ weatherManager: WeatherManager, weather: [WeatherModel]) {
         DispatchQueue.main.async {
-
             self.weatherArray = weather
+            // 중복제거를 위해 세트로 변환했다가 배열로 다시 변환하기 때문에 순서가 섞여버려서 정렬까지 해준 후 대입
             self.sections = removeDuplicate(weather.map { $0.date }).sorted { $0 < $1 }
             self.weatherTable?.reloadData()
         }
@@ -124,64 +122,61 @@ extension MainViewController: WeatherManagerDelegate {
     func didUpdateNowWeatherData(_ weatherManager: WeatherManager, nowWeatherData: WeatherModel?) {
         DispatchQueue.main.async {
             if let nowWeatherData = nowWeatherData {
-                var image: UIImage?
-
-                for item in nowWeatherData.value {
-                    switch item.key {
-                        case "T1H":
-                            self.nowWeather?.lblNowTMP.text = item.value + "º"
-                        case "RN1":
-                            switch item.value.toDouble {
-                                case 0:
-                                    self.nowWeather?.lblNowSKY.text = "강수없음"
-                                case (0.1 ..< 1.0):
-                                    self.nowWeather?.lblNowSKY.text = "1.0mm 미만"
-                                case (1.0 ..< 30.0):
-                                    self.nowWeather?.lblNowSKY.text = item.value + "mm"
-                                case (30.0 ..< 50.0):
-                                    self.nowWeather?.lblNowSKY.text = "30.0~50.0mm"
-                                case (50.0 ... Double.infinity) :
-                                    self.nowWeather?.lblNowSKY.text = "50.0mm 이상"
-                                default:
-                                    break
-                            }
-                            if item.value == "0" {
-                                self.nowWeather?.lblNowSKY.text = "강수없음"
-
-                            } else {
-                                self.nowWeather?.lblNowSKY.text = "강수량 : " + item.value
-                            }
-                        case "PTY":
-                            switch item.value.toInt {
-                                case 0:
-                                    if (600...2000).contains(nowWeatherData.time.toInt) {
-                                        image = UIImage(named: "sunny.png")
-                                    } else {
-                                        image = UIImage(named: "night.png")
-                                    }
-                                case 1:
-                                    fallthrough
-                                case 5:
-                                    image = UIImage(named: "rain.png")
-                                case 2:
-                                    fallthrough
-                                case 6:
-                                    image = UIImage(named: "rainORsnowy.png")
-                                case 3:
-                                    fallthrough
-                                case 7:
-                                    image = UIImage(named: "snow.png")
-                                default:
-                                    break
-                            }
-                            self.nowWeather?.imgNowSKY.image = image
-                        default:
-                            break
-                    }
-                }
+                self.nowWeather?.lblNowT1H.text = setNowWeatherData(model: nowWeatherData, key: "T1H")
+                self.nowWeather?.lblNowRN1.text = setNowWeatherData(model: nowWeatherData, key: "RN1")
+                self.nowWeather?.imgNowPTY.image = UIImage(named: setNowWeatherData(model: nowWeatherData, key: "PTY"))
             }
         }
     }
+}
+// 자료구분문자(category)의 코드값을 확인하고 구분에 맞는 예보 값(fcstValue)을 반환해주는 함수(초단기실황조회 전용)
+private func setNowWeatherData(model: WeatherModel, key: String) -> String {
+    var value: String = ""
+    switch key {
+        case "T1H": // 현재온도
+            value = model.value[key]! + "º"
+        case "RN1": // 1시간 강수량
+            switch model.value[key]!.toDouble {
+                case 0:
+                    value = "강수없음"
+                case (0.1 ..< 1.0):
+                    value = "1.0mm 미만"
+                case (1.0 ..< 30.0):
+                    value = model.value[key]! + "mm"
+                case (30.0 ..< 50.0):
+                    value = "30.0~50.0mm"
+                case (50.0 ... Double.infinity) :
+                    value = "50.0mm 이상"
+                default:
+                    break
+            }
+        case "PTY": // 강수형태, 강수가 없을 시 맑음 아이콘 사용
+            switch model.value[key]!.toInt {
+                case 0: // 없음
+                    if (600...2000).contains(model.time.toInt) {
+                        value = "sunny.png"
+                    } else {
+                        value = "night.png"
+                    }
+                case 1: // 비
+                    fallthrough
+                case 5: // 빗방울
+                    value = "rain.png"
+                case 2: // 비/눈
+                    fallthrough
+                case 6: // 빗방울눈날림
+                    value = "rainORsnowy.png"
+                case 3: // 눈
+                    fallthrough
+                case 7: // 눈날림
+                    value = "snow.png"
+                default:
+                    break
+            }
+        default:
+            break
+    }
+    return value
 }
 
 // 날씨에 맞는 아이콘과 날씨 상태 받아오기
@@ -192,6 +187,7 @@ private func setWeatherIcon(time: String, state: WeatherValue) -> (image: UIImag
     var iconName: String = ""
     var stateName: String = ""
     if (6...20).contains(time.description.toInt) {
+        // 6~20시는 해, 그 외 시간에는 달로 표기
         isDay = true
     } else {
         isDay = false

@@ -13,6 +13,7 @@ extension String {
     var toInt: Int {
         return Int(self)!
     }
+    // String 변수를 Double로 변경
     var toDouble: Double {
         return Double(self)!
     }
@@ -79,6 +80,8 @@ extension UserDefaults {
 extension Notification.Name {
     static let end_didUpdateLocations = Notification.Name("end_didUpdateLocations")
 }
+// 배열의 중복값을 제거
+// set로 한번 변환한 후 다시 배열로 바꾸기 때문에 정렬이 흐트러짐 -> 사용할 때 다시 정렬해줘야함
 func removeDuplicate<T: Hashable>(_ array: [T]) -> [T] {
     let set: Set<T> = Set(array)
     let array = Array(set)

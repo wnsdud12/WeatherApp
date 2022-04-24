@@ -44,7 +44,6 @@ extension EupmyeondongViewController: UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let locale: WeatherLocale
         locale = eupmyeondongArray[indexPath.row]
-//        lamcproj(lat: locale.point.x, lon: locale.point.y, isWantGrid: false)
         lamcproj(lon_x: locale.point.x, lat_y: locale.point.y, isWantGrid: false)
         UserDefaults.grid_x = locale.point.x
         UserDefaults.grid_y = locale.point.y
